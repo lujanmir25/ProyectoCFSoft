@@ -8,4 +8,5 @@ from usuarios.models import Profile
 class ProfileAdmnin(admin.ModelAdmin):
 	"perfil administrador"
 
-	list_display = ('pk','user', 'phone_number')
+	list_display = ('pk','user','website', 'phone_number')
+	list_editable = ('website', 'phone_number')
