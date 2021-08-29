@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     #'material.admin',
     #'material.frontend',
+    'colorfield',
     'admin_interface',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,8 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Clientes',
-    'colorfield',
     'bases',
+    'productos',
 ]
 
 X_FRAME_OPTIONS='SAMEORIGIN'
