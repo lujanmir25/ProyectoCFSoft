@@ -20,25 +20,25 @@
                                     <div class="input-group">
                                         <p><input type="text" name="product_name" maxlength="100" class="form-control"
                                                 required="id_product_name" placeholder="nombre"
-                                                value="{% if obj %} {{ obj.cedula }} {% endif %}"></p>
+                                                value="{% if obj %} {{ obj.product_name }} {% endif %}"></p>
                                         <p><input type="text" name="stock_actual" maxlength="100" class="form-control"
                                                 required="id_stock_actual" placeholder="stock actual"
-                                                value="{% if obj %} {{ obj.nombre }} {% endif %}"></p>
+                                                value="{% if obj %} {{ obj.stock_actual }} {% endif %}"></p>
                                         <p><input type="text" name="stock_minimo" maxlength="100" class="form-control"
                                                 required="id_stock_minimo" placeholder="stock minimo"
-                                                value="{% if obj %} {{ obj.apellido }} {% endif %}"></p>
+                                                value="{% if obj %} {{ obj.stock_minimo }} {% endif %}"></p>
                                         <p><input type="text" name="unidad_medida" maxlength="100" class="form-control"
                                                 required="id_unidad_medida" placeholder="Unidad de media"
-                                                value="{% if obj %} {{ obj.ruc }} {% endif %}"></p>
+                                                value="{% if obj %} {{ obj.unidad_medida }} {% endif %}"></p>
                                         <p><input type="text" name="fecha_ingreso" maxlength="100" class="form-control"
                                                 required="id_fecha_ingreso" placeholder="fecha de ingreso"
-                                                value="{% if obj %} {{ obj.nombre }} {% endif %}"></p>
+                                                value="{% if obj %} {{ obj.fecha_ingreso }} {% endif %}"></p>
                                         <p><input type="text" name="fecha_caducidad" maxlength="100" class="form-control"
                                                 required="id_fecha_caducidad" placeholder="fecha Caducidad"
-                                                value="{% if obj %} {{ obj.apellido }} {% endif %}"></p>
+                                                value="{% if obj %} {{ obj.fecha_caducidad }} {% endif %}"></p>
                                         <p><input type="text" name="categoria " maxlength="100" class="form-control"
                                                 required="id_categoria" placeholder="Categoria"
-                                                value="{% if obj %} {{ obj.ruc }} {% endif %}"></p>
+                                                value="{% if obj %} {{ obj.categoria }} {% endif %}"></p>
                                     </div>
                                 </div>
                             </div>
