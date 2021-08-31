@@ -19,6 +19,9 @@
   <!-- Custom styles for this template-->
   <link href="{% static 'base/css/sb-admin-2.min.css' %}" rel="stylesheet">
 
+  <!-- Custom styles for this page -->
+  <link href="{% static 'base/vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+
 </head>
 
 <body id="page-top" class="bg-gradient-primary">
@@ -59,14 +62,16 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-cog"></i>
-          <span>Usuarios</span>
+          <span>Clientes/Proveedores</span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Usuarios:</h6>
+            <h6 class="collapse-header">Registro:</h6>
             <a class="collapse-item" href="{% url 'clientes:cliente_list' %}">Clientes</a>
+
             <!-- <a class="collapse-item" href="cards.html">Cards</a> -->
-            
+                        <a class="collapse-item" href="cards.html">Proveedores </a>
+
           </div>
         </div>
       </li>
@@ -77,6 +82,9 @@
           <i class="fas fa-fw fa-wrench"></i>
           <span>Productos</span>
         </a>
+
+       
+
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Opciones:</h6>
@@ -86,17 +94,25 @@
             <a class="collapse-item" href="utilities-other.html">Other</a> -->
           </div>
         </div>
-      </li>
+      </li> 
+
+
 
       <!-- Divider -->
       <hr class="sidebar-divider">
 
       <!-- Heading -->
+     
+      <!--
       <div class="sidebar-heading">
         Addons
       </div>
+  
+    -->
 
       <!-- Nav Item - Pages Collapse Menu -->
+
+  <!--      
       <li class="nav-item active">
         <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
           <i class="fas fa-fw fa-folder"></i>
@@ -116,19 +132,29 @@
         </div>
       </li>
 
+      -->
+
       <!-- Nav Item - Charts -->
+
+      <!--
       <li class="nav-item">
         <a class="nav-link" href="charts.html">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Charts</span></a>
-      </li>
+      </li> 
+
+      -->
 
       <!-- Nav Item - Tables -->
+
+      <!--
       <li class="nav-item">
         <a class="nav-link" href="tables.html">
           <i class="fas fa-fw fa-table"></i>
           <span>Tables</span></a>
       </li>
+
+      -->
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -200,6 +226,8 @@
                 <span class="badge badge-danger badge-counter">3+</span>
               </a>
               <!-- Dropdown - Alerts -->
+
+              
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
                 <h6 class="dropdown-header">
                   Alerts Center
@@ -241,14 +269,27 @@
               </div>
             </li>
 
+            
+
+
             <!-- Nav Item - Messages -->
+
+            
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-envelope fa-fw"></i>
+                <i class="fas fa-envelope fa-fw"></i> -->
+
                 <!-- Counter - Messages -->
+
+                
                 <span class="badge badge-danger badge-counter">7</span>
-              </a>
+              </a>  
+
+
               <!-- Dropdown - Messages -->
+
+              
+
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
                 <h6 class="dropdown-header">
                   Message Center
@@ -297,15 +338,24 @@
               </div>
             </li>
 
-            <div class="topbar-divider d-none d-sm-block"></div>
+            <div class="topbar-divider d-none d-sm-block"></div> 
+
+          
 
             <!-- Nav Item - User Information -->
+
+            
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Valerie Luna</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
                 <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
               </a>
+
+            
               <!-- Dropdown - User Information -->
+              
+              
+
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="#">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -331,6 +381,9 @@
 
         </nav>
         {% endblock top_bar %}
+        
+        
+
         <!-- End of Topbar -->
 
         <!-- Begin Page Content -->
@@ -400,6 +453,10 @@
 
   <!-- Custom scripts for all pages-->
   <script src="{% static 'base/js/sb-admin-2.min.js' %}"></script>
+
+  <!-- Page level plugins -->
+  <script src="{% static 'base/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'base/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 
   {% block js_page %} {% endblock %}
 </body>
