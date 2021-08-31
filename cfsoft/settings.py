@@ -35,7 +35,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     #'material.admin',
     #'material.frontend',
-    'admin_interface',
+    #'admin_interface',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Clientes',
-    'colorfield',
+    #'colorfield',
     'bases',
 ]
 
@@ -88,7 +88,7 @@ DATABASES = {
         #'ENGINE': 'django.db.backends.sqlite3',
         #'NAME': BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cfsdb',
+        'NAME': 'cfsdbgit',
         'USER':'enterprisedb',
         'PASSWORD':'oracle',
         'HOST':'localhost',

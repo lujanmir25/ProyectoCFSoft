@@ -9,3 +9,16 @@ class ClaseModelo(models.Model):
 
 	class Meta:
 		abstract = True
+
+class ClaseModeloUsuario(models.Model):
+	cedula = models.CharField(max_length=50,blank=True) 
+	nombre = models.CharField(max_length=50,blank=True)
+	apellido = models.CharField(max_length=50,blank=True)
+	ruc = models.CharField(max_length=50,blank=True)
+	email = models.CharField(max_length=50,blank=True)
+	telefono = models.CharField(max_length=50,blank=True)
+	direccion = models.CharField(max_length=50,blank=True)
+	
+
+	class Meta:
+		abstract = True

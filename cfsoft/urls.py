@@ -22,5 +22,4 @@ urlpatterns = [
     path('', include(('bases.urls','bases'), namespace='bases')),
     path('Clientes/', include(('Clientes.urls','Clientes'), namespace='clientes')),
     path('admin/', admin.site.urls),
-    #path('Clientes/', views.MenuCliente),
 ]
