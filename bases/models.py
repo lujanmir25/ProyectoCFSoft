@@ -2,6 +2,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class ClaseModeloInv(models.Model):
+    estado = models.BooleanField(default=True)
+    fc = models.DateTimeField(auto_now_add=True)
+    fm = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
 
 class ClaseModelo(models.Model):
 	uc = models.ForeignKey(User, on_delete=models.CASCADE)

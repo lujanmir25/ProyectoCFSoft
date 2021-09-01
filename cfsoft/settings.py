@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     #'colorfield',
     'bases',
     'productos',
+    'proveedor',
+    'inventario',
 ]
 
 X_FRAME_OPTIONS='SAMEORIGIN'
@@ -86,16 +88,26 @@ WSGI_APPLICATION = 'cfsoft.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'cfsdbgit',
+        'USER': 'postgres',
+        'PASSWORD': '123',
+        'HOST': 'localhost',
+        'PORT': '5432'
+    }
+}
+"""DATABASES = {
+    'default': {
         #'ENGINE': 'django.db.backends.sqlite3',
         #'NAME': BASE_DIR / 'db.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'cfsdbgit',
         'USER':'enterprisedb',
         'PASSWORD':'oracle',
-        'HOST':'localhost',
-        'PORT':'5445',
+        'HOST': 'localhost',
+        'PORT': '5445',
     }
-}
+}"""
 
 
 # Password validation

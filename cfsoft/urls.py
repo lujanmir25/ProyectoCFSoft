@@ -22,6 +22,8 @@ from productos import views
 urlpatterns = [
     path('', include(('bases.urls','bases'), namespace='bases')),
     path('Clientes/', include(('Clientes.urls','Clientes'), namespace='clientes')),
+    path('proveedor/', include(('proveedor.urls', 'proveedor'), namespace='proveedor')),
     path('productos/', include(('productos.urls','productos'), namespace='productos')),
+    path('inventario/', include(('inventario.urls', 'inventario'), namespace='inv')),
     path('admin/', admin.site.urls),
 ]
