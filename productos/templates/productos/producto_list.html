@@ -31,9 +31,9 @@
       		<th>stock_minimo</th>
       		<th>unidad_medida</th>
       		<th>fecha_ingreso</th>
-            <th>fecha_caducidad</th>
-            <th>categoria</th>
-            <th>marca</th>
+          <th>fecha_caducidad</th>
+          <th>categoria</th>
+          <th>marca</th>
       		<th class="all">Opciones</th>
       	</thead>
       	<tbody>
@@ -45,12 +45,12 @@
       				<td>{{ item.stock_minimo}}</td>
       				<td>{{ item.unidad_medida }}</td>
       				<td>{{ item.fecha_ingreso }}</td>
-                    <td>{{ item.fecha_caducidad }}</td>
-                    <td>{{ item.categoria }}</td>
-                    <td>{{ item.marca }}</td>
+              <td>{{ item.fecha_caducidad }}</td>
+              <td>{{ item.categoria }}</td>
+              <td>{{ item.marca }}</td>
       				<td>
       					<a href="{% url 'productos:producto_edit' item.id %}" class="btn btn-warning btn-circle" role="button"><i class="far fa-edit"></i></a>
-      					<a href="#" class="btn btn-danger btn-circle" role="button"><i class="far fa-trash-alt"></i></a>
+      					<a href="{% url 'productos:producto_del' item.id %}" class="btn btn-danger btn-circle" role="button"><i class="far fa-trash-alt"></i></a>
       				</td>
       			</tr>
       		{% endfor %}

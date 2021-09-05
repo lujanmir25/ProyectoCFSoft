@@ -3,62 +3,42 @@
 {% block page_content %}
 <form method="POST" class="form-inline">
     {% csrf_token %}
-    <div class="col-xl-6 col-md-6 mb-6">
-        {% if obj %}
-        <div class="card border-left-warning shadow h-100 py-2">
-            {% else %}
-            <div class="card border-left-succes shadow h-100 py-2">
-                {% endif %}
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                {% if obj %} Editar {% else %} Nuevo Producto {% endif %} </div>
+        <div class="col-xl-6 col-md-6 mb-6">
+            {% if obj %}
+                <div class="card border-left-warning shadow h-100 py-2">
+            {% else %}  
+                <div class="card border-left-succes shadow h-100 py-2">
+            {% endif %}
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                   <div class="col mr-2">
+                       <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            {% if obj %} Editar {% else %} Nuevo Producto {% endif %} </div>
                             <div class="dropdown-divider"></div>
-                            <div class="row">
-                                <div class="col-10">
-                                    <div class="input-group">
-                                        <p><input type="text" name="product_name" maxlength="100" class="form-control"
-                                                required="id_product_name" placeholder="nombre"
-                                                value="{% if obj %} {{ obj.product_name }} {% endif %}"></p>
-                                        <p><input type="text" name="stock_actual" maxlength="100" class="form-control"
-                                                required="id_stock_actual" placeholder="stock actual"
-                                                value="{% if obj %} {{ obj.stock_actual }} {% endif %}"></p>
-                                        <p><input type="text" name="stock_minimo" maxlength="100" class="form-control"
-                                                required="id_stock_minimo" placeholder="stock minimo"
-                                                value="{% if obj %} {{ obj.stock_minimo }} {% endif %}"></p>
-                                        <p><input type="text" name="unidad_medida" maxlength="100" class="form-control"
-                                                required="id_unidad_medida" placeholder="Unidad de media"
-                                                value="{% if obj %} {{ obj.unidad_medida }} {% endif %}"></p>
-                                        <p><input type="text" name="fecha_ingreso" maxlength="100" class="form-control"
-                                                required="id_fecha_ingreso" placeholder="fecha de ingreso"
-                                                value="{% if obj %} {{ obj.fecha_ingreso }} {% endif %}"></p>
-                                        <p><input type="text" name="fecha_caducidad" maxlength="100" class="form-control"
-                                                required="id_fecha_caducidad" placeholder="fecha Caducidad"
-                                                value="{% if obj %} {{ obj.fecha_caducidad }} {% endif %}"></p>
-                                        <p><input type="text" name="categoria " maxlength="100" class="form-control"
-                                                required="id_categoria" placeholder="Categoria"
-                                                value="{% if obj %} {{ obj.categoria }} {% endif %}"></p>
-                                    </div>
+                                <div class="row">
+                                     <div class="col-10">
+                                        <div class="input-group">
+                                               {{ form.as_p }}
+                                        </div>  
+                                    </div> 
+                                </div>
+                            <div class="dropdown-divider"></div>
+                                <div class="row">
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span>Guardar</button>
+                                        <a href="{% url 'productos:producto_list' %}" class="btn btn-succes"><span class="fa fa-undo"></span>Cancelar</a>
                                 </div>
                             </div>
-                            <div class="dropdown-divider"></div>
-                            <div class="row">
-                                <div class="col">
-                                    <button type="submit" class="btn btn-danger"><span
-                                            class="fa fa-save"></span>Guardar</button>
-                                    <a href="{% url 'productos:producto_list' %}" class="btn btn-succes"><span
-                                            class="fa fa-undo"></span>Cancelar</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                      </div>
                 </div>
             </div>
         </div>
+    </div>
 </form>
 
 {% endblock %}
+
+
 
 {% block js_page %}
 {% endblock %}

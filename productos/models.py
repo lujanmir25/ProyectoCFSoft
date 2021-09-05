@@ -21,7 +21,7 @@ class Producto(ClaseModelo):
     marca = models.CharField(max_length=30)
 
     def __str__(self):
-        return f'{self.product_name}, {self.stock_actual}, {self.stock_minimo}, {self.unidad_medida},{self.fecha_ingreso}, {self.fecha_caducidad},{self.categoria},{self.marca}'
+        return '{}'.format(self.product_name) #, {self.stock_actual}, {self.stock_minimo}, {self.unidad_medida},{self.fecha_ingreso}, {self.fecha_caducidad},{self.categoria},{self.marca}'
         #return f'{self.name}, {self.checkIn}, {self.checkOut}, {self.occupant}'
 
     class Meta:
