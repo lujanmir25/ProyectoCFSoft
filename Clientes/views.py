@@ -10,10 +10,6 @@ from .models import Cliente
 from .forms import ClienteForm
 
 
-#def MenuCliente(request):
-#	clientes = Cliente.objects.all
-#	return render(request,'clientes.html',{'clientes': clientes})
-
 class ClienteView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
 	permission_required = "Clientes.view_cliente"
 	model = Cliente
@@ -22,7 +18,8 @@ class ClienteView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView)
 	login_url = 'bases:login'
 
 
-class ClienteNew(LoginRequiredMixin, generic.CreateView):
+class ClienteNew(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
+	permission_required = "Clientes.view_cliente"
 	Model = Cliente
 	template_name = "clientes/cliente_form.html"
 	context_object_name = "obj"
