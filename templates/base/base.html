@@ -90,12 +90,14 @@
             <h6 class="collapse-header">Opciones:</h6>
             {% if perms.productos.view_producto %}
             <a class="collapse-item" href="{% url 'productos:producto_list' %}"> Lista Productos</a>
-            <a class="collapse-item" href="{% url 'inv:categoria_list' %}">Categorias de Productos</a>
-            <a class="collapse-item" href="{% url 'inv:subcategoria_list' %}">Sub Categorias </a>
-            
-            <!-- <a class="collapse-item" href="utilities-border.html">Borders</a>
+            {% endif %}  
+            <!-- <a class="collapse-item" href="utilities-border.html">Borders</a> -->
+          </div>
+        </div>
+      </li>
+      
+<!-- <a class="collapse-item" href="utilities-border.html">Borders</a>
 
-            {% endif %}
             {% if perms.inv.view_categoria %}
             <a class="collapse-item" href="{% url 'inv:categoria_list' %}">Categorias de Productos</a>
             {% endif %}
@@ -106,10 +108,6 @@
 
             <a class="collapse-item" href="utilities-animation.html">Animations</a>
             <a class="collapse-item" href="utilities-other.html">Other</a> -->
-          </div>
-        </div>
-      </li> 
-
 
 
       <!-- Divider -->
