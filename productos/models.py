@@ -10,18 +10,16 @@ class Producto(ClaseModelo):
 
     product_name = models.CharField(max_length=50)
 
-    stock_actual = models.IntegerField(blank=False)
-    stock_minimo = models.IntegerField(default=10, blank=False)
     unidad_medida = models.CharField(max_length=5)
 
-    fecha_ingreso = models.DateTimeField(default=timezone.now)
-    fecha_caducidad = models.DateField()
-
     categoria = models.CharField(max_length=30)
+    
     marca = models.CharField(max_length=30)
+    
+    precio_venta = models.IntegerField(blank=False)
 
     def __str__(self):
-        return '{}'.format(self.product_name) #, {self.stock_actual}, {self.stock_minimo}, {self.unidad_medida},{self.fecha_ingreso}, {self.fecha_caducidad},{self.categoria},{self.marca}'
+        return '{}'.format(self.product_name)
         #return f'{self.name}, {self.checkIn}, {self.checkOut}, {self.occupant}'
 
     class Meta:
