@@ -1,9 +1,15 @@
-{% extends 'base/base.html' %}
+<!-- {% extends 'base/base.html' %}
 
-{% block page_content %}
-<form method="POST" class="form-inline">
-    {% csrf_token %}
-        <div class="col-xl-6 col-md-6 mb-6">
+{% block page_content %}  -->
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+    {% if obj %}
+    <form method="POST" role="form" class="form-inline" action="{% url 'productos:producto_edit' obj.pk %}">
+    {% else %} 
+    <form method="POST" role="form" class="form-inline" action="{% url 'productos:producto_new' %}">
+    {% endif %}
+    <!--{% csrf_token %} -->
+        <div class="col-xl-12 col-md-12 mb-12">
             {% if obj %}
                 <div class="card border-left-warning shadow h-100 py-2">
             {% else %}  
@@ -15,18 +21,22 @@
                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             {% if obj %} Editar {% else %} Nuevo Producto {% endif %} </div>
                             <div class="dropdown-divider"></div>
+                            {% csrf_token %}
                                 <div class="row">
-                                     <div class="col-10">
-                                        <div class="input-group">
+                                    <!-- <div class="col-10">
+                                        <div class="input-group"> --> 
                                                {{ form.as_p }}
-                                        </div>  
-                                    </div> 
+                                        <!--</div>  
+                                    </div> -->
                                 </div>
                             <div class="dropdown-divider"></div>
                                 <div class="row">
                                     <div class="col">
                                         <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span>Guardar</button>
-                                        <a href="{% url 'productos:producto_list' %}" class="btn btn-succes"><span class="fa fa-undo"></span>Cancelar</a>
+                                    <!--<a href="{% url 'productos:producto_list' %}" class="btn btn-succes"><span class="fa fa-undo"></span>Cancelar</a> -->
+                                    <button type="submit" class="btn btn-success" onclick="return cerrar_modal()" >
+                                        Cancelar
+                                    </button>
                                 </div>
                             </div>
                       </div>
@@ -35,10 +45,13 @@
         </div>
     </div>
 </form>
+    </div>
+</div>
 
+<!--
 {% endblock %}
 
 
 
 {% block js_page %}
-{% endblock %}
+{% endblock %} 
