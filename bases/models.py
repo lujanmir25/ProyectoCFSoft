@@ -1,7 +1,7 @@
 #Django
 from django.db import models
 from django.contrib.auth.models import User
-
+from django_userforeignkey.models.fields import UserForeignKey
 
 
 class ClaseModeloInv(models.Model):
@@ -18,6 +18,13 @@ class ClaseModelo(models.Model):
 
 	class Meta:
 		abstract = True
+
+class ClaseModelo2(models.Model):
+	uc = UserForeignKey(auto_user_add=True,related_name='+')
+	um = UserForeignKey(auto_user=True,related_name='+')
+
+	class Meta:
+		abstract = True		
 
 class ClaseModeloUsuario(models.Model):
 	cedula = models.IntegerField(max_length=50,blank=False,unique=True,error_messages={'unique':"Person with this FirstName already exists."}) 
