@@ -2,7 +2,7 @@
 from django.db import models
 
 #Local
-from bases.models import ClaseModelo, ClaseModelo2
+from bases.models import ClaseModelo, ClaseModelo2, ClaseModeloUsuario
 from Clientes.models import Cliente
 from productos.models import Producto
 
@@ -21,7 +21,7 @@ def __str__(self):
 
 def save(self):
 	self.total = self.sub_total - self.descuento
-	super(facturaEnc,self).save()
+	super(FacturaEnc,self).save()
 
 class Meta:
 	verbose_name_plural = "Encabezado de Facturas"
@@ -33,7 +33,7 @@ class Meta:
 
 class FacturaDet(ClaseModelo2):
 	factura = models.ForeignKey(FacturaEnc, on_delete=models.CASCADE)
-	producto = m odels.ForeignKey(Producto, on_delete=models.CASCADE)
+	producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
 	cantidad = models.BigIntegerField(default=0)
 	precio = models.FloatField(default=0)
 	sub_total = models.FloatField(default=0)

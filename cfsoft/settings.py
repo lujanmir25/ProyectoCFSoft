@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'productos',
     'proveedor',
     'inventario',
+    'ventas',
 ]
 
 X_FRAME_OPTIONS='SAMEORIGIN'

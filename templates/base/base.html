@@ -95,6 +95,22 @@
           </div>
         </div>
       </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVentas" aria-expanded="true" aria-controls="collapseVentas">
+          <i class="fas fa-fw fa-wrench"></i>
+          <span>Ventas</span>
+        </a>
+        <div id="collapseVentas" class="collapse" aria-labelledby="headingVentas" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Salidas:</h6>
+            {% if perms.ventas.view_facturaenc %}
+            <a class="collapse-item" href="{% url 'ventas:factura_list' %}">Ventas</a>
+            {% endif %}  
+            <!-- <a class="collapse-item" href="utilities-border.html">Borders</a> -->
+          </div>
+        </div>
+      </li>
       
       <!-- <a class="collapse-item" href="utilities-border.html">Borders</a>
 
