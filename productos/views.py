@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, \
     PermissionRequiredMixin
@@ -53,3 +53,21 @@ class ProductoDel(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteVie
     template_name = "productos/producto_del.html"
     context_object_name = "obj"
     success_url = reverse_lazy("productos:producto_list")
+
+def producto_inactivar(request, id): 
+    prod = Producto.objects.filter(pk=id).first()
+    contexto= {}
+    template_name = "productos/producto_del.html"
+
+    if not prod:
+        return redirect("productos:producto_list") 
+    
+    if request.method == 'GET':
+        contexto= {'obj':prod}
+    
+    if request.method == 'POST':
+        prod.estado = False 
+        prod.save()
+        return redirect("producto:producto_list") 
+    
+    return render(request,template_name, contexto ) 
