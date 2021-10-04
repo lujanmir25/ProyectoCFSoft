@@ -1,13 +1,18 @@
 #Django
-from django.shortcuts import render
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.views import generic
+from django.contrib.auth.decorators import login_required,permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.urls import reverse_lazy
+from datetime import datetime
+
 
 #Local
 from ventas.models import FacturaEnc, FacturaDet
+from Clientes.models import Cliente
+from Clientes.forms import ClienteForm
+from productos.models import Producto
 
 
 class FacturaView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
@@ -16,3 +21,20 @@ class FacturaView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView)
 	template_name = "ventas/factura_list.html"
 	context_object_name = "obj"
 	login_url = 'bases:login'
+
+@login_required(login_url='/login/')
+@permission_required('ventas.change_facturasenc')
+
+def facturas(request, id=None):
+	template_name = 'ventas/facturas.html'
+	encabezado = {
+		'fecha':datetime.today()
+	}
+	detalle = {}
+	clientes = Cliente.objects.filter
+
+
+	contexto={"enc":encabezado,"det":detalle,"clientes":clientes}
+
+
+	return render(request,template_name, contexto)
