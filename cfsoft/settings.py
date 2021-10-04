@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     #'material.admin',
     #'material.frontend',
     #'admin_interface',
+    'django_userforeignkey',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
     'productos',
     'proveedor',
     'inventario',
+    'ventas',
 ]
 
 X_FRAME_OPTIONS='SAMEORIGIN'
@@ -60,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_userforeignkey.middleware.UserForeignKeyMiddleware',
 ]
 
 ROOT_URLCONF = 'cfsoft.urls'
@@ -85,7 +88,7 @@ WSGI_APPLICATION = 'cfsoft.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -108,7 +111,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '5445',
     }
-}"""
+}
 
 
 # Password validation
