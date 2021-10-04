@@ -7,8 +7,7 @@ from django.utils import timezone
 
 class Producto(ClaseModelo):
     """Modelo de producto"""
-    # product_id = models.CharField(unique=True, max_length=50)
-
+    codigo = models.CharField(max_length=20, unique=True, blank=False, default='cod_def' )
     product_name = models.CharField(max_length=50)
 
     unidad_medida = models.CharField(max_length=5)

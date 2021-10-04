@@ -9,10 +9,11 @@ from .models import Producto
 class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
-        fields = ['product_name', 'unidad_medida','existencia','estado_c',
+        fields = ['codigo','product_name', 'unidad_medida','existencia','estado_c',
                   'categoria', 'marca', 'precio_venta', 'cantidad']
 
-        labels = {'product_name': "Nombre Producto",
+        labels = {'codigo':'codigo',
+                'product_name': "Nombre Producto",
                   'unidad_medida': "Unidad de Medida",
                   'categoria': "Categoria",
                   'marca': "Marca",
