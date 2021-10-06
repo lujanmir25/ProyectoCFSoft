@@ -13,6 +13,8 @@ from ventas.models import FacturaEnc, FacturaDet
 from Clientes.models import Cliente
 from Clientes.forms import ClienteForm
 from productos.models import Producto
+import productos.views as productos
+
 
 
 class FacturaView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
@@ -32,9 +34,12 @@ def facturas(request, id=None):
 	}
 	detalle = {}
 	clientes = Cliente.objects.filter
-
+	print(clientes)
 
 	contexto={"enc":encabezado,"det":detalle,"clientes":clientes}
 
 
 	return render(request,template_name, contexto)
+
+class ProductoView(productos.ProductoView):
+	template_name="ventas/buscar_producto.html"

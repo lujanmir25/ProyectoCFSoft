@@ -207,6 +207,16 @@
 			placeholder:"Seleccione Cliente",
 			allowClear:true
 		});
+
+		$("#btnBuscar").click(function(){
+			if ($("#enc_cliente").val()==="0"){
+            	mensaje("Cliente No Seleccionado",'red');
+				return false;
+			}
+           abrir_modal("{% url 'ventas:factura_producto' %}");
+        });
 	});
+
+	
 </script>
 {% endblock %}
