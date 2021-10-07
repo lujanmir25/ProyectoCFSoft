@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     #'material.admin',
     #'material.frontend',
     #'admin_interface',
+    'rest_framework',
     'django_userforeignkey',
     'django.contrib.admin',
     'django.contrib.auth',

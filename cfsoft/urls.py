@@ -27,5 +27,6 @@ urlpatterns = [
     path('productos/', include(('productos.urls','productos'), namespace='productos')),
     path('inventario/', include(('inventario.urls', 'inventario'), namespace='inv')),
     path('ventas/', include(('ventas.urls', 'ventas'), namespace='ventas')),
+    path('api/', include(('api.urls', 'ventas'), namespace='api')),
     path('admin/', admin.site.urls),
 ]

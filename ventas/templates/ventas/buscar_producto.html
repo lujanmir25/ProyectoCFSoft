@@ -11,14 +11,20 @@
                         <div class="dropdown-divider"></div>
                         
                         <div class="row">
-                                <table class="table table-striped table-hover"> 
+                            <table
+                                id="tblProducto"
+                                data-pagination="true"
+                                data-search="true"
+                                data-show-columns="true"
+                                data-show-fullscreen="true"
+                                data-locale="es-NI"
+                                >
                                 <thead>
-                                  <th>Id</th>        
-                                  <th>Código</th>
-                                  <!--<th data-sortable="true" data-field="codigo_barra">Barra</th>-->
-                                  <!--<th>Descripción</th>-->
-                                  <th>Existencia</th>
-                                  <th>Precio</th>
+                                  <th data-sortable="true" data-field="id">Id</th>        
+                                  <th data-sortable="true" data-field="codigo">Código</th>
+                                  <th data-field="producto">Producto</th>
+                                  <th data-field="existencia">Existencia</th>
+                                  <th data-field="precio">Precio</th>
                                   <th class="all">Acciones</th>
                                 </thead>
                                 <tbody>
@@ -26,19 +32,21 @@
                                   <tr>
                                     <td>{{ item.id }}</td>
                                     <td>{{ item.codigo }}</td>
-                                    <!--<td>{{ item.codigo_barra }}</td>-->
-                                    <!--<td>{{item.descripcion}}</td>-->
+                                    <td>{{item.product_name}}</td>
                                     <td>{{item.existencia}}</td>
                                     <td>{{item.precio_venta}}</td>
                                     <td>
-                                        <button class="btn btn-warning btn-circle" id="btnSelect">
+                                        {% if item.existencia > 0 and item.estado %}
+                                        <button class="btn btn-warning btn-circle" id="btnSelect"
+                                            onclick="seleccionarProducto({{item.id}},'{{item.codigo}}','{{item.product_name}}',{{item.precio_venta}})">
                                             <i class="far fa-hand-pointer"></i>
                                         </button>
+                                        {% endif %}
                                     </td>
                                   </tr>
                                   {% endfor %}
                                 </tbody>
-                              </table>
+                              </table> 
                         </div>
                         <div class="dropdown-divider"></div>
                         <div class="row">
@@ -70,15 +78,15 @@
     });
     $('#tblProducto').bootstrapTable();
 
-    /*function seleccionarProducto(id,codigo,descripcion,precio){
+    function seleccionarProducto(id,codigo,product_name,precio_venta){
         $("#codigo").val(codigo);
-        $("#descripcion").val(descripcion);
-        $("#precio").val(precio);
+        $("#product_name").val(product_name);
+        $("#precio_venta").val(precio_venta);
         $("#btnCancelar").click();
         $("#codigo").select();
         $("#codigo").focus();
 
-    }*/
+    }
 
 </script>
 {% endblock %}

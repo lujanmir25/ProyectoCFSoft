@@ -31,15 +31,6 @@
 
 					<div class="row">
 						<div class="col-lg-8 p-2">
-							<!--<div class="row">
-								<div class="col-lg-2">
-								Fecha:
-								</div>
-								<div class="col-lg-8 form-group">
-									<input type="text" name="fecha" id="fecha" class="form-control form-control-user"
-									value="{{ enc.fecha|date:'Y-m-d'}}" readonly />
-								</div>
-							</div>-->
 							<div class="col-lg-11 p-2 form-group">
 								<div class="row">
 									<div class="col-lg-2">Fecha:</div>
@@ -81,15 +72,14 @@
                             <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Cód. Producto">
                         </div>
                         <div class="col-lg-7">
-                           <!-- <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Descripción" disabled> -->
+                            <input type="text" class="form-control" name="producto" id="product_name" placeholder="Descripción" disabled> 
                         </div>
                         <div class="col-lg-1">
-                            <!--<button type="button" class="btn btn-info" id="btnBuscar">
+                           <!-- <button type="button" class="btn btn-info" id="btnBuscar">
                                 <i class="fab fa-searchengin"></i>
                             </button> -->
-
                             <button  class="btn btn-info" onclick="return abrir_modal('{% url 'ventas:factura_producto' %}')"> <i class="fab fa-searchengin"></i> 
-                			</button>
+                			</button> 
                         </div>
                     </div>
                     <div class="row p-2">
@@ -99,7 +89,7 @@
                             <input type="hidden" class="form-control" name="existencia" id="existencia">
                         </div>
                         <div class="col-lg-4">
-                            <input type="number" class="form-control" name="precio" id="precio" placeholder="Precio" readonly>
+                            <input type="number" class="form-control" name="precio" id="precio_venta" placeholder="Precio" readonly>
                         </div>
                         <div class="col-lg-3">
                            <!-- <input type="number" class="form-control" name="descuento_detalle" id="descuento_detalle" placeholder="Descuento"> -->
@@ -135,7 +125,7 @@
 			<hr>
 			<div class="row p-1">
                 <div class="col-lg-12">
-                    <!--<table
+                    <table
                         data-toggle="table"
                         data-pagination="true"
                         data-search="true"
@@ -159,21 +149,21 @@
 			              <td>{{ item.id }}</td>
 			              <td>{{ item.cliente }}</td>
 			              <td>{{ item.total }}</td>
-			              <<td>{{ item.estado|yesno:"Activo,Inactivo"}}</td>
+			             <!-- <td>{{ item.estado|yesno:"Activo,Inactivo"}}</td> -->
 			           	  <td>
 			           	  		<button class="btn btn-warning btn-circle"><i class="far fa-edit"></i></button>
 			           	  </td>
 			              <!--<td>
 			                  <button type="button" class="btn btn-warning btn-circle"
 			                   		onclick="borrar_detalle({{ item.id }})">
-			                    	<i class="fas fa-history"></i>
+			                    	<i class="fas fa-history"></i> 
 			                  </button>
-			              </td>
+			              </td> -->
             			</tr> 
             			{% endfor %}
          			</tbody>
-                  </table> -->
-                  <table class="table table-striped table-hover" >
+                  </table> 
+                 <!-- <table class="table table-striped table-hover" >
       				<thead>
       				<th>id</th>
       				<th>Codigo</th>
@@ -192,7 +182,7 @@
       				</tr>
       				{% endfor %}
       			</tbody>
-      		</table>
+      		</table>-->
                 </div>
 			</div>
 			<!-- Fin Detalle -->
@@ -216,8 +206,7 @@
             	mensaje("Cliente No Seleccionado",'red');
 				return false;
 			}
-           abrir_modal('{% url 'ventas:factura_producto' %}');
-		     
+           abrir_modal("{% url 'ventas:factura_producto' %}");
         });
 	});
 
