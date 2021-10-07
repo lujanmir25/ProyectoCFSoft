@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from Clientes import views 
 from productos import views
+from ventas import views
 
 
 urlpatterns = [
