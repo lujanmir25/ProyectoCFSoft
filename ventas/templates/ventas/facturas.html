@@ -81,12 +81,15 @@
                             <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Cód. Producto">
                         </div>
                         <div class="col-lg-7">
-                            <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Descripción" disabled>
+                           <!-- <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Descripción" disabled> -->
                         </div>
                         <div class="col-lg-1">
-                            <button type="button" class="btn btn-info" id="btnBuscar">
+                            <!--<button type="button" class="btn btn-info" id="btnBuscar">
                                 <i class="fab fa-searchengin"></i>
-                            </button>
+                            </button> -->
+
+                            <button  class="btn btn-info" onclick="return abrir_modal('{% url 'ventas:factura_producto' %}')"> <i class="fab fa-searchengin"></i> 
+                			</button>
                         </div>
                     </div>
                     <div class="row p-2">
@@ -213,7 +216,8 @@
             	mensaje("Cliente No Seleccionado",'red');
 				return false;
 			}
-           abrir_modal("{% url 'ventas:factura_producto' %}");
+           abrir_modal('{% url 'ventas:factura_producto' %}');
+		     
         });
 	});
 
