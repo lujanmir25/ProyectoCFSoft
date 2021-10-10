@@ -10,7 +10,7 @@ class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
         fields = ['codigo','product_name', 'unidad_medida','existencia','estado_c',
-                  'categoria', 'marca', 'precio_venta', 'cantidad']
+                  'categoria', 'marca', 'precio_venta']
 
         labels = {'codigo':'codigo',
                 'product_name': "Nombre Producto",
@@ -18,8 +18,7 @@ class ProductoForm(forms.ModelForm):
                   'categoria': "Categoria",
                   'marca': "Marca",
                   'precio_venta': 'Precio_venta',
-                  'estado_c': 'estado',
-                  'cantidad' : 'cantidad'}
+                  'estado_c': 'estado'}
         # Modificar tipo de datos.
         widget = {'product_name': forms.TextInput, 'unidad_medida': forms.TextInput,
                   'categoria': forms.TextInput, 'precio_venta': forms.TextInput}
