@@ -17,8 +17,8 @@ class Producto(ClaseModelo):
     marca = models.CharField(max_length=30)
 
     precio_venta = models.FloatField(default=0)
-    existencia = models.IntegerField (default=0)
-    cantidad = models.IntegerField (default=0) 
+    existencia = models.FloatField(default=0)
+    #cantidad = models.IntegerField(default=0)
 
     def __str__(self):
         return '{}'.format(self.product_name)

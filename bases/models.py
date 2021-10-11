@@ -1,4 +1,4 @@
-#Django
+# Django
 from django.db import models
 from django.contrib.auth.models import User
 from django_userforeignkey.models.fields import UserForeignKey
@@ -12,30 +12,32 @@ class ClaseModeloInv(models.Model):
     class Meta:
         abstract = True
 
-class ClaseModelo(models.Model):
-	estado_c = models.BooleanField(default=True)
-	uc = models.ForeignKey(User, on_delete=models.CASCADE)
-	um = models.IntegerField(blank=True, null=True)
 
-	class Meta:
-		abstract = True
+class ClaseModelo(models.Model):
+    estado_c = models.BooleanField(default=True)
+    uc = models.ForeignKey(User, on_delete=models.CASCADE)
+    um = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
 
 class ClaseModelo2(models.Model):
-	uc = UserForeignKey(auto_user_add=True,related_name='+')
-	um = UserForeignKey(auto_user=True,related_name='+')
+    uc = UserForeignKey(auto_user_add=True, related_name='+')
+    um = UserForeignKey(auto_user=True, related_name='+')
 
-	class Meta:
-		abstract = True		
+    class Meta:
+        abstract = True
+
 
 class ClaseModeloUsuario(models.Model):
-	cedula = models.CharField(max_length=50,blank=True) 
-	nombre = models.CharField(max_length=50,blank=True)
-	apellido = models.CharField(max_length=50,blank=True)
-	ruc = models.CharField(max_length=50,blank=True)
-	email = models.CharField(max_length=50,blank=True)
-	telefono = models.CharField(max_length=50,blank=True)
-	direccion = models.CharField(max_length=50,blank=True)
-	
+    cedula = models.CharField(max_length=50, blank=True)
+    nombre = models.CharField(max_length=50, blank=True)
+    apellido = models.CharField(max_length=50, blank=True)
+    ruc = models.CharField(max_length=50, blank=True)
+    email = models.CharField(max_length=50, blank=True)
+    telefono = models.CharField(max_length=50, blank=True)
+    direccion = models.CharField(max_length=50, blank=True)
 
-	class Meta:
-		abstract = True
+    class Meta:
+        abstract = True
