@@ -508,16 +508,14 @@
   <script src="{% static 'base/vendor/jquery_confirm/jquery-confirm.min.js' %}"></script>
 
 
-{% block js_page %} {% endblock %}
+{% block js_page %} 
+{% endblock %}
 {% block control_modal %}
   <script>
       $(document).ready(function (){
           jQuery.datetimepicker.setLocale('es');
       });
   </script>
-
-  {% block js_page %} {% endblock %}
-    {% block control_modal %}
     <script>
         function abrir_modal(url){
             $("#popup").load(url, function() {
