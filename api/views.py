@@ -3,6 +3,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 # Local
 from .serializers import ProductoSerializer,ClienteSerializer
@@ -24,7 +25,7 @@ class ProductoDetalle(APIView):
 
 class ProductoDetalle(APIView):
     def get(self,request, codigo):
-        prod = get_object_or_404(Producto,Q(codigo=codigo)|Q(codigo_barra=codigo))
+        prod = get_object_or_404(Producto,Q(codigo=codigo))
         data = ProductoSerializer(prod).data
         return Response(data)
 

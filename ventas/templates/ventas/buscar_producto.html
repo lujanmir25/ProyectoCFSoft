@@ -36,12 +36,12 @@
                                     <td>{{item.existencia}}</td>
                                     <td>{{item.precio_venta}}</td>
                                     <td>
-                                        {% if item.existencia > 0 and item.estado %}
+                                        
                                         <button class="btn btn-warning btn-circle" id="btnSelect"
                                             onclick="seleccionarProducto({{item.id}},'{{item.codigo}}','{{item.product_name}}',{{item.precio_venta}})">
                                             <i class="far fa-hand-pointer"></i>
                                         </button>
-                                        {% endif %}
+                                       
                                     </td>
                                   </tr>
                                   {% endfor %}
