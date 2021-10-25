@@ -1,6 +1,8 @@
 {% extends 'base/base.html' %}
 
 {% block page_content %}
+<form method="post" id="frmFacturas">
+    {% csrf_token %}
 <div class="card shadow mb-4">
 	<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
 		<a href="#" class="btn btn-danger">Guardar</a><a href="#" class="btn btn-info">Cancelar</a>
@@ -20,8 +22,8 @@
 						</div>
 						<div class="col-lg-1">Client</div>
 						<div class="col-lg-5 form-group">
-							<select name="enc-cliente" id="enc_cliente">
-								<option value=0>Seleccione Cliente</option>
+							<select name="enc_cliente" id="enc_cliente">
+								<option value="0">Seleccione Cliente</option>
 								{% for item in clientes %}
 									<option value="{{item.id}}">{{ item.nombre }} {{ item.apellido }} </option>
 								{% endfor %} 
@@ -72,14 +74,12 @@
                             <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Cód. Producto">
                         </div>
                         <div class="col-lg-7">
-                            <input type="text" class="form-control" name="producto" id="product_name" placeholder="Descripción" disabled> 
+                            <input type="text" class="form-control" name="producto" id="product_name" placeholder="Producto" disabled> 
                         </div>
                         <div class="col-lg-1">
-                           <!-- <button type="button" class="btn btn-info" id="btnBuscar">
+                            <button type="button" class="btn btn-info" id="btnBuscar">
                                 <i class="fab fa-searchengin"></i>
-                            </button> -->
-                            <button  class="btn btn-info" onclick="return abrir_modal('{% url 'ventas:factura_producto' %}')"> <i class="fab fa-searchengin"></i> 
-                			</button> 
+                            </button>
                         </div>
                     </div>
                     <div class="row p-2">
@@ -91,29 +91,22 @@
                         <div class="col-lg-4">
                             <input type="number" class="form-control" name="precio" id="precio_venta" placeholder="Precio" readonly>
                         </div>
-                        <div class="col-lg-3">
-                           <!-- <input type="number" class="form-control" name="descuento_detalle" id="descuento_detalle" placeholder="Descuento"> -->
-                        </div> 
                         <div class="col-lg-1">
                             <button type="submit" class="btn btn-danger" id="btnGuardar"> <i class="far fa-plus-square"></i> </button>
                         </div>
                     </div>
                     <div class="row p-2">
-                    	<div class="row p-2">
-                    	</div>
-                    	<div class="row p-2">
-                    	</div>	
                         <div class="col-lg-1 text-right">Sub Total</div>
                         <div class="col-lg-3">
                             <input type="number" class="form-control" name="sub_total_detalle" id="sub_total_detalle" placeholder="Sub Total"
-                             value="0.00" disabled>
+                             readonly>
                         </div>
                     </div>
                     <div class="row p-2">
                         <div class="col-lg-1 text-right">Total</div>
                         <div class="col-lg-3">
                             <input type="number" class="form-control" name="total_detalle" id="total_detalle" placeholder="Total"
-                             value="0.00" disabled>
+                             readonly>
                         </div>
                     </div> 
                 </div>
@@ -137,9 +130,9 @@
 			        <thead>
 			        	<th data-sortable="true" data-field="id">Id.</th>        
                        	<th data-sortable="true" data-field="codigo">Codigo</th>
-                        <th data-sortable="true" data-field="unidad_medida">Unidad Medida</th>
+                        <th data-sortable="true" data-field="product_name">Producto</th>
                         <th data-field="cantidad">Cant</th> 
-                        <th data-field="subtotal">S. Total</th>
+                        <th data-field="sub_total">S. Total</th>
                         <th data-field="total">Total</th>
                         <th class="all">Opciones</th>
 			        </thead>
@@ -147,18 +140,14 @@
 			          	{% for item in obj %}
             			<tr>
 			              <td>{{ item.id }}</td>
-			              <td>{{ item.cliente }}</td>
+			              <td>{{ item.producto }}</td>
+			              <td>{{ item.producto.product_name }}</td>
+			              <td>{{ item.cantidad }}</td> 
+			              <td>{{ item.sub_total }}</td>
 			              <td>{{ item.total }}</td>
-			             <!-- <td>{{ item.estado|yesno:"Activo,Inactivo"}}</td> -->
 			           	  <td>
 			           	  		<button class="btn btn-warning btn-circle"><i class="far fa-edit"></i></button>
 			           	  </td>
-			              <!--<td>
-			                  <button type="button" class="btn btn-warning btn-circle"
-			                   		onclick="borrar_detalle({{ item.id }})">
-			                    	<i class="fas fa-history"></i> 
-			                  </button>
-			              </td> -->
             			</tr> 
             			{% endfor %}
          			</tbody>
@@ -189,11 +178,48 @@
 		</div>
 	</div>
 </div>
+</form>
+
 
 {% endblock %}
 
-{% block js-page %}
+{% block js_page %}
 <script>
+    function calcular_detalle()
+    {
+        var cant,prec,desc,stotal,total;
+
+        cant = $("#cantidad").val();
+        cant = cant==="" ? 0 : +cant;
+        cant = cant<0 ? 0 : cant;
+
+        prec =$('#precio_venta').val();
+        prec = prec==="" ? 0 : +prec;
+        prec = prec<0 ? 0 : prec;
+
+        //desc = $('#descuento_detalle').val();
+        //desc = desc==="" ? 0 : +desc;
+        //desc = desc<0 ? 0 : desc;
+
+        //desc = desc>(cant * prec) ? 0 : desc;
+
+        stotal = cant * prec;
+        total  = stotal;
+
+        $('#cantidad').val(cant);
+        $('#precio').val(prec);
+        $('#sub_total_detalle').val(stotal);
+        $('#total_detalle').val(total);
+
+        console.log("Cantidad " + cant);
+        console.log("prec " + prec);
+
+        console.log("sub_total_detalle " + $('#sub_total_detalle').val());
+        console.log("total_detalle " + $('#total_detalle').val());
+        //console.log("sub_total_detalle " + stotal);
+
+    }
+
 	function buscarProducto()
     {
         if ($("#enc_cliente").val()==="0" || $("#enc_cliente").val()===null){
@@ -216,20 +242,20 @@
                 console.log(r.existencia);
                 console.log(r.estado);
 
-                if(r.existencia<=0 || !r.estado){
+           /*     if(r.existencia<=0 ){
                     mensaje("Producto No Tiene Existencia o está inactivo",'orange')
                     $("#codigo").val("");
                     //$("#descripcion").val("");
                     $("#precio_venta").val("0.00");
                     $("#codigo").focus();
                     return false;
-                }
+                }*/
 
                 $("#codigo").val(r.codigo);
-                //$("#descripcion").val(r.descripcion);
-                $("#precio_venta").val(r.precio);
+                $("#product_name").val(r.product_name);
+                $("#precio_venta").val(r.precio_venta);
                 $("#existencia").val(r.existencia);
-                //$("#cantidad").focus();
+                $("#cantidad").focus();
 
             },
             error: function(a,b,c){
@@ -269,12 +295,24 @@
 
            abrir_modal("{% url 'ventas:factura_producto' %}");
         });
+
         $("#codigo").keypress(function(e){
             if(e.keyCode===13){
-                //e.preventDefault();
+                e.preventDefault();
                 buscarProducto();
             }
        });
+
+        $('#cantidad,#precio').change(function(){
+            calcular_detalle();
+        });
+
+        $("#enc_id").val("{{ enc.id }}");
+        $("#enc_cliente").val("{{ enc.cliente.id }}").change();
+        $("#fecha").val("{{ enc.fecha|date:'Y-m-d' }}");
+        $("#sub_total").val("{{ enc.sub_total }}");
+        //$("#descuento").val("{{ enc.descuento }}");
+        $("#total").val({{ enc.total }});
 	});
 
 	

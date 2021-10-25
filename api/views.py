@@ -23,13 +23,6 @@ class ProductoDetalle(APIView):
         data = ProductoSerializer(prod).data
         return Response(data)
 
-class ProductoDetalle(APIView):
-    def get(self,request, codigo):
-        prod = get_object_or_404(Producto,Q(codigo=codigo))
-        data = ProductoSerializer(prod).data
-        return Response(data)
-
-
 class ClienteList(APIView):
     def get(self,request):
         obj = Cliente.objects.all()

@@ -3,7 +3,7 @@ from django.db import models
 from bases.models import ClaseModelo, ClaseModeloInv
 
 
-class Categoria(ClaseModelo, ClaseModeloInv):
+class Categoria(ClaseModeloInv):
     descripcion = models.CharField(
         max_length=100,
         help_text='Descripcion de la categoria',

@@ -36,12 +36,10 @@
                                     <td>{{item.existencia}}</td>
                                     <td>{{item.precio_venta}}</td>
                                     <td>
-                                        
                                         <button class="btn btn-warning btn-circle" id="btnSelect"
                                             onclick="seleccionarProducto({{item.id}},'{{item.codigo}}','{{item.product_name}}',{{item.precio_venta}})">
                                             <i class="far fa-hand-pointer"></i>
                                         </button>
-                                       
                                     </td>
                                   </tr>
                                   {% endfor %}

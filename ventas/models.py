@@ -20,11 +20,11 @@ def __str__(self):
 	return '{}'.format(self.id)
 
 def save(self):
-	self.total = self.sub_total - self.descuento
+	self.total = self.sub_total
 	super(FacturaEnc,self).save()
 
 class Meta:
-	verbose_name_plural = "Encabezado de Facturas"
+	verbose_name_plural = "Encabezado Facturas"
 	verbose_name = "Encabezado Factura"
 
 
