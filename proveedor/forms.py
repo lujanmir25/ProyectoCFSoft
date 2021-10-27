@@ -1,7 +1,7 @@
 from django import forms
 
 # Local
-from .models import Proveedor, ComprasEnc
+from .models import Proveedor, ComprasEnc, OrdenComprasEnc
 
 
 # La vista llama a este formulario
@@ -39,6 +39,27 @@ class ComprasEncForm(forms.ModelForm):
             })
         self.fields['fecha_compra'].widget.attrs['readonly'] = True
         self.fields['fecha_factura'].widget.attrs['readonly'] = True
+        self.fields['sub_total'].widget.attrs['readonly'] = True
+        self.fields['descuento'].widget.attrs['readonly'] = True
+        self.fields['total'].widget.attrs['readonly'] = True
+
+#Formulario orden compra.
+class OrdenComprasEncForm(forms.ModelForm):
+#    fecha_compra = forms.DateInput()
+#    fecha_factura = forms.DateInput()
+
+    class Meta:
+        model = OrdenComprasEnc
+        fields = ['proveedor','observacion', 'sub_total', 'descuento', 'total']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'from-control'
+            })
+    #    self.fields['fecha_compra'].widget.attrs['readonly'] = True
+    #    self.fields['fecha_factura'].widget.attrs['readonly'] = True
         self.fields['sub_total'].widget.attrs['readonly'] = True
         self.fields['descuento'].widget.attrs['readonly'] = True
         self.fields['total'].widget.attrs['readonly'] = True

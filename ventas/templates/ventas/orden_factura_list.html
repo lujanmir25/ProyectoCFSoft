@@ -4,14 +4,14 @@
  <div class="card shadow mb-4">
     <!-- Card Header - Dropdown -->
     <div class="card-header py-5 d-flex flex-row align-items-center justify-content-between">
-      <h6 class="m-0 font-weight-bold text-primary">Listado de Facturas</h6>
+      <h6 class="m-0 font-weight-bold text-primary">Listado de Ordenes de Ventas</h6>
        <div class="dropdown no-arrow">
         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-600"></i>
         </a> 
         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
           <div class="dropdown-header">Opciones</div>
-          <a class="dropdown-item" href="{% url 'ventas:factura_new' %}"><i class="far fa-calendar-plus"></i> Nuevo </a>
+          <a class="dropdown-item" href="{% url 'ventas:orden_factura_new' %}"><i class="far fa-calendar-plus"></i> Nueva Orden </a>
       </div> 
     </div> 
 
@@ -19,7 +19,7 @@
     
     <div class="card-body">
       {% if not obj %}
-      	<div class="alert alert-info">No hay Facturas</div>
+      	<div class="alert alert-info">No hay Ordenes</div>
       {% else %}
      <table 
       id="table"
@@ -45,7 +45,7 @@
       				<td>{{ item.cliente.nombre }}</td>
       				<td>{{ item.total }}</td>
       				<td>
-      					<a href="{% url 'ventas:factura_edit' item.id %}" class="href btn btn-warning btn-circle">
+      					<a href="{% url 'ventas:orden_factura_edit' item.id %}" class="href btn btn-warning btn-circle">
                   <i class="far fa-edit"></i>
                 </a>
       				</td> 

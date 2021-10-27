@@ -6,7 +6,7 @@
                     <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Buscar Producto
+                            Buscar Orden Compra
                         </div>
                         <div class="dropdown-divider"></div>
                         
@@ -20,24 +20,26 @@
                                 data-locale="es-NI"
                                 >
                                 <thead>
-                                  <th data-sortable="true" data-field="id">Id</th>        
-                                  <th data-sortable="true" data-field="codigo">Código</th>
+                                  <th data-sortable="true" data-field="id">Id</th>      
+                                  <th data-sortable="true" data-field="id">observacion</th>  
+                                <!--  <th data-sortable="true" data-field="codigo">Código</th>
                                   <th data-field="producto">Producto</th>
                                   <th data-field="existencia">Existencia</th>
-                                  <th data-field="precio">Precio</th>
-                                  <th class="all">Acciones</th>
+                                  <th data-field="precio">Precio</th> -->
+                                  <th class="all">Acciones</th> 
                                 </thead>
                                 <tbody>
                                   {% for item in obj%}
                                   <tr>
                                     <td>{{ item.id }}</td>
-                                    <td>{{ item.codigo }}</td>
+                                    <td>{{ item.observacion }}</td>
+                                <!--    <td>{{ item.codigo }}</td>
                                     <td>{{item.product_name}}</td>
                                     <td>{{item.existencia}}</td>
-                                    <td>{{item.precio_venta}}</td>
+                                    <td>{{item.precio_venta}}</td> -->
                                     <td>
                                         <button class="btn btn-warning btn-circle" id="btnSelect"
-                                            onclick="seleccionarProducto({{item.id}},'{{item.codigo}}','{{item.product_name}}',{{item.precio_venta}})">
+                                            onclick="seleccionarProducto({{item.id}},{{item.observacion}})">
                                             <i class="far fa-hand-pointer"></i>
                                         </button>
                                     </td>
@@ -76,13 +78,12 @@
     });
     $('#tblProducto').bootstrapTable();
 
-    function seleccionarProducto(id,codigo,product_name,precio_venta){
-        $("#codigo").val(codigo);
-        $("#product_name").val(product_name);
-        $("#precio_venta").val(precio_venta);
+    function seleccionarProducto(id, observacion){
+        $("#id").val(id);
+        $("#observacion").val(observacion);
         $("#btnCancelar").click();
-        $("#codigo").select();
-        $("#codigo").focus();
+        $("#id").select();
+        $("#id").focus();
 
     }
 

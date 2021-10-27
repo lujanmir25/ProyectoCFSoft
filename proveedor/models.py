@@ -59,6 +59,7 @@ class ComprasDet(ClaseModelo):
     descuento = models.FloatField(default=0)
     total = models.FloatField(default=0)
     costo = models.FloatField(default=0)
+    estado_compra = models.CharField(max_length=12, default= 'En proceso' ) 
 
     def __str__(self):
         return '{}'.format(self.producto)
@@ -72,7 +73,58 @@ class ComprasDet(ClaseModelo):
         verbose_name_plural = "Detalles Compras"
         verbose_name = "Detalle Compra"
 
+# inicio de clase orden compra enc y detalle 
+class OrdenComprasEnc(ClaseModelo):
+#    fecha_compra = models.DateField(null=True, blank=True)
+    observacion = models.TextField(blank=True, null=True)
+#    no_factura = models.CharField(max_length=100)
+#    fecha_factura = models.DateField()
+    sub_total = models.FloatField(default=0)
+    descuento = models.FloatField(default=0)
+    total = models.FloatField(default=0)
 
+    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '{}'.format(self.observacion)
+
+    def save(self, **kwargs):
+        self.observacion = self.observacion.upper()
+        if self.sub_total == None  or self.descuento == None:
+            self.sub_total = 0
+            self.descuento = 0
+
+        self.total = self.sub_total - self.descuento
+        super(OrdenComprasEnc, self).save()
+
+    class Meta:
+        verbose_name_plural = "Encabezado de Orden Compras"
+        verbose_name = "Encabezado Orden Compra"
+
+
+class OrdenComprasDet(ClaseModelo):
+    compra = models.ForeignKey(OrdenComprasEnc, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.BigIntegerField(default=0)
+    precio_prv = models.FloatField(default=0)
+    sub_total = models.FloatField(default=0)
+    descuento = models.FloatField(default=0)
+    total = models.FloatField(default=0)
+    costo = models.FloatField(default=0)
+    estado_compra = models.CharField(max_length=12, default= 'En proceso' ) 
+
+    def __str__(self):
+        return '{}'.format(self.producto)
+
+    def save(self, **kwargs):
+        self.sub_total = float(float(int(self.cantidad)) * float(self.precio_prv))
+        self.total = self.sub_total - float(self.descuento)
+        super(OrdenComprasDet, self).save()
+
+    class Meta:
+        verbose_name_plural = "Detalles orden Compras"
+        verbose_name = "Detalle Orden Compra"
+#fin de clase orden compra enc y detalle
 @receiver(post_delete, sender=ComprasDet)
 def detalle_compra_borrar(sender, instance, **kwargs):
     id_producto = instance.producto.id
