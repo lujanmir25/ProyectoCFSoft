@@ -1,4 +1,4 @@
-#Django
+"""#Django
 from django.shortcuts import render
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -53,3 +53,4 @@ class ClienteDel(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView
 	context_object_name = "obj"
 	success_url = reverse_lazy("Clientes:cliente_list")
 
+"""

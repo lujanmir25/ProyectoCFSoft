@@ -1,4 +1,4 @@
-#Django
+"""#Django
 from django.db import models
 
 #Local 
@@ -12,4 +12,4 @@ class Cliente(ClaseModelo,ClaseModeloUsuario):
 		return '{}'.format(self.cedula)
 
 	class Meta:
-		verbose_name_plural= "Clientes"
+		verbose_name_plural= "Clientessss" """

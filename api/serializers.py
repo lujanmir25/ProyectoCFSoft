@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 # Local
 from productos.models import Producto
-from Clientes.models import Cliente
+from ventas.models import Cliente
 
 
 class ProductoSerializer(serializers.ModelSerializer):

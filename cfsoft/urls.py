@@ -15,14 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from Clientes import views 
 from productos import views
 from ventas import views
 
+"""path('Clientes/', include(('Clientes.urls','Clientes'), namespace='clientes')),"""
 
 urlpatterns = [
-    path('', include(('bases.urls','bases'), namespace='bases')),
-    path('Clientes/', include(('Clientes.urls','Clientes'), namespace='clientes')),
+    path('', include(('bases.urls','bases'), namespace='bases')), 
     path('proveedor/', include(('proveedor.urls', 'proveedor'), namespace='proveedor')),
     path('productos/', include(('productos.urls','productos'), namespace='productos')),
     path('inventario/', include(('inventario.urls', 'inventario'), namespace='inv')),
@@ -30,3 +32,5 @@ urlpatterns = [
     path('api/', include(('api.urls', 'api'), namespace='api')),
     path('admin/', admin.site.urls),
 ]
+
+urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

@@ -1,14 +1,13 @@
-# Django
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from django.db.models import Q
 
-# Local
 from .serializers import ProductoSerializer,ClienteSerializer
 from productos.models import Producto
-from Clientes.models import Cliente
+from ventas.models import Cliente
+
+from django.db.models import Q
 
 class ProductoList(APIView):
     def get(self,request):
@@ -19,9 +18,10 @@ class ProductoList(APIView):
 
 class ProductoDetalle(APIView):
     def get(self,request, codigo):
-        prod = get_object_or_404(Producto,Q(codigo=codigo))
+        prod = get_object_or_404(Producto,Q(codigo=codigo)|Q(codigo_barra=codigo))
         data = ProductoSerializer(prod).data
         return Response(data)
+
 
 class ClienteList(APIView):
     def get(self,request):

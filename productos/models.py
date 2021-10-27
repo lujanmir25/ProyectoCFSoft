@@ -16,13 +16,21 @@ class Producto(ClaseModelo):
 
     marca = models.CharField(max_length=30)
 
-    precio_venta = models.FloatField(default=0)
+    precio = models.FloatField(default=0)
     existencia = models.FloatField(default=0)
-    #cantidad = models.IntegerField(default=0)
+
+    ultima_compra = models.DateField(null=True, blank=True)
+
+    descripcion = models.CharField(max_length=200,default='.')
 
     def __str__(self):
         return '{}'.format(self.product_name)
         # return f'{self.name}, {self.checkIn}, {self.checkOut}, {self.occupant}'
 
+    def save(self):
+        self.descripcion = self.descripcion.upper()
+        super(Producto,self).save()
+
     class Meta:
         verbose_name_plural = "Productos"
+        """unique_together = ('codigo')"""

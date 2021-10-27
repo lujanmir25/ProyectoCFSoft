@@ -1,4 +1,4 @@
-#Django
+"""#Django
 from django.urls import path
 
 #Local
@@ -10,3 +10,5 @@ urlpatterns = [
 	path('clientes/edit/<int:pk>',ClienteEdit.as_view(), name='cliente_edit'),
 	path('clientes/delete/<int:pk>',ClienteDel.as_view(), name='cliente_del'),
 ]
+
+"""
