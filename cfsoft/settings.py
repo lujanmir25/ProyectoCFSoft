@@ -102,14 +102,11 @@ DATABASES = {
 """
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': BASE_DIR / 'db.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'cfs',
-        'USER':'enterprisedb',
-        'PASSWORD':'oracle',
-        'HOST': 'localhost',
-        'PORT': '5445',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'CFSDB',
+        'USER' : 'postgres',
+        #'PASSWORD':'',
+        'HOST':'localhost',
     }
 }
 
