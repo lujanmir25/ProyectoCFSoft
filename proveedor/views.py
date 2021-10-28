@@ -72,7 +72,7 @@ class ComprasView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView)
 @permission_required('proveedor.view_comprasenc', login_url='bases:login')
 def compras(request, compra_id=None):
     template_name = "prov/compras.html"
-    prod = Producto.objects.filter(estado_c=True)
+    prod = Producto.objects.filter(estado=True)
     form_compras = {}
     contexto = {}
 

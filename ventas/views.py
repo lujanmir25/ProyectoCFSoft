@@ -14,7 +14,7 @@ from bases.views import SinPrivilegios
 
 #Local
 from ventas.models import FacturaEnc, FacturaDet,Cliente, FacturaEnc, FacturaDet, OrdenFacturaEnc, OrdenFacturaDet
-from .forms import ClienteForm, OrdenVentaForm
+from .forms import ClienteForm
 from productos.models import Producto
 import productos.views as productos
 

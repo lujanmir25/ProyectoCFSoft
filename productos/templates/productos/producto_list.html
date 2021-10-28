@@ -33,6 +33,7 @@
           <th>categoria</th>
           <th>existencia</th>
           <th>marca</th>
+          <th>estado</th>
           <th>precio_venta</th>
       		<th class="all">Opciones</th>
       	</thead>
@@ -46,7 +47,8 @@
               <td>{{ item.categoria }}</td>
               <td>{{ item.existencia }}</td>
               <td>{{ item.marca }}</td>
-              <td>{{ item.precio_venta }}</td>
+              <td>{{ item.estado }}</td>
+              <td>{{ item.precio }}</td>
       				<td>
       					<!--  <a href="{% url 'productos:producto_edit' item.id %}" class="btn btn-warning btn-circle" role="button"><i class="far fa-edit"></i></a> -->
                 <button class="btn btn-warning btn-circle" onclick="return abrir_modal('{% url 'productos:producto_edit' item.id %}') " ><i class="far fa-edit"></i> 
