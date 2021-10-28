@@ -3,7 +3,7 @@ from django.urls import path
 
 # Local
 from .views import ProveedorView, ProveedorNew, ProveedorEdit, ProveedorDel, \
-    ComprasView, compras, CompraDetDelete, OrdenComprasView, orden_compras
+    ComprasView, compras, CompraDetDelete, OrdenComprasView, orden_compras, OrdenView, clienteInactivar
 
 urlpatterns = [
     path('proveedor/', ProveedorView.as_view(), name='proveedor_list'),
@@ -18,4 +18,6 @@ urlpatterns = [
     path('compras/edit/<int:compra_id>', compras, name="compras_edit"),
     path('orden_compras/edit/<int:compra_id>', orden_compras, name="orden_compras_edit"),
     path('compras/<int:compra_id>/delete/<int:pk>', CompraDetDelete.as_view(), name="compras_del"),
+    path('orden_compra/estado/<int:id>',clienteInactivar, name="cliente_inactivar"),
+    path('proveedor/buscar-orden',OrdenView.as_view(), name='buscar_compra'),
 ]

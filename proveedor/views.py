@@ -288,3 +288,18 @@ def orden_compras(request, compra_id=None):
         return redirect("proveedor:orden_compras_edit", compra_id=compra_id)
 
     return render(request, template_name, contexto)
+
+class OrdenView(OrdenComprasView):
+	template_name="prov/buscar_orden_compra.html"
+
+def clienteInactivar(request,id):
+    cliente = OrdenComprasEnc.objects.filter(pk=id).first()
+
+    if request.method=="POST":
+        if cliente:
+            cliente.estado = not cliente.estado
+            cliente.save()
+            return HttpResponse("OK")
+        return HttpResponse("FAIL")
+    
+    return HttpResponse("FAIL")
