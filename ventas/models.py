@@ -125,7 +125,6 @@ def detalle_fac_guardar(sender,instance,**kwargs):
 
 class OrdenFacturaEnc(ClaseModelo2):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    #fecha = models.DateTimeField(auto_now_add=True)
     sub_total=models.FloatField(default=0)
     descuento=models.FloatField(default=0)
     total=models.FloatField(default=0)
@@ -151,7 +150,6 @@ class OrdenFacturaDet(ClaseModelo2):
     cantidad=models.BigIntegerField(default=0)
     precio=models.FloatField(default=0)
     sub_total=models.FloatField(default=0)
-    #descuento=models.FloatField(default=0)
     total=models.FloatField(default=0)
 
     def __str__(self):

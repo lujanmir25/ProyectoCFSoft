@@ -88,15 +88,15 @@ WSGI_APPLICATION = 'cfsoft.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'cfsdbgit',
-        'USER': 'postgres',
-        'PASSWORD': '123',
+        'NAME': 'cfs',
+        'USER': 'enterprisedb',
+        'PASSWORD': 'oracle',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '5445',
     }
 }
 """
@@ -109,7 +109,7 @@ DATABASES = {
         'HOST':'localhost',
     }
 }
-
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

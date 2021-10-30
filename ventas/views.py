@@ -309,93 +309,26 @@ def cliente_add_modify(request,pk=None):
     return render(request,template_name,context)
 
 
-def OrdenFacturas(request,id=None):
-    template_name='ventas/orden_facturas.html'
 
-    detalle = {}
-    clientes = Cliente.objects.filter(estado=True)
-    
-    if request.method == "GET":
-        enc = OrdenFacturaEnc.objects.filter(pk=id).first()
-        if id:
-            if not enc:
-                messages.error(request,'Factura No Existe')
-                return redirect("ventas:orden_factura_list")
+"""  ORDEN DE VENTA """
 
-            usr = request.user
-            if not usr.is_superuser:
-                if enc.uc != usr:
-                    messages.error(request,'Factura no fue creada por usuario')
-                    return redirect("ventas:orden_factura_list")
+class OrdenFacturaView(SinPrivilegios, generic.ListView):
+    model = FacturaEnc
+    template_name = "ventas/orden_venta_list.html"
+    context_object_name = "obj"
+    #permission_required="ventas.view_facturaenc"
 
-        if not enc:
-            encabezado = {
-                'id':0,
-            #    'fecha':datetime.today(),
-                'cliente':0,
-                'sub_total':0.00,
-            #    'descuento':0.00,
-                'total': 0.00
-            }
-            detalle=None
-        else:
-            encabezado = {
-                'id':enc.id,
-            #    'fecha':enc.fecha,
-                'cliente':enc.cliente,
-                'sub_total':enc.sub_total,
-             #   'descuento':enc.descuento,
-                'total':enc.total
-            }
-
-        detalle=OrdenFacturaDet.objects.filter(factura=enc)
-        contexto = {"enc":encabezado,"det":detalle,"clientes":clientes}
-        return render(request,template_name,contexto)
-    
-    if request.method == "POST":
-        cliente = request.POST.get("enc_cliente")
-        #fecha  = request.POST.get("fecha")
-        cli=Cliente.objects.get(pk=cliente)
-
-        if not id:
-            enc = OrdenFacturaEnc(
-                cliente = cli,
-            #    fecha = fecha
-            )
-            if enc:
-                enc.save()
-                id = enc.id
-        else:
-            enc = OrdenFacturaEnc.objects.filter(pk=id).first()
-            if enc:
-                enc.cliente = cli
-                enc.save()
-
-        if not id:
-            messages.error(request,'No Puedo Continuar No Pude Detectar No. de Factura')
-            return redirect("ventas:orden_factura_list")
+    def get_queryset(self):
+        user = self.request.user
+        # print(user,"usuario")
+        qs = super().get_queryset()
+        for q in qs:
+            print(q.uc,q.id)
         
-        codigo = request.POST.get("codigo")
-        cantidad = request.POST.get("cantidad")
-        precio = request.POST.get("precio")
-        s_total = request.POST.get("sub_total_detalle")
-    #    descuento = request.POST.get("descuento_detalle")
-        total = request.POST.get("total_detalle")
+        if not user.is_superuser:
+            qs = qs.filter(uc=user)
 
-        prod = Producto.objects.get(codigo=codigo)
-        det = OrdenFacturaDet(
-            factura = enc,
-            producto = prod,
-            cantidad = cantidad,
-            precio = precio,
-            sub_total = s_total,
-         #   descuento = descuento,
-            total = total
-        )
-        
-        if det:
-            det.save()
-        
-        return redirect("ventas:orden_factura_edit",id=id)
+        for q in qs:
+            print(q.uc,q.id)
 
-    return render(request,template_name,contexto)
+        return qs
