@@ -46,12 +46,12 @@ class ComprasEncForm(forms.ModelForm):
 
 #Formulario orden compra.
 class OrdenComprasEncForm(forms.ModelForm):
-#    fecha_compra = forms.DateInput()
+    fecha_compra = forms.DateInput()
 #    fecha_factura = forms.DateInput()
 
     class Meta:
         model = OrdenComprasEnc
-        fields = ['proveedor','observacion', 'sub_total', 'descuento', 'total']
+        fields = ['fecha_compra','observacion', 'sub_total', 'descuento', 'total']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -59,7 +59,7 @@ class OrdenComprasEncForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'from-control'
             })
-    #    self.fields['fecha_compra'].widget.attrs['readonly'] = True
+        self.fields['fecha_compra'].widget.attrs['readonly'] = True
     #    self.fields['fecha_factura'].widget.attrs['readonly'] = True
         self.fields['sub_total'].widget.attrs['readonly'] = True
         self.fields['descuento'].widget.attrs['readonly'] = True

@@ -82,6 +82,7 @@
                                                     <thead>
                                                         <th>Id</th>
                                                         <th class="all">Descripción</th>
+                                                        <th class="all">Existencia</th>
                                                         <th class="all">Acciones</th>
                                                     </thead>
                                                     <tbody>
@@ -89,9 +90,10 @@
                                                         <tr>
                                                         <td>{{ item.id }}</td>
                                                         <td>{{ item.product_name }}</td>
+                                                        <td>{{ item.existencia }}</td>
                                                         <td>
                                                             <button type="button" class="btn btn-warning btn-circle"
-                                                            onclick="selectProducto({{ item.id }}, '{{ item.product_name }}')"><i class="far fa-hand-pointer"></i></button>
+                                                            onclick="selectProducto({{ item.id }}, '{{ item.product_name }}', '{{ item.existencia }}')"><i class="far fa-hand-pointer"></i></button>
                                                         </td>
                                                         </tr>
                                                         {% endfor %}
@@ -256,6 +258,23 @@
 
     });
     function selectProducto(id,descripcion)
+    {
+        $('#id_cantidad_detalle').val(0);
+        $(`#id_precio_detalle`).val(0);
+        $('#id_descuento_detalle').val(0);
+
+        $('#id_sub_total_detalle').val(0);
+        $('#id_total_detalle').val(0);
+
+        $('#id_id_producto').val(+id);
+        $('#id_descripcion_producto').val(descripcion);
+        $('#id_cantidad_detalle').focus();
+        $('#id_cantidad_detalle').select();
+
+        $('.table').DataTable().search('').draw();
+    }
+
+    function selectOrden(id,descripcion)
     {
         $('#id_cantidad_detalle').val(0);
         $(`#id_precio_detalle`).val(0);

@@ -202,11 +202,11 @@ def orden_compras(request, compra_id=None):
 
         if enc:
             det = OrdenComprasDet.objects.filter(compra=enc)
-        #    fecha_compra = datetime.date.isoformat(enc.fecha_compra)
+            fecha_compra = datetime.date.isoformat(enc.fecha_compra)
         #    fecha_factura = datetime.date.isoformat(enc.fecha_factura)
             e = {
-            #    'fecha_compra': fecha_compra,
-                'proveedor': enc.proveedor,
+                'fecha_compra': fecha_compra,
+            #    'proveedor': enc.proveedor,
                 'observacion': enc.observacion,
             #    'no_factura': enc.no_factura,
             #    'fecha_factura': fecha_factura,
@@ -222,7 +222,7 @@ def orden_compras(request, compra_id=None):
         contexto = {'productos': prod, 'encabezado': enc, 'detalle': det, 'form_enc': form_compras}
 
     if request.method == 'POST':
-    #    fecha_compra = request.POST.get("fecha_compra")
+        fecha_compra = request.POST.get("fecha_compra")
         observacion = request.POST.get("observacion")
     #    no_factura = request.POST.get("no_factura")
     #    fecha_factura = request.POST.get("fecha_factura")
@@ -232,14 +232,14 @@ def orden_compras(request, compra_id=None):
         total = 0
 
         if not compra_id:
-            prov = Proveedor.objects.get(pk=proveedor)
+        #    prov = Proveedor.objects.get(pk=proveedor)
 
             enc = OrdenComprasEnc(
-            #    fecha_compra=fecha_compra,
+                fecha_compra=fecha_compra,
                 observacion=observacion,
             #    no_factura=no_factura,
             #    fecha_factura=fecha_factura,
-                proveedor=prov,
+            #    proveedor=prov,
                 uc=request.user
             )
             if enc:
@@ -248,7 +248,7 @@ def orden_compras(request, compra_id=None):
         else:
             enc = OrdenComprasEnc.objects.filter(pk=compra_id).first()
             if enc:
-            #    enc.fecha_compra = fecha_compra
+                enc.fecha_compra = fecha_compra
                 enc.observacion = observacion
             #    enc.no_factura = no_factura
             #    enc.fecha_factura = fecha_factura

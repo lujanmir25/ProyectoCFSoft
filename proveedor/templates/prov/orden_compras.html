@@ -19,36 +19,32 @@
                                     <!-- Inicio Izquierda -->
                                     <div class="col-6">
                                         <!-- Inicio Encabezado -->
-                                        <div class="form-group row">
+                                    <!--    <div class="form-group row">
                                             <label for="staticEmail" class="col-sm-2 col-form-label">Proveedor:</label>
                                             <div class="col-sm-10">
                                               {{ form_enc.proveedor }}
-                                            </div>
+                                            </div> -->
                                             <div class="form-group row">
                                                 <label for="id_descripcion">Descripción:</label>
                                                 {{form_enc.observacion}}
                                             </div>
-                                        </div>
-                                        <!--  <div class="row">
+                                        </div> 
+                                         <div class="row">
                                             <div class="col-6">
                                                 <div class="form-group">
                                                     <label for="id_fecha_compra">Fecha Compra:</label>
                                                     {{form_enc.fecha_compra}}
                                                 </div>
-                                                <div class="form-group">
-                                                    <label for="id_descripcion">Descripción:</label>
-                                                    {{form_enc.observacion}}
-                                                </div> 
+                                               
                                             </div>
-                                            <div class="col-6">
-                                                <div class="form-group">
+                                            <!--/    <div class="form-group">
                                                     <label for="id_fecha_compra">No. Factura:</label>
                                                     {{form_enc.no_factura}} 
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="id_descripcion">Fecha Factura:</label>
                                                     {{form_enc.fecha_factura}} 
-                                                </div>
+                                                </div> / 
                                                 <div class="row">
                                                      <div class="col">
                                                         <label for="Sub Total">Sub Total:</label>
@@ -64,7 +60,7 @@
                                                     <div class="col">
                                                         {{ form_enc.descuento }}
                                                     </div>
-                                                </div>
+                                                </div> 
                                                 <div class="row">
                                                     <div class="col">
                                                         <label for="total">Total:</label>
@@ -72,9 +68,9 @@
                                                     <div class="col">
                                                         {{ form_enc.total }}
                                                     </div> 
-                                                </div> 
+                                                </div> -->
                                             </div> 
-                                        </div> -->
+                                        </div> 
                                         <!-- Fin Encabezado -->
                                     </div>
                                     <!-- Fin Izquierda -->
@@ -193,10 +189,10 @@
 <script>
     $(function () {
 
-    /*    $("#id_fecha_compra, #id_fecha_factura").datetimepicker({
+        $("#id_fecha_compra").datetimepicker({
             format: 'Y-m-d',
             timepicker:false
-        }); */
+        }); 
 
         $("#sidebarToggle").click();
 
@@ -236,7 +232,7 @@
 
         $("#frmOrdenCompras").submit(function(e){
 
-        /*    if($("#id_fecha_compra").val()=="" || $("#id_fecha_factura").val()=="") {
+            if($("#id_fecha_compra").val()=="" ) {
                 e.preventDefault()
                 $.alert({
                     type: 'red',
@@ -244,7 +240,7 @@
                     content: 'Debe Especificar Fecha'
                 });
                 return false;
-            }*/
+            }
 
             if($('#id_total_detalle').val()==0 || $('#id_id_producto').val()==0 ){
                 e.preventDefault();
