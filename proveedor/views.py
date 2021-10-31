@@ -73,13 +73,14 @@ class ComprasView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView)
 def compras(request, compra_id=None):
     template_name = "prov/compras.html"
     prod = Producto.objects.filter(estado=True)
+    orden = OrdenComprasEnc.objects.filter(estado=False)
     form_compras = {}
     contexto = {}
 
     if request.method == 'GET':
         form_compras = ComprasEncForm()
         enc = ComprasEnc.objects.filter(pk=compra_id).first()
-
+        
         if enc:
             det = ComprasDet.objects.filter(compra=enc)
             fecha_compra = datetime.date.isoformat(enc.fecha_compra)
@@ -98,7 +99,7 @@ def compras(request, compra_id=None):
         else:
             det = None
 
-        contexto = {'productos': prod, 'encabezado': enc, 'detalle': det, 'form_enc': form_compras}
+        contexto = {'orden': orden,'productos': prod, 'encabezado': enc, 'detalle': det, 'form_enc': form_compras}
 
     if request.method == 'POST':
         fecha_compra = request.POST.get("fecha_compra")
@@ -136,6 +137,8 @@ def compras(request, compra_id=None):
         if not compra_id:
             return redirect("proveedor:compras_list")
 
+        orden_id = request.POST.get("id_id_orden_compra") #Recibe el id de la orden.
+        Descripcion = request.POST.get("id_descripcion_orden")
         producto = request.POST.get("id_id_producto")
         cantidad = request.POST.get("id_cantidad_detalle")
         precio = request.POST.get("id_precio_detalle")
@@ -144,7 +147,8 @@ def compras(request, compra_id=None):
         total_detalle = request.POST.get("id_total_detalle")
 
         prod = Producto.objects.get(pk=producto)
-
+        orden_det = OrdenComprasDet.objects.filter(compra_id=orden_id)
+        
         det = ComprasDet(
             compra=enc,
             producto=prod,
@@ -165,9 +169,8 @@ def compras(request, compra_id=None):
             enc.save()
 
         return redirect("proveedor:compras_edit", compra_id=compra_id)
-
+    
     return render(request, template_name, contexto)
-
 
 class CompraDetDelete(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
     permission_required = "proveedor.delete_comprasdet"
