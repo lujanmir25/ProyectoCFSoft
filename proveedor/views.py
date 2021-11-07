@@ -8,6 +8,7 @@ from django.http import HttpResponse
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Sum
+from django.core import serializers
 
 from .models import Proveedor, ComprasEnc, ComprasDet, OrdenComprasEnc, OrdenComprasDet
 from .forms import ProveedorForm, ComprasEncForm, OrdenComprasEncForm
@@ -74,6 +75,7 @@ def compras(request, compra_id=None):
     template_name = "prov/compras.html"
     prod = Producto.objects.filter(estado=True)
     orden = OrdenComprasEnc.objects.filter(estado=False)
+    detalle = OrdenComprasDet.objects.all()
     form_compras = {}
     contexto = {}
 
@@ -102,11 +104,16 @@ def compras(request, compra_id=None):
         contexto = {'orden': orden,'productos': prod, 'encabezado': enc, 'detalle': det, 'form_enc': form_compras}
 
     if request.method == 'POST':
+        proveedor = request.POST.get("proveedor")
         fecha_compra = request.POST.get("fecha_compra")
         observacion = request.POST.get("observacion")
         no_factura = request.POST.get("no_factura")
         fecha_factura = request.POST.get("fecha_factura")
-        proveedor = request.POST.get("proveedor")
+        
+        orden_id = request.POST.get("id_id_orden_compra")
+        
+        encabezado = OrdenComprasEnc.objects.filter(pk=orden_id)
+
         sub_total = 0
         descuento = 0
         total = 0
@@ -136,7 +143,7 @@ def compras(request, compra_id=None):
                 enc.save()
         if not compra_id:
             return redirect("proveedor:compras_list")
-
+        ''' 
         orden_id = request.POST.get("id_id_orden_compra") #Recibe el id de la orden.
         Descripcion = request.POST.get("id_descripcion_orden")
         producto = request.POST.get("id_id_producto")
@@ -147,29 +154,45 @@ def compras(request, compra_id=None):
         total_detalle = request.POST.get("id_total_detalle")
 
         prod = Producto.objects.get(pk=producto)
-        orden_det = OrdenComprasDet.objects.filter(compra_id=orden_id)
+        orden_det = detalle.objects.filter(compra_id=orden_id)
+        #orden_det = OrdenComprasDet.objects.filter(compra_id=orden_id)
+        #query = PedidosProductos.objects.select_related() --ejemplo goole
+        '''
         
+        ordenDet = OrdenComprasDet.objects.filter(compra=orden_id)
+        serialized_orden = serializers.serialize('json', [ ordenDet, ])
+        cantidad_items = ordenDet.count()
+        
+        '''
+        producto = OrdenComprasDet.objects.select_related('producto').get(compra= orden_id)
+        cantidad = ordenDet.get('cantidad')
+        precio = OrdenComprasDet.objects.filter(compra=orden_id).only('precio_prv')
+        descuento_detalle = OrdenComprasDet.objects.filter(compra=orden_id).only('descuento')
+        total_detalle = OrdenComprasDet.objects.filter(compra=orden_id).only('total') '''
+
+        prod = Producto.objects.get(pk=1)
+
         det = ComprasDet(
             compra=enc,
             producto=prod,
-            cantidad=cantidad,
-            precio_prv=precio,
-            descuento=descuento_detalle,
+            cantidad=ordenDet.cantidad,
+            precio_prv=ordenDet.precio_prv,
+            descuento=ordenDet.descuento,
             costo=0,
             uc=request.user
-        )
-
+        ) 
+        #import pdb; pdb.set_trace()
         if det:
             det.save()
 
-            sub_total = ComprasDet.objects.filter(compra=compra_id).aggregate(Sum('sub_total'))
-            descuento = ComprasDet.objects.filter(compra=compra_id).aggregate(Sum('descuento'))
-            enc.sub_total = sub_total["sub_total__sum"]
-            enc.descuento = descuento["descuento__sum"]
-            enc.save()
+        #sub_total = ComprasDet.objects.filter(compra=compra_id).aggregate(Sum('sub_total'))
+        #descuento = ComprasDet.objects.filter(compra=compra_id).aggregate(Sum('descuento'))
+        #enc.sub_total = sub_total["sub_total__sum"]
+        #enc.descuento = descuento["descuento__sum"]
+        #enc.save()
 
         return redirect("proveedor:compras_edit", compra_id=compra_id)
-    
+
     return render(request, template_name, contexto)
 
 class CompraDetDelete(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):

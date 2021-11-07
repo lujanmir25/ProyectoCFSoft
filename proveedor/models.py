@@ -117,7 +117,8 @@ class OrdenComprasEnc(ClaseModelo):
     #proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '{}'.format(self.observacion)
+        #return '{}'.format(self.total)
+        return f'{self.observacion}, {self.total}'
 
     def save(self, **kwargs):
         self.observacion = self.observacion.upper()
@@ -144,12 +145,20 @@ class OrdenComprasDet(ClaseModelo):
     estado_compra = models.CharField(max_length=12, default= 'En proceso' ) 
 
     def __str__(self):
-        return '{}'.format(self.producto)
+        #return '{}'.format(self.producto)
+        return f'{self.producto}, {self.cantidad}, {self.precio_prv},{self.descuento},{self.total}'
 
     def save(self, **kwargs):
         self.sub_total = float(float(int(self.cantidad)) * float(self.precio_prv))
         self.total = self.sub_total - float(self.descuento)
         super(OrdenComprasDet, self).save()
+    
+    def as_json(self):
+        return dict(
+            cantidad=self.cantidad, 
+            precio_prv=self.precio_prv,
+            descuento=self.descuento,
+            total =self.total)
 
     class Meta:
         verbose_name_plural = "Detalles orden Compras"
