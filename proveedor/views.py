@@ -68,6 +68,18 @@ class ComprasView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView)
     context_object_name = "obj"
     login_url = "bases:login"
 
+def OrdenesToDictionary(OrdenComprasDet):
+    """
+    A utility function to convert object of type Blog to a Python Dictionary
+    """
+    output = {}
+    output["producto"] = OrdenComprasDet.producto
+    output["cantidad"] = OrdenComprasDet.cantidad
+    output["precio_prv"] = OrdenComprasDet.precio_prv
+    output["descuento"] = OrdenComprasDet.descuento
+    output["total"] = OrdenComprasDet.total
+
+    return output
 
 @login_required(login_url='/login/')
 @permission_required('proveedor.view_comprasenc', login_url='bases:login')
@@ -75,7 +87,11 @@ def compras(request, compra_id=None):
     template_name = "prov/compras.html"
     prod = Producto.objects.filter(estado=True)
     orden = OrdenComprasEnc.objects.filter(estado=False)
-    detalle = OrdenComprasDet.objects.all()
+    
+#    detalle = OrdenComprasDet.objects.all()
+    detalleOrdenesAll = OrdenComprasDet.objects.all()
+    tempOrdenes = []
+    blog = OrdenComprasDet.objects.all()
     form_compras = {}
     contexto = {}
 
@@ -112,7 +128,7 @@ def compras(request, compra_id=None):
         
         orden_id = request.POST.get("id_id_orden_compra")
         
-        encabezado = OrdenComprasEnc.objects.filter(pk=orden_id)
+        #encabezado = OrdenComprasEnc.objects.filter(pk=orden_id)
 
         sub_total = 0
         descuento = 0
@@ -143,9 +159,11 @@ def compras(request, compra_id=None):
                 enc.save()
         if not compra_id:
             return redirect("proveedor:compras_list")
-        ''' 
+         
         orden_id = request.POST.get("id_id_orden_compra") #Recibe el id de la orden.
+        
         Descripcion = request.POST.get("id_descripcion_orden")
+        '''
         producto = request.POST.get("id_id_producto")
         cantidad = request.POST.get("id_cantidad_detalle")
         precio = request.POST.get("id_precio_detalle")
@@ -159,32 +177,30 @@ def compras(request, compra_id=None):
         #query = PedidosProductos.objects.select_related() --ejemplo goole
         '''
         
-        ordenDet = OrdenComprasDet.objects.filter(compra=orden_id)
-        serialized_orden = serializers.serialize('json', [ ordenDet, ])
-        cantidad_items = ordenDet.count()
+        detalleOrdenes = OrdenComprasDet.objects.filter(compra=orden_id).values()
         
-        '''
-        producto = OrdenComprasDet.objects.select_related('producto').get(compra= orden_id)
-        cantidad = ordenDet.get('cantidad')
-        precio = OrdenComprasDet.objects.filter(compra=orden_id).only('precio_prv')
-        descuento_detalle = OrdenComprasDet.objects.filter(compra=orden_id).only('descuento')
-        total_detalle = OrdenComprasDet.objects.filter(compra=orden_id).only('total') '''
+        cantidad_d = OrdenComprasDet.objects.values_list('cantidad', flat=True).get(compra=orden_id)
+        precio = OrdenComprasDet.objects.values_list('precio_prv', flat=True).get(compra=orden_id)
+        sub_total = OrdenComprasDet.objects.values_list('sub_total', flat=True).get(compra=orden_id)
+        total = OrdenComprasDet.objects.values_list('total', flat=True).get(compra=orden_id)
 
-        prod = Producto.objects.get(pk=1)
+        producto_id = OrdenComprasDet.objects.values_list('producto_id', flat=True).get(compra=orden_id)
+        prod = Producto.objects.get(pk=producto_id)
 
         det = ComprasDet(
             compra=enc,
-            producto=prod,
-            cantidad=ordenDet.cantidad,
-            precio_prv=ordenDet.precio_prv,
-            descuento=ordenDet.descuento,
+            producto=prod, 
+            cantidad = cantidad_d,
+            precio_prv = precio,
+            sub_total = sub_total,
+            total = total,
             costo=0,
             uc=request.user
         ) 
         #import pdb; pdb.set_trace()
         if det:
             det.save()
-
+        
         #sub_total = ComprasDet.objects.filter(compra=compra_id).aggregate(Sum('sub_total'))
         #descuento = ComprasDet.objects.filter(compra=compra_id).aggregate(Sum('descuento'))
         #enc.sub_total = sub_total["sub_total__sum"]
@@ -314,6 +330,8 @@ def orden_compras(request, compra_id=None):
         return redirect("proveedor:orden_compras_edit", compra_id=compra_id)
 
     return render(request, template_name, contexto)
+#CREAR CONVERSION PARA ORDENES DE COMPRA 
+#f'{self.producto}, {self.cantidad}, {self.precio_prv},{self.descuento},{self.total}'
 
 class OrdenView(OrdenComprasView):
 	template_name="prov/buscar_orden_compra.html"
