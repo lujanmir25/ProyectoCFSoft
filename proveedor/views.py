@@ -127,8 +127,6 @@ def compras(request, compra_id=None):
         fecha_factura = request.POST.get("fecha_factura")
         
         orden_id = request.POST.get("id_id_orden_compra")
-        
-        #encabezado = OrdenComprasEnc.objects.filter(pk=orden_id)
 
         sub_total = 0
         descuento = 0
@@ -161,51 +159,47 @@ def compras(request, compra_id=None):
             return redirect("proveedor:compras_list")
          
         orden_id = request.POST.get("id_id_orden_compra") #Recibe el id de la orden.
-        
         Descripcion = request.POST.get("id_descripcion_orden")
-        '''
-        producto = request.POST.get("id_id_producto")
-        cantidad = request.POST.get("id_cantidad_detalle")
-        precio = request.POST.get("id_precio_detalle")
-        sub_total_detalle = request.POST.get("id_sub_total_detalle")
-        descuento_detalle = request.POST.get("id_descuento_detalle")
-        total_detalle = request.POST.get("id_total_detalle")
-
-        prod = Producto.objects.get(pk=producto)
-        orden_det = detalle.objects.filter(compra_id=orden_id)
-        #orden_det = OrdenComprasDet.objects.filter(compra_id=orden_id)
-        #query = PedidosProductos.objects.select_related() --ejemplo goole
-        '''
         
-        detalleOrdenes = OrdenComprasDet.objects.filter(compra=orden_id).values()
+
+        #detalleOrdenes = OrdenComprasDet.objects.filter(compra=orden_id).values()
+        detalleOrdenes = OrdenComprasDet.objects.filter(compra=orden_id)
+        items = detalleOrdenes.count()
         
-        cantidad_d = OrdenComprasDet.objects.values_list('cantidad', flat=True).get(compra=orden_id)
-        precio = OrdenComprasDet.objects.values_list('precio_prv', flat=True).get(compra=orden_id)
-        sub_total = OrdenComprasDet.objects.values_list('sub_total', flat=True).get(compra=orden_id)
-        total = OrdenComprasDet.objects.values_list('total', flat=True).get(compra=orden_id)
+        detalleOrdenes = list(detalleOrdenes)
 
-        producto_id = OrdenComprasDet.objects.values_list('producto_id', flat=True).get(compra=orden_id)
-        prod = Producto.objects.get(pk=producto_id)
+        for items in detalleOrdenes:
+            cantidad_d = items.cantidad
+            precio = items.precio_prv
+            sub_total = items.sub_total
+            total = items.total
+            producto_id = items.producto_id
+            prod = Producto.objects.get(pk=producto_id)
 
-        det = ComprasDet(
-            compra=enc,
-            producto=prod, 
-            cantidad = cantidad_d,
-            precio_prv = precio,
-            sub_total = sub_total,
-            total = total,
-            costo=0,
-            uc=request.user
-        ) 
-        #import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
+
+            det = ComprasDet(
+                compra=enc,
+                producto=prod, 
+                cantidad = cantidad_d,
+                precio_prv = precio,
+                sub_total = sub_total,
+                total = total,
+                costo=0,
+                uc=request.user
+            ) 
+
+            det.save()
+            
+
         if det:
             det.save()
         
-        #sub_total = ComprasDet.objects.filter(compra=compra_id).aggregate(Sum('sub_total'))
+        sub_total = OrdenComprasDet.objects.filter(compra=orden_id).aggregate(Sum('sub_total'))
         #descuento = ComprasDet.objects.filter(compra=compra_id).aggregate(Sum('descuento'))
-        #enc.sub_total = sub_total["sub_total__sum"]
+        enc.sub_total = sub_total["sub_total__sum"]
         #enc.descuento = descuento["descuento__sum"]
-        #enc.save()
+        enc.save()
 
         return redirect("proveedor:compras_edit", compra_id=compra_id)
 
