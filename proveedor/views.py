@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db.models.fields import IntegerField
 from django.shortcuts import render, redirect
 
 from django.views import generic
@@ -10,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.db.models import Sum
 from django.core import serializers
 
-from .models import Proveedor, ComprasEnc, ComprasDet, OrdenComprasEnc, OrdenComprasDet
+from .models import Proveedor, ComprasEnc, ComprasDet, OrdenComprasEnc, OrdenComprasDet, PagoProveedor
 from .forms import ProveedorForm, ComprasEncForm, OrdenComprasEncForm
 from bases.models import ClaseModelo
 from productos.models import Producto
@@ -23,6 +24,12 @@ class ProveedorView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListVie
     context_object_name = "obj"
     login_url = "bases:login"
 
+class PagoView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
+    permission_required = "proveedor.view_proveedor"
+    model = PagoProveedor
+    template_name = "prov/pago_list.html"
+    context_object_name = "obj"
+    login_url = "bases:login"
 
 class ProveedorNew(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
     permission_required = "proveedor.add_proveedor"
@@ -101,9 +108,11 @@ def compras(request, compra_id=None):
         
         if enc:
             det = ComprasDet.objects.filter(compra=enc)
+            cantidad_cuotas = IntegerField(enc.cantidad_cuotas)
             fecha_compra = datetime.date.isoformat(enc.fecha_compra)
             fecha_factura = datetime.date.isoformat(enc.fecha_factura)
             e = {
+                'cantidad_cuotas' : cantidad_cuotas,
                 'fecha_compra': fecha_compra,
                 'proveedor': enc.proveedor,
                 'observacion': enc.observacion,
@@ -121,6 +130,7 @@ def compras(request, compra_id=None):
 
     if request.method == 'POST':
         proveedor = request.POST.get("proveedor")
+        cantidad_cuotas = request.POST.get("cantidad_cuotas")
         fecha_compra = request.POST.get("fecha_compra")
         observacion = request.POST.get("observacion")
         no_factura = request.POST.get("no_factura")
@@ -138,6 +148,7 @@ def compras(request, compra_id=None):
             enc = ComprasEnc(
                 fecha_compra=fecha_compra,
                 observacion=observacion,
+                cantidad_cuotas = cantidad_cuotas,
                 no_factura=no_factura,
                 fecha_factura=fecha_factura,
                 proveedor=prov,
@@ -150,7 +161,8 @@ def compras(request, compra_id=None):
             enc = ComprasEnc.objects.filter(pk=compra_id).first()
             if enc:
                 enc.fecha_compra = fecha_compra
-                enc.observacion = observacion
+                enc.observacion = observacion    
+                enc.cantidad_cuotas = cantidad_cuotas
                 enc.no_factura = no_factura
                 enc.fecha_factura = fecha_factura
                 enc.um = request.user.id
@@ -200,6 +212,16 @@ def compras(request, compra_id=None):
         enc.sub_total = sub_total["sub_total__sum"]
         #enc.descuento = descuento["descuento__sum"]
         enc.save()
+        compra = ComprasEnc.objects.get(pk=enc.id)
+        pagos = PagoProveedor( 
+            compra = compra, 
+            proveedor = enc.proveedor,
+            cantidad_cuotas = enc.cantidad_cuotas,
+            monto_mensual = float(enc.total) / int(cantidad_cuotas),
+            monto_total_pag = 0,
+            estado_cuenta = 'Pendiente'
+        )
+        pagos.save()
 
         return redirect("proveedor:compras_edit", compra_id=compra_id)
 
@@ -337,6 +359,22 @@ def clienteInactivar(request,id):
         if cliente:
             cliente.estado = not cliente.estado
             cliente.save()
+            return HttpResponse("OK")
+        return HttpResponse("FAIL")
+    
+    return HttpResponse("FAIL") 
+
+def realizarPago(request,id):
+    deuda = PagoProveedor.objects.filter(pk=id).first()
+
+    if request.method=="POST":
+        if deuda:  
+            #deuda.estado = not deuda.estado
+            deuda.cantidad_cuotas = deuda.cantidad_cuotas -1
+            deuda.monto_total_pag  = deuda.monto_total_pag + deuda.monto_mensual
+            if deuda.cantidad_cuotas == 0: 
+                deuda.estado_cuenta = 'Cancelado'
+            deuda.save()
             return HttpResponse("OK")
         return HttpResponse("FAIL")
     

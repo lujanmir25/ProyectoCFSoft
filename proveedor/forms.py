@@ -1,7 +1,7 @@
 from django import forms
 
 # Local
-from .models import Proveedor, ComprasEnc, OrdenComprasEnc
+from .models import Proveedor, ComprasEnc, OrdenComprasEnc, PagoProveedor
 
 
 # La vista llama a este formulario
@@ -28,7 +28,7 @@ class ComprasEncForm(forms.ModelForm):
 
     class Meta:
         model = ComprasEnc
-        fields = ['proveedor', 'fecha_compra', 'observacion',
+        fields = ['proveedor', 'fecha_compra','cantidad_cuotas' ,'observacion',
                   'no_factura', 'fecha_factura', 'sub_total', 'descuento', 'total']
 
     def __init__(self, *args, **kwargs):
@@ -37,7 +37,7 @@ class ComprasEncForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'from-control'
             })
-        self.fields['fecha_compra'].widget.attrs['readonly'] = True
+        self.fields['fecha_compra'].widget.attrs['readonly'] = True 
         self.fields['fecha_factura'].widget.attrs['readonly'] = True
         self.fields['sub_total'].widget.attrs['readonly'] = True
         self.fields['descuento'].widget.attrs['readonly'] = True
@@ -64,3 +64,18 @@ class OrdenComprasEncForm(forms.ModelForm):
         self.fields['sub_total'].widget.attrs['readonly'] = True
         self.fields['descuento'].widget.attrs['readonly'] = True
         self.fields['total'].widget.attrs['readonly'] = True
+
+#Formulario Pagos 
+class PagoProveedorForm(forms.ModelForm):
+    class Meta:
+        model = PagoProveedor
+        fields = ['compra','proveedor', 'cantidad_cuotas', 'monto_mensual', 'monto_total_pag','estado_cuenta']
+        labels = {'compra':'compra','proveedor':'proveedor','cantidad cuotas': 'cantidad_cuotas','monto mensual': 'monto_mensual', 'monto total':'monto_total_pag','estado cuenta':  'estado_cuenta' }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'from-control'
+            })
+        self.fields['monto_total_pag'].widget.attrs['readonly'] = True

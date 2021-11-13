@@ -131,6 +131,22 @@
           </div>
         </div>
       </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePagos" aria-expanded="true" aria-controls="collapsePagos">
+          <i class="fas fa-book"></i>
+          <span>Deudas-Pagos</span>
+        </a>
+        <div id="collapsePagos" class="collapse" aria-labelledby="headingPagos" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Opciones:</h6>
+            
+            <a class="collapse-item" href="{% url 'proveedor:pago_list' %}"> Lista Pagos</a>
+           
+            <!-- <a class="collapse-item" href="utilities-border.html">Borders</a> -->
+          </div>
+        </div>
+      </li>
       
       <!-- <a class="collapse-item" href="utilities-border.html">Borders</a>
 

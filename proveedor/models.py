@@ -26,6 +26,7 @@ class ComprasEnc(ClaseModelo):
     fecha_compra = models.DateField(null=True, blank=True)
     observacion = models.TextField(blank=True, null=True)
     no_factura = models.CharField(max_length=100)
+    cantidad_cuotas = models.IntegerField(default=0 )
     fecha_factura = models.DateField()
     sub_total = models.FloatField(default=0)
     descuento = models.FloatField(default=0)
@@ -159,3 +160,21 @@ class OrdenComprasDet(ClaseModelo):
         verbose_name = "Detalle Orden Compra"
 #fin de clase orden compra enc y detalle
 
+#Modelo pagos_proveedor 
+
+class PagoProveedor(models.Model):
+    compra = models.ForeignKey(ComprasEnc, on_delete=models.CASCADE)
+    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
+    cantidad_cuotas = models.BigIntegerField(default=0)
+    #cant_cuotas_pagadas = models.BigIntegerField(default=0)
+    monto_mensual = models.FloatField(default=0)
+    monto_total_pag = models.FloatField(default=0)
+    estado_cuenta = models.CharField(max_length=12, default= 'Iniciado' ) 
+
+    def __str__(self):
+        #return '{}'.format(self.producto)
+        return f'{self.proveedor}, {self.cantidad_cuotas},{self.monto_mensual},{self.monto_total_pag}'
+    
+    class Meta:
+        verbose_name_plural = "Pago de Proveedores"
+        verbose_name = "Pago de Proveedor"
