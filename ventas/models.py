@@ -49,6 +49,7 @@ class Cliente(ClaseModelo):
 
 class FacturaEnc(ClaseModelo2):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    descripcion = models.TextField(blank=True, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
     sub_total=models.FloatField(default=0)
     descuento=models.FloatField(default=0)
@@ -124,7 +125,9 @@ def detalle_fac_guardar(sender,instance,**kwargs):
 #Ordenes ventas
 
 class OrdenFacturaEnc(ClaseModelo2):
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    #caja = models.ForeignKey(Caja, on_delete=models.CASCADE)
+    descripcion = models.TextField(blank=True, null=True)
+    fecha = models.DateTimeField(auto_now_add=True, null=True)
     sub_total=models.FloatField(default=0)
     descuento=models.FloatField(default=0)
     total=models.FloatField(default=0)
@@ -133,6 +136,7 @@ class OrdenFacturaEnc(ClaseModelo2):
         return '{}'.format(self.id)
 
     def save(self):
+        #self.descripcion = self.descripcion.upper()
         self.total = self.sub_total - self.descuento
         super(OrdenFacturaEnc,self).save()
 
@@ -150,6 +154,7 @@ class OrdenFacturaDet(ClaseModelo2):
     cantidad=models.BigIntegerField(default=0)
     precio=models.FloatField(default=0)
     sub_total=models.FloatField(default=0)
+    #descuento=models.FloatField(default=0)
     total=models.FloatField(default=0)
 
     def __str__(self):
@@ -157,7 +162,7 @@ class OrdenFacturaDet(ClaseModelo2):
 
     def save(self):
         self.sub_total = float(float(int(self.cantidad)) * float(self.precio))
-        self.total = self.sub_total - float(self.descuento)
+        self.total = self.sub_total 
         super(OrdenFacturaDet, self).save()
     
     class Meta:
@@ -167,3 +172,20 @@ class OrdenFacturaDet(ClaseModelo2):
             ('sup_caja_facturadet','Permisos de Supervisor de Caja Detalle')
         ]
 
+
+class Caja(ClaseModelo):
+    apertura = models.BigIntegerField(default=0)
+    fecha = models.DateTimeField(auto_now_add=True)
+    sub_total = models.BigIntegerField(default=0)
+    total = models.BigIntegerField(default=0)
+
+
+    def __str__(self):
+        return '{}'.format(self.apertura)
+
+    def save(self):
+        #self.total = self.sub_total + self.apertura
+        super(Caja,self).save()
+
+    class Meta:
+        verbose_name_plural= "Cajas"

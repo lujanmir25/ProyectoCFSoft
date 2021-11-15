@@ -6,12 +6,12 @@
                     <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Buscar Producto
+                            Buscar Orden Venta
                         </div>
                         <div class="dropdown-divider"></div>
                         
                         <div class="row">
-                                <table
+                            <table
                                 id="tblProducto"
                                 data-pagination="true"
                                 data-search="true"
@@ -20,32 +20,29 @@
                                 data-locale="es-NI"
                                 >
                                 <thead>
-                                  <th data-sortable="true" data-field="id">Id</th>        
-                                  <th data-sortable="true" data-field="codigo">Código</th>
-                                  <th data-field="product_name">Descripción</th>
-                                  <th data-field="existencia">Existencia</th>
-                                  <th data-field="precio">Precio</th>
-                                  <th class="all">Accioness </th>
+                                  <th data-sortable="true" data-field="id">Id</th>      
+                                  <th data-sortable="true" data-field="descripcion">Descripcion</th>
+                                  <th data-sortable="true" data-field="total">Total</th>
+                                  <th class="all">Acciones</th> 
                                 </thead>
                                 <tbody>
                                   {% for item in obj%}
-                                  <tr>
+                                  {% if not item.estado %}
+                                  <tr> 
                                     <td>{{ item.id }}</td>
-                                    <td>{{ item.codigo }}</td>
-                                    <td>{{item.product_name}}</td>
-                                    <td>{{item.existencia}}</td>
-                                    <td>{{item.precio}}</td>
+                                    <td>{{ item.descripcion }}</td> 
+                                    <td>{{ item.total }}</td>
                                     <td>
-                                        <button class="btn btn-warning btn-circle" id="btnSelect" 
-                                        onclick="seleccionarProducto({{item.id}},'{{item.codigo}}','{{item.product_name}}',{{item.precio}})">
+                                        <button class="btn btn-warning btn-circle" id="btnSelect"
+                                            onclick="seleccionarProducto({{item.id}}, '{{ item.descripcion}}', {{ item.total }})">
                                             <i class="far fa-hand-pointer"></i>
                                         </button>
-                                        
-                                    </td>
+                                    </td> 
                                   </tr>
+                                  {% endif %}
                                   {% endfor %}
                                 </tbody>
-                              </table>
+                              </table> 
                         </div>
                         <div class="dropdown-divider"></div>
                         <div class="row">
@@ -70,22 +67,19 @@
 {% block js_page %}
 <script>
     $(function () {
-
         $("#btnCancelar").click(function(e){
             e.preventDefault();
             cerrar_modal();
-
         });
     });
     $('#tblProducto').bootstrapTable();
 
-    function seleccionarProducto(id,codigo,descripcion,precio){
-        $("#codigo").val(codigo);
+    function seleccionarProducto(id,descripcion){
+        $("#id_orden").val(id);
         $("#descripcion").val(descripcion);
-        $("#precio").val(precio);
         $("#btnCancelar").click();
-        $("#codigo").select();
-        $("#codigo").focus();
+        $("#id").select();
+        $("#id").focus();
 
     }
 

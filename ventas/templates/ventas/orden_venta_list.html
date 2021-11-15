@@ -57,6 +57,68 @@
 {% endblock page_content %}
 
 {% block js_page %}
+<script>
+    function inactivar(id)
+  {
+    var data = {id:id};
+    data = JSON.stringify(data);
+    var token = '{{csrf_token}}';
+    // alert(token);
+    // alert(id);
+    
+    $.ajax({
+      headers : {"X-CSRFToken": token},
+      type:"POST",
+      //url:"/fac/clientes/estado/"+id,
+      url : "/ventas/orden_venta/estado/"+id,
+      data: data,
+      success: function(response){
+        if(response==="OK")
+        {
+          location.reload(true);
+        }
+        else{
+          mensaje("Error Intentado Cambiar Estado de la orden");
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrow){
+        console.log(textStatus, errorThrow);
+        mensaje(errorThrow,'red');
+        cerrar_modal();
+      }
+    });
+  }
+        //call the datatables jQuery plugin
+        $(document).ready(function () {
+            $('.table').DataTable({
+                "languaje": {
+                    "sProcessing": "Procesando...",
+                    "sLengthMenu": "Mostrar _MENU_registros",
+                    "sZerorecords": "No se encontraron resultados",
+                    "sEmptyTable": "Ningun dato disponible en esta tabla",
+                    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando registro del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered": "(Filtrando de un total de _MAX_ registros)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Buscar:",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst": "<span class='fa fa-angle-double-left'></span>",
+                        "sLast": "<span class='fa fa-angle-double-right'></span>",
+                        "sNext": "<span class='fa fa-angle-right'></span>",
+                        "sPrevious": "<span class='fa fa-angle-left'></span>"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                }
+            });
+        });
+    </script>
+
 {% endblock %}
 
 

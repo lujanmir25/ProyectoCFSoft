@@ -6,8 +6,8 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <a href="#" class="btn btn-danger">Guardar</a>
-        <a href="{% url 'ventas:factura_imprimir_one' enc.id %}" class="btn btn-success" target="_factura">Imprimir</a>
-        <a href="{% url 'ventas:factura_list' %}" class="btn btn-info">Cancelar</a>
+        <!-- <a href="{% url 'ventas:factura_imprimir_one' enc.id %}" class="btn btn-success" target="_factura">Imprimir</a> -->
+        <a href="{% url 'ventas:orden_factura_list' %}" class="btn btn-info">Cancelar</a>
     </div>
     <div class="card-body">
         <div class="content">
@@ -17,13 +17,13 @@
                 <div class="col-lg-6 form-group">
                     <div class="content">
                         <div class="row ">
-                            <div class="col-lg-1">No.:</div>
+                            <!-- <div class="col-lg-1">No.:</div>
                             <div class="col-lg-4">
                                 <input type="text" name="enc_id" id="enc_id" readonly class="form-control">
-                            </div>
+                            </div> 
                             <div class="col-lg-2">
                                 Cliente:
-                            </div>
+                            </div> -->
                             <div class="col-lg-5 form-group">
                                 <!-- <select name="enc_cliente" id="enc_cliente" class="form-control">
                                     <option value="0">Seleccione Cliente</option>
@@ -33,16 +33,16 @@
                                 </select> -->
                                 <div class="row">
                                     <div class="col-lg-11 col-md-11">
-                                        <select name="enc_cliente" id="enc_cliente" class="form-control">
+                                       <!-- <select name="enc_cliente" id="enc_cliente" class="form-control">
                                             <option value="0">Seleccione Cliente</option>
                                             {% for item in clientes %}
                                                 <option value="{{item.id}}">{{ item.nombres }} {{item.apellidos}} </option>
                                             {% endfor %}
-                                        </select>
+                                        </select> -->
                                     </div>
-                                    <div class="col-lg-1 col-md-1">
+                                   <!-- <div class="col-lg-1 col-md-1">
                                         <button class="btn btn-outline-danger btn-sm" id="btnEditCliente"><i class="far fa-edit"></i></button>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -58,28 +58,36 @@
                                         value="{{ enc.fecha|date:'Y-m-d' }}" readonly />
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-lg-2">
+                                        Desc:
+                                    </div>
+                                    <div class="col-lg-8 form-group">
+                                        <input style="height: calc(2.5em + 4.75rem + 2px)" type="text" class="form-control" name="descripcion_enc" id="descripcion_enc" placeholder="Descripcion">
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-lg-6 p-2 form-group">
                                 <div class="row">
-                                    <div class="col-lg-3">Sub Total:</div>
+                                   <!-- <div class="col-lg-3">Sub Total:</div>
                                     <div class="col-lg-8">
                                         <input type="number" class="form-control text-right" value="0.00" readonly
                                         name="sub_total" id="sub_total">
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-3">Descuento:</div>
+                                   <!-- <div class="col-lg-3">Descuento:</div>
                                     <div class="col-lg-8">
                                         <input type="number" class="form-control text-right" value="0.00" disabled
                                             name="descuento" id="descuento">
-                                    </div>
+                                    </div>-->
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-3">Total:</div>
                                     <div class="col-lg-8">
                                         <input type="number" class="form-control text-right" value="0.00" disabled
                                             name="total" id="total">
-                                    </div>
+                                    </div> 
                                 </div>
                             </div>
                         </div>
@@ -91,12 +99,12 @@
                 <!-- Sección Derecha -->
                 <div class="col-lg-6 from-group">
                     <div class="row p-2">
-                        <!--<div class="col-lg-1">Ordenes de Ventas :</div> -->
-                        <!--<div class="col-lg-3">
+                        <div class="col-lg-1">Cod</div>
+                        <div class="col-lg-3">
                             <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Cód. Producto">
-                        </div> -->
-                        <div class="col-lg-8">
-                            <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Descripcion" disabled>
+                        </div>
+                        <div class="col-lg-7">
+                            <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Descripción" disabled>
                         </div>
                         <div class="col-lg-1">
                             <button type="button" class="btn btn-info" id="btnBuscar">
@@ -104,27 +112,28 @@
                             </button>
                         </div>
                     </div>
-                    <div class="row p-2">
-                     <div class="col-lg-1">Orden</div>
+                    <div class="row">
+                        <div class="col-lg-1">Cant</div>
                         <div class="col-lg-3">
-                            <input type="text" readonly class="form-control" name="id_orden" id="id_orden" placeholder="Orden Id" value="" required>
+                            <input type="number" class="form-control" name="cantidad" id="cantidad" placeholder="Cantidad">
+                            <input type="hidden" class="form-control" name="existencia" id="existencia">
                         </div>
-                        <!--<div class="col-lg-4">
+                        <div class="col-lg-4">
                             <input type="number" class="form-control" name="precio" id="precio" placeholder="Precio" readonly>
                         </div>
                         <div class="col-lg-3">
                             <input type="number" class="form-control" name="descuento_detalle" id="descuento_detalle" placeholder="Descuento">
-                        </div> -->
-                        <div class="col-lg-3">
-                            <button type="submit" class="btn btn-danger" id="btnGuardar">Ver detalle<i class="far fa-plus-square"></i> </button>
+                        </div>
+                        <div class="col-lg-1">
+                            <button type="submit" class="btn btn-danger" id="btnGuardar"> <i class="far fa-plus-square"></i> </button>
                         </div>
                     </div>
                     <div class="row p-1">
-                        <!--<div class="col-lg-9 text-right">Sub Total</div>
+                        <div class="col-lg-9 text-right">Sub Total</div>
                         <div class="col-lg-3">
                             <input type="number" class="form-control" name="sub_total_detalle" id="sub_total_detalle" placeholder="Sub Total"
                              value="0.00" disabled>
-                        </div> 
+                        </div>
                     </div>
                     <div class="row p-1">
                         <div class="col-lg-9 text-right">Total</div>
@@ -132,7 +141,7 @@
                             <input type="number" class="form-control" name="total_detalle" id="total_detalle" placeholder="Total"
                              value="0.00" disabled>
                         </div>
-                    </div>-->
+                    </div>
                 </div>
                 <!-- Fin Sección Derecha -->
             </div>
@@ -156,7 +165,6 @@
                             <th data-sortable="true" data-field="descripcion">Descripción</th>
                             <th data-field="cantidad">Cant</th>
                             <th data-field="subtotal">S. Total</th>
-                            <th data-field="descuento">Des.</th>
                             <th data-field="total">Total</th>
                             <th class="all">Acciones</th>
                         </thead>
@@ -168,11 +176,10 @@
                                 <td>{{ item.producto.descripcion }}</td>
                                 <td>{{ item.cantidad }}</td>
                                 <td>{{ item.sub_total }}</td>
-                                <td>{{ item.descuento }}</td>
                                 <td>{{ item.total }}</td>
                             <td>
                                 <button type="button" class="btn btn-warning btn-circle"
-                                    onclick="#">
+                                    onclick="borrar_detalle({{ item.id }})">
                                     <i class="fas fa-history"></i>
                                 </button>
                             </td>
@@ -229,10 +236,10 @@
 
     function buscarProducto()
     {
-        if ($("#enc_cliente").val()==="0" || $("#enc_cliente").val()===null){
+       /* if ($("#enc_cliente").val()==="0" || $("#enc_cliente").val()===null){
             mensaje("Cliente No Seleccionado",'red');
             return false;
-        }
+        } */
 
         var codigo = $("#codigo").val();
         if(codigo===""){
@@ -293,11 +300,11 @@
         });
 
         $("#btnBuscar").click(function(e){
-            if ($("#enc_cliente").val()==="0"){
+            /*if ($("#enc_cliente").val()==="0"){
                 mensaje("Cliente No Seleccionado",'red');
                 return false;
-            }
-            abrir_modal("{% url 'ventas:factura_orden' %}");
+            }*/
+            abrir_modal("{% url 'ventas:factura_producto' %}");
         });
 
         $("#codigo").keypress(function(e){
@@ -312,7 +319,8 @@
         });
 
         $("#enc_id").val("{{ enc.id }}");
-        $("#enc_cliente").val("{{ enc.cliente.id }}").change();
+        /*$("#enc_cliente").val("{{ enc.cliente.id }}").change();*/
+        $("#descripcion_enc").val({{ enc.descripcion }});
         $("#fecha").val("{{ enc.fecha|date:'Y-m-d' }}");
         $("#sub_total").val("{{ enc.sub_total }}");
         $("#descuento").val("{{ enc.descuento }}");
@@ -320,9 +328,9 @@
 
         // $('#enc_cliente').select2().select2('val', $('#enc_cliente option:eq(1)').val());
         // https://select2.org/programmatic-control/add-select-clear-items
-        $("#enc_cliente").data('select2').trigger('select', {
-            data: {"id": 3}
-        });
+        //$("#enc_cliente").data('select2').trigger('select', {
+        //    data: {"id": 3}
+        //});
 
     });
 
@@ -334,7 +342,7 @@
             icon:"fab fa-keycdn",
             type:'red',
             title: "Confirmación Requerida",
-            content: 'url:/ventas/borrar-detalle/' + id,
+            content: 'url:/ventas/facturas/borrar-OrdenDetalle/' + id,
             onContentReady: function () {
                 var self = this;
                 this.$content.find('#usuario').val('{{ user.username }}');
@@ -372,7 +380,7 @@
                             headers: { "X-CSRFToken": token },
                             type:"POST",
                             data:data,
-                            url: '/ventas/borrar-detalle/' + id,
+                            url: '/ventas/facturas/borrar-OrdenDetalle/' + id,
                             success: function(r){
                                 console.log(r);
                                 if(r==="ok"){
@@ -410,7 +418,7 @@
         const qs = "?t=fc";
         // alert(idCliente)
 
-        if(idCliente===null || idCliente===undefined || idCliente==0){
+        /*if(idCliente===null || idCliente===undefined || idCliente==0){
             // url = "/ventas/clientes/new" + qs;
             url = "{% url 'ventas:fac_cliente_add' %}" + qs
             //alert(url);
@@ -421,7 +429,7 @@
             // abrir_modal(url);
         }
         abrir_modal(url);
-        var token = '{{csrf_token}}';
+        var token = '{{csrf_token}}';*/
     });
 
 $("#popup").on('hidden.bs.modal',function(){
