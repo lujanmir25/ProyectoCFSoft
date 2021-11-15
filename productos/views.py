@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 
 from .models import Producto
-from .forms import ProductoForm
+from .forms import ProductoForm, InvProductoForm
 
 
 # Create your views here.
@@ -14,6 +14,13 @@ class ProductoView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView
     permission_required = "productos.view_producto"
     model = Producto
     template_name = "productos/producto_list.html"
+    context_object_name = "obj"
+    login_url = 'bases:login'
+
+class ProductoInvView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
+    permission_required = "productos.view_producto"
+    model = Producto
+    template_name = "productos/producto_inv_list.html"
     context_object_name = "obj"
     login_url = 'bases:login'
 
@@ -46,6 +53,18 @@ class ProductoEdit(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateVi
         form.instance.um = self.request.user.id
         return super().form_valid(form)
 
+class InvProductoEdit(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
+    permission_required = "productos.change_producto"
+    model = Producto
+    template_name = "productos/producto_form.html"
+    context_object_name = "obj"
+    form_class = InvProductoForm
+    success_url = reverse_lazy("productos:producto_list")
+    login_url = "bases:login"
+
+    def form_valid(self, form):
+        form.instance.um = self.request.user.id
+        return super().form_valid(form)
 
 class ProductoDel(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
     permission_required = "productos.delete_producto"

@@ -21,6 +21,29 @@ class ProductoForm(forms.ModelForm):
                   'estado': 'estado'}
         # Modificar tipo de datos.
         widget = {'product_name': forms.TextInput, 'unidad_medida': forms.TextInput,
+                  'categoria': forms.TextInput}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            })
+        self.fields ['existencia'].widget.attrs['readonly'] = True
+        self.fields ['precio'].widget.attrs['readonly'] = True   
+
+class InvProductoForm(forms.ModelForm):
+    class Meta:
+        model = Producto
+        fields = ['codigo','product_name','existencia', 'precio']
+
+        labels = {'codigo':'codigo',
+                'product_name': "Nombre Producto",
+                  'marca': "Marca",
+                  'precio': 'Precio',
+                  'estado': 'estado'}
+        # Modificar tipo de datos.
+        widget = {'product_name': forms.TextInput, 'unidad_medida': forms.TextInput,
                   'categoria': forms.TextInput, 'precio_venta': forms.TextInput}
 
     def __init__(self, *args, **kwargs):
@@ -29,4 +52,4 @@ class ProductoForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
             })
-        self.fields ['existencia'].widget.attrs['readonly'] = True 
+        self.fields ['existencia'].widget.attrs['readonly'] = False

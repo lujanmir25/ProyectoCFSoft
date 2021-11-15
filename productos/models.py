@@ -34,3 +34,19 @@ class Producto(ClaseModelo):
     class Meta:
         verbose_name_plural = "Productos"
         """unique_together = ('codigo')"""
+
+
+class AjusteInventario(Producto):
+    """Modelo de Ajuste inventario"""
+
+
+    def __str__(self):
+        #return '{}'.format(self.product_name)
+        return f'{self.product_name}, {self.existencia}'
+
+    def save(self):
+        self.descripcion = self.descripcion.upper()
+        super(Producto,self).save()
+
+    class Meta:
+        verbose_name_plural = "Productos Ajustados"

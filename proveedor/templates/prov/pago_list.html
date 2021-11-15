@@ -27,11 +27,11 @@
                 <thead>
                     <th>id</th>
       		        <th>proveedor</th>
-      		        <th>cantidad_cuotas</th>
+      		        <th>cuotas pendientes</th>
       		        <th>monto mensual</th>
-      		        <th>monto_total_pag</th>
+      		        <th>monto total pagado</th>
       		        <th>estado cuenta</th>
-      		        <th class="all">Opciones</th>
+      		        <th class="all">Realizar Pago</th>
                 </thead>
                 <tbody>
                     {% for item in obj %}  
@@ -67,7 +67,7 @@
     data = JSON.stringify(data);
     var token = '{{csrf_token}}';
     // alert(token);
-    // alert(id);
+    //alert(id);
     
     $.ajax({
       headers : {"X-CSRFToken": token},
@@ -80,6 +80,10 @@
         if(response==="OK")
         {
           location.reload(true);
+        }
+        else if (response == 'Pay')
+        {
+          mensaje("Deuda Cancelada");
         }
         else{
           mensaje("Error al realizar el pago");

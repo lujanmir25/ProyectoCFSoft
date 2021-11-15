@@ -98,12 +98,14 @@ def detalle_compra_borrar(sender, instance, **kwargs):
 def detalle_compra_guardar(sender, instance, **kwargs):
     id_producto = instance.producto.id
     fecha_compra=instance.compra.fecha_compra
+    precio_compra = instance.precio_prv
 
     prod = Producto.objects.filter(pk=id_producto).first()
     if prod:
         cantidad = int(prod.existencia) + int(instance.cantidad)
         prod.existencia = cantidad
         prod.ultima_compra=fecha_compra
+        prod.precio = precio_compra
         prod.save()
 
 class OrdenComprasEnc(ClaseModelo):

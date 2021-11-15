@@ -369,13 +369,15 @@ def realizarPago(request,id):
 
     if request.method=="POST":
         if deuda:  
+            if deuda.estado_cuenta == 'Pendiente':
             #deuda.estado = not deuda.estado
-            deuda.cantidad_cuotas = deuda.cantidad_cuotas -1
-            deuda.monto_total_pag  = deuda.monto_total_pag + deuda.monto_mensual
-            if deuda.cantidad_cuotas == 0: 
-                deuda.estado_cuenta = 'Cancelado'
-            deuda.save()
-            return HttpResponse("OK")
+                deuda.cantidad_cuotas = deuda.cantidad_cuotas -1
+                deuda.monto_total_pag  = deuda.monto_total_pag + deuda.monto_mensual
+                if deuda.cantidad_cuotas == 0: 
+                    deuda.estado_cuenta = 'Cancelado'
+                deuda.save()
+                return HttpResponse("OK")
+            return HttpResponse("Pay")
         return HttpResponse("FAIL")
     
     return HttpResponse("FAIL")
