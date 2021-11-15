@@ -91,12 +91,12 @@
                 <!-- Sección Derecha -->
                 <div class="col-lg-6 from-group">
                     <div class="row p-2">
-                        <div class="col-lg-1">Cod</div>
-                        <div class="col-lg-3">
+                        <!--<div class="col-lg-1">Ordenes de Ventas :</div> -->
+                        <!--<div class="col-lg-3">
                             <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Cód. Producto">
-                        </div>
-                        <div class="col-lg-7">
-                            <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Descripción" disabled>
+                        </div> -->
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Descripcion" disabled>
                         </div>
                         <div class="col-lg-1">
                             <button type="button" class="btn btn-info" id="btnBuscar">
@@ -104,28 +104,27 @@
                             </button>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-1">Cant</div>
+                    <div class="row p-2">
+                     <div class="col-lg-1">Orden</div>
                         <div class="col-lg-3">
-                            <input type="number" class="form-control" name="cantidad" id="cantidad" placeholder="Cantidad">
-                            <input type="hidden" class="form-control" name="existencia" id="existencia">
+                            <input type="text" readonly class="form-control" name="id_orden" id="id_orden" placeholder="Orden Id" value="" required>
                         </div>
-                        <div class="col-lg-4">
+                        <!--<div class="col-lg-4">
                             <input type="number" class="form-control" name="precio" id="precio" placeholder="Precio" readonly>
                         </div>
                         <div class="col-lg-3">
                             <input type="number" class="form-control" name="descuento_detalle" id="descuento_detalle" placeholder="Descuento">
-                        </div>
-                        <div class="col-lg-1">
-                            <button type="submit" class="btn btn-danger" id="btnGuardar"> <i class="far fa-plus-square"></i> </button>
+                        </div> -->
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-danger" id="btnGuardar">Ver detalle<i class="far fa-plus-square"></i> </button>
                         </div>
                     </div>
                     <div class="row p-1">
-                        <div class="col-lg-9 text-right">Sub Total</div>
+                        <!--<div class="col-lg-9 text-right">Sub Total</div>
                         <div class="col-lg-3">
                             <input type="number" class="form-control" name="sub_total_detalle" id="sub_total_detalle" placeholder="Sub Total"
                              value="0.00" disabled>
-                        </div>
+                        </div> 
                     </div>
                     <div class="row p-1">
                         <div class="col-lg-9 text-right">Total</div>
@@ -133,7 +132,7 @@
                             <input type="number" class="form-control" name="total_detalle" id="total_detalle" placeholder="Total"
                              value="0.00" disabled>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
                 <!-- Fin Sección Derecha -->
             </div>
@@ -173,7 +172,7 @@
                                 <td>{{ item.total }}</td>
                             <td>
                                 <button type="button" class="btn btn-warning btn-circle"
-                                    onclick="borrar_detalle({{ item.id }})">
+                                    onclick="#">
                                     <i class="fas fa-history"></i>
                                 </button>
                             </td>
@@ -298,7 +297,7 @@
                 mensaje("Cliente No Seleccionado",'red');
                 return false;
             }
-            abrir_modal("{% url 'ventas:factura_producto' %}");
+            abrir_modal("{% url 'ventas:factura_orden' %}");
         });
 
         $("#codigo").keypress(function(e){
@@ -335,7 +334,7 @@
             icon:"fab fa-keycdn",
             type:'red',
             title: "Confirmación Requerida",
-            content: 'url:/ventas/facturas/borrar-detalle/' + id,
+            content: 'url:/ventas/borrar-detalle/' + id,
             onContentReady: function () {
                 var self = this;
                 this.$content.find('#usuario').val('{{ user.username }}');
@@ -373,7 +372,7 @@
                             headers: { "X-CSRFToken": token },
                             type:"POST",
                             data:data,
-                            url: '/ventas/facturas/borrar-detalle/' + id,
+                            url: '/ventas/borrar-detalle/' + id,
                             success: function(r){
                                 console.log(r);
                                 if(r==="ok"){
@@ -397,10 +396,10 @@
         var existencia = +$("#existencia").val();
         var cantidad = +$("#cantidad").val();
 
-        if(cantidad>existencia){
+        /*if(cantidad>existencia){
             mensaje("No hay existencia suficiente");
             return false;
-        }
+        }*/
     })
 
     $("#btnEditCliente").click(function(e){

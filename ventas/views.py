@@ -3,6 +3,7 @@ from django.shortcuts import render,redirect
 from django.views import generic
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
+from django.db.models import Sum
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, \
     PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
@@ -11,10 +12,12 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from bases.views import SinPrivilegios
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 #Local
-from ventas.models import FacturaEnc, FacturaDet,Cliente, FacturaEnc, FacturaDet, OrdenFacturaEnc, OrdenFacturaDet
-from .forms import ClienteForm
+from ventas.models import FacturaEnc, FacturaDet,Cliente, FacturaEnc, FacturaDet, OrdenFacturaEnc, OrdenFacturaDet, Caja
+from .forms import ClienteForm, CajaForm
 from productos.models import Producto
 import productos.views as productos
 
@@ -92,6 +95,76 @@ class ClienteEdit(VistaBaseEdit):
         return self.render_to_response(context)
 
 
+############# CAJA ################
+
+class CajaView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
+    permission_required="ventas.view_facturaenc"
+    model = Caja
+    template_name = "ventas/caja_list.html"
+    context_object_name = "obj"
+    login_url = 'bases:login'
+
+
+class CajaNew(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
+    permission_required = "caja.view_caja"
+    Model = Caja
+    template_name = "ventas/caja_form.html"
+    context_object_name = "obj"
+    form_class=ClienteForm
+    success_url = reverse_lazy("ventas:caja_list")
+    login_url = "bases:login"
+
+    #Para obtener el usuario que esta logueado
+    def form_valid(self, form):
+        form.instance.uc = self.request.user
+        return super().form_valid(form)  
+
+class CajaEdit(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
+    permission_required = "caja.change_cliente"
+    model = Caja
+    template_name = "ventas/caja_form.html"
+    context_object_name = "obj"
+    form_class=ClienteForm
+    success_url = reverse_lazy("ventas:caja_list")
+    login_url = "bases:login"
+
+    def form_valid(self, form):
+        form.instance.um = self.request.user.id
+        return super().form_valid(form)
+
+
+class CajaDel(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
+    permission_required = "caja.delete_cliente"
+    model = Caja
+    template_name = "ventas/caja_del.html"
+    context_object_name = "obj"
+    success_url = reverse_lazy("ventas:caja_list")
+
+
+
+@receiver(post_save, sender=FacturaEnc)
+def actualizar_caja(sender, instance, **kwargs):
+    """
+    id_enc = instance.id
+    enc = FacturaEnc.objects.get(pk=id_enc)
+    today = datetime.now().date()
+    caja = Caja.objects.filter(fecha=today)
+    caja = list(caja)
+
+    s_total = caja[0].sub_total
+    #totalCaja = caja[1].total
+
+
+    import pdb; pdb.set_trace()
+
+    if (caja.fecha == today):
+        caja.sub_total = caja.sub_total + enc.sub_total
+        caja.total = caja.apertura + caja.sub_total
+
+    caja.save()
+"""
+
+
 @login_required(login_url="/login/")
 @permission_required("ventas.change_cliente",login_url="/login/")
 def clienteInactivar(request,id):
@@ -109,6 +182,28 @@ def clienteInactivar(request,id):
 class FacturaView(SinPrivilegios, generic.ListView):
     model = FacturaEnc
     template_name = "ventas/factura_list.html"
+    context_object_name = "obj"
+    permission_required="ventas.view_facturaenc"
+
+    def get_queryset(self):
+        user = self.request.user
+        # print(user,"usuario")
+        qs = super().get_queryset()
+        for q in qs:
+            print(q.uc,q.id)
+        
+        if not user.is_superuser:
+            qs = qs.filter(uc=user)
+
+        for q in qs:
+            print(q.uc,q.id)
+
+        return qs
+
+
+class OrdenFacturaView(SinPrivilegios, generic.ListView):
+    model = OrdenFacturaEnc
+    template_name = "ventas/orden_factura_list.html"
     context_object_name = "obj"
     permission_required="ventas.view_facturaenc"
 
@@ -196,23 +291,40 @@ def facturas(request,id=None):
             messages.error(request,'No Puedo Continuar No Pude Detectar No. de Factura')
             return redirect("ventas:factura_list")
         
-        codigo = request.POST.get("codigo")
+
+        """codigo = request.POST.get("codigo")
         cantidad = request.POST.get("cantidad")
         precio = request.POST.get("precio")
         s_total = request.POST.get("sub_total_detalle")
         descuento = request.POST.get("descuento_detalle")
-        total = request.POST.get("total_detalle")
+        total = request.POST.get("total_detalle") """
 
-        prod = Producto.objects.get(codigo=codigo)
-        det = FacturaDet(
-            factura = enc,
-            producto = prod,
-            cantidad = cantidad,
-            precio = precio,
-            sub_total = s_total,
-            descuento = descuento,
-            total = total
-        )
+        orden_id = request.POST.get("id_orden")
+        detalleOrdenes = OrdenFacturaDet.objects.filter(factura=orden_id)
+        detalleOrdenes = list(detalleOrdenes)
+       #caja = Caja.objects.all()
+
+        for items in detalleOrdenes:
+            cantidad_d = items.cantidad
+            precio_d = items.precio
+            sub_total_d = items.sub_total
+            total_d = items.total
+            producto_id = items.producto_id
+            prod = Producto.objects.get(pk=producto_id)
+
+            #prod = Producto.objects.get(codigo=codigo)
+            det = FacturaDet(
+                factura = enc,
+                producto = prod,
+                cantidad = cantidad_d,
+                precio = precio_d,
+                sub_total = sub_total_d,
+                descuento = 0,
+                total = total_d
+            )
+            
+            det.save()
+
         
         if det:
             det.save()
@@ -221,13 +333,75 @@ def facturas(request,id=None):
 
     return render(request,template_name,contexto)
 
+# Vista para buscar la Orden de venta
+class OrdenVentaView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
+    permission_required = "ventas.view_comprasenc"
+    model = OrdenFacturaEnc
+    template_name = "ventas/orden_factura_list.html"
+    context_object_name = "obj"
+    login_url = "bases:login"
 
+# Clase para buscar los productos en la Orden Venta
 class ProductoView(productos.ProductoView):
     template_name="ventas/buscar_producto.html" 
 
 
+# Clase para buscar las ordenes en la Factura Venta
+class OrdenView(OrdenVentaView):
+    template_name="ventas/buscar_orden_venta.html" 
+    #orden = OrdenFacturaEnc.objects.filter(estado=True)
+    #contexto = {"orden":orden}
+
 def borrar_detalle_factura(request, id):
     template_name = "ventas/factura_borrar_detalle.html"
+
+    det = FacturaDet.objects.get(pk=id)
+
+    if request.method=="GET":
+        context={"det":det}
+
+    if request.method == "POST":
+        usr = request.POST.get("usuario")
+        pas = request.POST.get("pass")
+
+        user =authenticate(username=usr,password=pas)
+
+        if not user:
+            return HttpResponse("Usuario o Clave Incorrecta")
+        
+        if not user.is_active:
+            return HttpResponse("Usuario Inactivo")
+
+            """or user.has_perm("ventas.sup_caja_facturadet")"""
+
+        if user.is_superuser :
+            det.id = None
+            det.cantidad = (-1 * det.cantidad)
+            det.sub_total = (-1 * det.sub_total)
+            det.descuento = (-1 * det.descuento)
+            det.total = (-1 * det.total)
+            det.save()
+
+            return HttpResponse("ok")
+
+        return HttpResponse("Usuario no autorizado")
+    
+    return render(request,template_name,context)
+
+def ordenInactivar(request,id):
+    orden = OrdenFacturaEnc.objects.filter(pk=id).first()
+
+    if request.method=="POST":
+        if orden:
+            orden.estado = not orden.estado
+            orden.save()
+            return HttpResponse("OK")
+        return HttpResponse("FAIL")
+    
+    return HttpResponse("FAIL")
+
+def borrar_OrdenDetalle_factura(request, id):
+    template_name = "ventas/factura_borrar_Ordendetalle.html"
 
     det = FacturaDet.objects.get(pk=id)
 
@@ -309,11 +483,12 @@ def cliente_add_modify(request,pk=None):
     return render(request,template_name,context)
 
 
-def OrdenFacturas(request,id=None):
+def orden_facturas(request,id=None):
     template_name='ventas/orden_facturas.html'
 
     detalle = {}
     clientes = Cliente.objects.filter(estado=True)
+    facDet = OrdenFacturaEnc.objects.all()
     
     if request.method == "GET":
         enc = OrdenFacturaEnc.objects.filter(pk=id).first()
@@ -330,37 +505,41 @@ def OrdenFacturas(request,id=None):
 
         if not enc:
             encabezado = {
-                'id':0,
-            #    'fecha':datetime.today(),
-                'cliente':0,
+               'id':0,
+               'fecha':datetime.today(),
+               'descripcion':0.0, 
+            #   'cliente':0,
                 'sub_total':0.00,
-            #    'descuento':0.00,
+            #   'descuento':0.00,
                 'total': 0.00
             }
             detalle=None
         else:
             encabezado = {
                 'id':enc.id,
-            #    'fecha':enc.fecha,
-                'cliente':enc.cliente,
+                'fecha':enc.fecha,
+                'descripcion': enc.descripcion,
+             #  'cliente':enc.cliente,
                 'sub_total':enc.sub_total,
              #   'descuento':enc.descuento,
                 'total':enc.total
             }
 
         detalle=OrdenFacturaDet.objects.filter(factura=enc)
-        contexto = {"enc":encabezado,"det":detalle,"clientes":clientes}
+        contexto = {"enc":encabezado,"det":detalle,"clientes":clientes,"facDet":facDet}
         return render(request,template_name,contexto)
     
     if request.method == "POST":
         cliente = request.POST.get("enc_cliente")
-        #fecha  = request.POST.get("fecha")
-        cli=Cliente.objects.get(pk=cliente)
+        fecha  = request.POST.get("fecha")
+        descripcion_enc = request.POST.get("descripcion_enc")
+        #cli=Cliente.objects.get(pk=cliente)
 
         if not id:
             enc = OrdenFacturaEnc(
-                cliente = cli,
-            #    fecha = fecha
+                #id = enc.id,
+                fecha = fecha,
+                descripcion = descripcion_enc
             )
             if enc:
                 enc.save()
@@ -368,8 +547,13 @@ def OrdenFacturas(request,id=None):
         else:
             enc = OrdenFacturaEnc.objects.filter(pk=id).first()
             if enc:
-                enc.cliente = cli
+                #enc.c = cli
+                enc.fecha = fecha
                 enc.save()
+            
+        if enc:
+            enc.save()
+            id = enc.id
 
         if not id:
             messages.error(request,'No Puedo Continuar No Pude Detectar No. de Factura')
@@ -379,7 +563,6 @@ def OrdenFacturas(request,id=None):
         cantidad = request.POST.get("cantidad")
         precio = request.POST.get("precio")
         s_total = request.POST.get("sub_total_detalle")
-    #    descuento = request.POST.get("descuento_detalle")
         total = request.POST.get("total_detalle")
 
         prod = Producto.objects.get(codigo=codigo)
@@ -392,10 +575,14 @@ def OrdenFacturas(request,id=None):
          #   descuento = descuento,
             total = total
         )
-        
+        #enc.descripcion = descripcion
         if det:
             det.save()
-        
+
+            sub_total = OrdenFacturaDet.objects.filter(factura=id).aggregate(Sum('sub_total'))
+            enc.sub_total = sub_total["sub_total__sum"]
+            enc.save() 
+
         return redirect("ventas:orden_factura_edit",id=id)
 
     return render(request,template_name,contexto)
