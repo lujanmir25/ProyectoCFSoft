@@ -20,7 +20,7 @@ class ProductoForm(forms.ModelForm):
                   'precio': 'Precio',
                   'estado': 'estado'}
         # Modificar tipo de datos.
-        widget = {'product_name': forms.TextInput, 'unidad_medida': forms.TextInput,
+        widget = {'product_name': forms.TextInput,
                   'categoria': forms.TextInput}
 
     def __init__(self, *args, **kwargs):
@@ -43,8 +43,7 @@ class InvProductoForm(forms.ModelForm):
                   'precio': 'Precio',
                   'estado': 'estado'}
         # Modificar tipo de datos.
-        widget = {'product_name': forms.TextInput, 'unidad_medida': forms.TextInput,
-                  'categoria': forms.TextInput, 'precio_venta': forms.TextInput}
+        widget = {'product_name': forms.TextInput,'precio_venta': forms.TextInput}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
