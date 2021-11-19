@@ -1,7 +1,7 @@
 from django import forms
 
 # Local
-from .models import Proveedor, ComprasEnc, OrdenComprasEnc, PagoProveedor
+from .models import Proveedor, ComprasEnc, OrdenComprasEnc, PagoProveedor, ComprasDet
 
 
 # La vista llama a este formulario
@@ -79,3 +79,23 @@ class PagoProveedorForm(forms.ModelForm):
                 'class': 'from-control'
             })
         self.fields['monto_total_pag'].widget.attrs['readonly'] = True
+
+class ComprasDetForm(forms.ModelForm):
+
+    class Meta:
+        model = ComprasDet
+        fields = ['compra', 'producto', 'cantidad','precio_prv' ,'sub_total', 'descuento', 'total', 'costo']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'from-control'
+            })
+        self.fields['producto'].widget.attrs['readonly'] = True 
+        self.fields['cantidad'].widget.attrs['readonly'] = False
+        self.fields['precio_prv'].widget.attrs['readonly'] = False 
+        self.fields['sub_total'].widget.attrs['readonly'] = True
+        self.fields['descuento'].widget.attrs['readonly'] = False
+        self.fields['total'].widget.attrs['readonly'] = True
+        self.fields['costo'].widget.attrs['readonly'] = True

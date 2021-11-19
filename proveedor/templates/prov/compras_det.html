@@ -1,0 +1,175 @@
+{% extends 'base/base.html'%}
+{% block page_content %}
+    <form method="POST" id="frmDetalleCompra">
+        {% csrf_token %}
+        <div class="col-xl-12 col-md-12 mb-12">
+            {% if encabezado %}
+            <div class="card border-left-warning shadow h-100 py-2">
+            {% else %}
+            <div class="card border-left-success shadow h-100 py-2">
+            {% endif %}
+                <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    {% if encabezado %} Editar {% else %} Nueva Compra {% endif %} Compra
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="row">
+                                    <!-- Inicio Izquierda -->
+                                    <div class="col-6">
+                                        <!-- Inicio Encabezado -->
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label for="id_producto">Producto:</label>
+                                                    {{form_det.producto}}
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="id_compra">Compra:</label>
+                                                    {{form_det.compra}}
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="id_precio">Precio:</label>
+                                                    {{form_det.precio_prv}}
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label for="id_cantidad">cantidad:</label>
+                                                    {{form_det.cantidad}}
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="sub_total">Sub_total:</label>
+                                                    {{form_det.sub_total}}
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label for="Total">Total:</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label for="sub_total">Descuento:</label>
+                                                    </div>
+                                                    <div class="col">
+                                                        {{ form_det.descuento }}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label for="costo">Costo:</label>
+                                                    </div>
+                                                    <div class="col">
+                                                        {{ form_det.costo }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Fin Encabezado -->
+                                        
+                                    </div>
+                                    <!-- Fin Izquierda -->
+                                    <!-- Inicio Derecha -->
+                                    
+                                    <!-- Fin Derecha -->
+                                </div>
+                                <!-- Inicio Detalle -->
+                                <div class="row">
+                                    <div class="col">
+                                        <table class="table table-striped table-hover dt-responsive nowrap" style="width:100%">
+                                            <thead>
+                                                <th>Compra</th>
+                                                <th>Producto</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio</th>
+                                                <th>Sub Total</th>
+                                                <th>Desc.</th>
+                                                <th>Total</th>
+                                                <th>Acciones</th>
+                                               
+                                            </thead>
+                                            <tbody>
+                                                {% for item in detalle %}
+                                                <tr>
+                                                <td>{{ item.producto }}</td>
+                                                <td>{{ item.cantidad }}</td>
+                                                <td>{{ item.precio_prv }}</td>
+                                                <td>{{ item.sub_total }}</td>
+                                                <td>{{ item.descuento }}</td>
+                                                <td>{{ item.total }}</td>
+                                                <td>
+                                                    <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span> Actualizar Detalle</button>
+                                                </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- Fin Detalle -->
+                                
+                            </div>
+                        </div>
+                </div>
+        </div>
+    </form>
+{% endblock %}
+{% block js_page %}
+<script>
+    $(function () {
+
+       
+
+        $("#sidebarToggle").click();
+
+        $('.table').DataTable({
+            "pageLength": 2,
+            "language": {
+            "sProcessing": "Procesando...",
+            "sLengthMenu": "Mostrar _MENU_ registros",
+            "sZeroRecords": "No se encontraron resultados",
+            "sEmptyTable": "Ningún dato disponible en esta tabla",
+            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix": "",
+            "sSearch": "Buscar:",
+            "sUrl": "",
+            "sInfoThousands": ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst": "<span class='fa fa-angle-double-left'></span>",
+                "sLast": "<span class='fa fa-angle-double-right'></span>",
+                "sNext": "<span class='fa fa-angle-right'></span>",
+                "sPrevious": "<span class='fa fa-angle-left'></span>"
+            },
+            "oAria": {
+                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            }
+            }
+        });
+
+
+        /*Validar Envio de Detalle */
+
+        $("#frmDetalleCompra").submit(function(e){
+
+            /*if($("#id_fecha_compra").val()=="" || $("#id_fecha_factura").val()=="") {
+                e.preventDefault()
+                $.alert({
+                    type: 'red',
+                    title: '',
+                    content: 'Debe Especificar Fecha'
+                });
+                return false;
+            }*/
+
+        }); 
+        /*Fin Validar Envio de Detalle*/
+
+    });
+
+</script>
+{% endblock %}

@@ -12,7 +12,7 @@ from django.db.models import Sum
 from django.core import serializers
 
 from .models import Proveedor, ComprasEnc, ComprasDet, OrdenComprasEnc, OrdenComprasDet, PagoProveedor
-from .forms import ProveedorForm, ComprasEncForm, OrdenComprasEncForm
+from .forms import ProveedorForm, ComprasEncForm, OrdenComprasEncForm, ComprasDetForm
 from bases.models import ClaseModelo
 from productos.models import Producto
 
@@ -45,6 +45,23 @@ class ProveedorNew(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateVi
         # print(self.request.user.id)
         return super().form_valid(form)
 
+class ComprasDetEdit(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
+    permission_required = "proveedor.view_comprasenc"
+    model = ComprasDet
+    template_name = "prov/compras_det_form.html"
+    context_object_name = 'obj'
+    form_class = ComprasDetForm
+    success_url = reverse_lazy("proveedor:compras_list")
+    login_url = 'bases:login'
+
+    #def get_success_url(self):
+        #compra_id = self.kwargs['compra_id']
+        #return reverse_lazy('proveedor:compras_edit', kwargs={'compra_id': compra_id})
+
+    def form_valid(self, form):
+        form.instance.uc = self.request.user
+        # print(self.request.user.id)
+        return super().form_valid(form)
 
 class ProveedorEdit(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
     permission_required = "proveedor.change_proveedor"
@@ -75,18 +92,68 @@ class ComprasView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView)
     context_object_name = "obj"
     login_url = "bases:login"
 
-def OrdenesToDictionary(OrdenComprasDet):
-    """
-    A utility function to convert object of type Blog to a Python Dictionary
-    """
-    output = {}
-    output["producto"] = OrdenComprasDet.producto
-    output["cantidad"] = OrdenComprasDet.cantidad
-    output["precio_prv"] = OrdenComprasDet.precio_prv
-    output["descuento"] = OrdenComprasDet.descuento
-    output["total"] = OrdenComprasDet.total
+class ComprasDetView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
+    permission_required = "proveedor.view_comprasenc"
+    model = ComprasDet
+    template_name = "prov/compras_det_list.html"
+    context_object_name = "obj"
+    login_url = "bases:login"
 
-    return output
+
+@login_required(login_url='/login/')
+@permission_required('proveedor.view_comprasenc', login_url='bases:login')
+def detalle_compras(request, id):
+    template_name = "prov/compras_det.html"
+    det = ComprasDet.objects.filter(pk = id)
+    #import pdb; pdb.set_trace()
+    form_detalles = {}
+    contexto = {}
+
+    for item in det:
+        compra_det= item.compra
+        producto_det= item.producto
+        cantidad_det= item.cantidad
+        precio_det= item.precio_prv
+        descuento_det= item.descuento
+        sub_total_det= item.sub_total
+        total_det= item.total
+
+    if request.method == 'GET':
+        form_detalles = ComprasDetForm()
+    
+        if det:
+            e = {
+                'compra' : compra_det,
+                'producto' : producto_det,
+                'cantidad': cantidad_det,
+                'precio_prv': precio_det, 
+                'descuento': descuento_det,
+                'sub_total': sub_total_det,
+                'total': total_det,
+            }
+            form_detalles = ComprasDetForm(e)
+        contexto = { 'detalle': det, 'form_det': form_detalles}
+
+    if request.method == 'POST':
+        #compra = request.POST.get("id_compra")
+        producto = request.POST.get("id_producto")
+        cantidad = request.POST.get("id_cantidad")
+        precio_prv = request.POST.get("id_precio")
+            
+
+        det = ComprasDet(
+            producto=producto, 
+            cantidad = cantidad,
+            precio_prv = precio_prv,
+            sub_total = cantidad * precio_prv,
+            total = cantidad * precio_prv,
+            costo=0,
+            uc=request.user) 
+
+        det.save()
+
+    return render(request, template_name, contexto)
+
 
 @login_required(login_url='/login/')
 @permission_required('proveedor.view_comprasenc', login_url='bases:login')
@@ -104,6 +171,7 @@ def compras(request, compra_id=None):
 
     if request.method == 'GET':
         form_compras = ComprasEncForm()
+        form_detalles = ComprasDetForm()
         enc = ComprasEnc.objects.filter(pk=compra_id).first()
         
         if enc:
@@ -188,8 +256,6 @@ def compras(request, compra_id=None):
             producto_id = items.producto_id
             prod = Producto.objects.get(pk=producto_id)
 
-            #import pdb; pdb.set_trace()
-
             det = ComprasDet(
                 compra=enc,
                 producto=prod, 
@@ -202,7 +268,9 @@ def compras(request, compra_id=None):
             ) 
 
             det.save()
-            
+            form_detalles = ComprasDetForm(det)
+        detalle = list(ComprasDet.objects.filter(id = 47))
+        #import pdb; pdb.set_trace()
 
         if det:
             det.save()
@@ -210,7 +278,6 @@ def compras(request, compra_id=None):
         sub_total = OrdenComprasDet.objects.filter(compra=orden_id).aggregate(Sum('sub_total'))
         #descuento = ComprasDet.objects.filter(compra=compra_id).aggregate(Sum('descuento'))
         enc.sub_total = sub_total["sub_total__sum"]
-        #enc.descuento = descuento["descuento__sum"]
         enc.save()
         compra = ComprasEnc.objects.get(pk=enc.id)
         pagos = PagoProveedor( 

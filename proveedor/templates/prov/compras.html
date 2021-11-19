@@ -133,6 +133,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span> Ver Detalle</button>
+                                                <a href="{% url 'proveedor:compras_det_list' %}" class="btn btn-success"><i class="far fa-hand-point-left"></i> Actualizar</a>
                                                 <a href="{% url 'proveedor:compras_list' %}" class="btn btn-success"><i class="far fa-hand-point-left"></i> Cancelar</a>
                                             </div>
                                         </div>
@@ -164,6 +165,8 @@
                                                 <td>{{ item.total }}</td>
                                                 <td>
                                                     <button class="btn btn-danger btn-circle" onclick="return abrir_modal('{% url 'proveedor:compras_del' encabezado.pk item.id %}')"><i class="fas fa-trash-alt"></i></button>
+                                                    <a href="{% url 'proveedor:compras_det_edit' item.id %}" class="btn btn-success"><i class="far fa-hand-point-left"></i> Editar</a>
+                                                    <!--<button class="btn btn-warning btn-circle" onclick="return abrir_modal('{% url 'proveedor:compras_det_edit' item.id %}')"><i class="fas fa-trash-alt"></i></button> -->
                                                 </td>
                                                 </tr>
                                                 {% endfor %}
@@ -178,7 +181,7 @@
         </div>
     </form>
 {% endblock %}
-{% block js_page %}
+{% block js_page %} 
 <script>
     $(function () {
 

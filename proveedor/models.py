@@ -35,10 +35,11 @@ class ComprasEnc(ClaseModelo):
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '{}'.format(self.observacion)
+        #return '{}'.format(self.observacion)
+        return '{}'.format(self.id)
 
     def save(self, **kwargs):
-        self.observacion = self.observacion.upper()
+        #self.observacion = self.observacion.upper() 
         if self.sub_total == None  or self.descuento == None:
             self.sub_total = 0
             self.descuento = 0
@@ -62,7 +63,8 @@ class ComprasDet(ClaseModelo):
     costo = models.FloatField(default=0)
 
     def __str__(self):
-        return '{}'.format(self.producto)
+        #return '{}'.format(self.producto)
+        return f'{self.compra}, {self.producto}, {self.cantidad}, {self.precio_prv}, {self.sub_total} , {self.total}'
 
     def save(self, **kwargs):
         self.sub_total = float(float(int(self.cantidad)) * float(self.precio_prv))
@@ -97,8 +99,16 @@ def detalle_compra_borrar(sender, instance, **kwargs):
 @receiver(post_save, sender=ComprasDet)
 def detalle_compra_guardar(sender, instance, **kwargs):
     id_producto = instance.producto.id
+    id_compra = instance.compra.id
     fecha_compra=instance.compra.fecha_compra
     precio_compra = instance.precio_prv
+    total = instance.total
+    
+    enc = ComprasEnc.objects.filter(pk=id_compra).first()
+    #import pdb; pdb.set_trace()
+    if enc: 
+        enc.total = total
+        enc.save()
 
     prod = Producto.objects.filter(pk=id_producto).first()
     if prod:
