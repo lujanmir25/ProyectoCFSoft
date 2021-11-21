@@ -1,6 +1,7 @@
 from django.db import models
 # Para los signals
 from django.db.models.signals import post_save, post_delete
+from django.urls import reverse
 from django.dispatch import receiver
 from django.db.models import Sum
 from bases.models import ClaseModelo, ClaseModeloUsuario

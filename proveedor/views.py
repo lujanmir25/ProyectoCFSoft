@@ -51,17 +51,29 @@ class ComprasDetEdit(LoginRequiredMixin, PermissionRequiredMixin, generic.Update
     template_name = "prov/compras_det_form.html"
     context_object_name = 'obj'
     form_class = ComprasDetForm
-    success_url = reverse_lazy("proveedor:compras_list")
+    #success_url = reverse_lazy("proveedor:compras_list")
     login_url = 'bases:login'
 
-    #def get_success_url(self):
-        #compra_id = self.kwargs['compra_id']
-        #return reverse_lazy('proveedor:compras_edit', kwargs={'compra_id': compra_id})
+    def get_success_url(self):
+        compra_id = self.kwargs['compra_id']
+        return reverse_lazy('proveedor:compras_edit', kwargs={'compra_id': compra_id})
 
     def form_valid(self, form):
         form.instance.uc = self.request.user
         # print(self.request.user.id)
         return super().form_valid(form)
+
+class CompraDetDelete(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
+    permission_required = "proveedor.delete_comprasdet"
+    model = ComprasDet
+    template_name = "prov/compras_det_del.html"
+    context_object_name = 'obj'
+
+    def get_success_url(self):
+        compra_id = self.kwargs['compra_id']
+        return reverse_lazy('proveedor:compras_edit', kwargs={'compra_id': compra_id})
+
+
 
 class ProveedorEdit(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
     permission_required = "proveedor.change_proveedor"
@@ -294,19 +306,6 @@ def compras(request, compra_id=None):
 
     return render(request, template_name, contexto)
 
-class CompraDetDelete(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
-    permission_required = "proveedor.delete_comprasdet"
-    model = ComprasDet
-    template_name = "prov/compras_det_del.html"
-    context_object_name = 'obj'
-
-    # success_url = reverse_lazy("proveedor:proveedor_list")
-
-    def get_success_url(self):
-        compra_id = self.kwargs['compra_id']
-        return reverse_lazy('proveedor:compras_edit', kwargs={'compra_id': compra_id})
-
-
 
 class OrdenComprasView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
     permission_required = "proveedor.view_comprasenc"
@@ -438,7 +437,7 @@ def realizarPago(request,id):
         if deuda:  
             if deuda.estado_cuenta == 'Pendiente':
             #deuda.estado = not deuda.estado
-                deuda.cantidad_cuotas = deuda.cantidad_cuotas -1
+                deuda.cantidad_cuotas = int(deuda.cantidad_cuotas) -1
                 deuda.monto_total_pag  = deuda.monto_total_pag + deuda.monto_mensual
                 if deuda.cantidad_cuotas == 0: 
                     deuda.estado_cuenta = 'Cancelado'

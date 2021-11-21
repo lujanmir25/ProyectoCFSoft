@@ -92,7 +92,8 @@ class ComprasDetForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'from-control'
             })
-        self.fields['producto'].widget.attrs['readonly'] = True 
+        self.fields['producto'].widget.attrs['readonly'] = True
+        self.fields['compra'].widget.attrs['readonly'] = True 
         self.fields['cantidad'].widget.attrs['readonly'] = True
         self.fields['precio_prv'].widget.attrs['readonly'] = False 
         self.fields['sub_total'].widget.attrs['readonly'] = True
