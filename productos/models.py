@@ -3,6 +3,8 @@ from django.db import models
 
 from bases.models import ClaseModelo
 from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Producto(ClaseModelo):
@@ -24,7 +26,7 @@ class Producto(ClaseModelo):
     descripcion = models.CharField(max_length=200,default='.')
 
     def __str__(self):
-        return '{}'.format(self.product_name)
+        return '{}'.format(self.id)
         # return f'{self.name}, {self.checkIn}, {self.checkOut}, {self.occupant}'
 
     def save(self):
@@ -50,3 +52,4 @@ class AjusteInventario(Producto):
 
     class Meta:
         verbose_name_plural = "Productos Ajustados"
+

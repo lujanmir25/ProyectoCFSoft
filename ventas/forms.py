@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Cliente, Caja
+from .models import Cliente, Caja, FacturaDet
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -32,3 +32,22 @@ class CajaForm(forms.ModelForm):
         self.fields ['sub_total'].widget.attrs['readonly'] = True
         self.fields ['total'].widget.attrs['readonly'] = True
         #self.fields ['existencia'].widget.attrs['readonly'] = True  
+
+class FacturaDetForm(forms.ModelForm):
+
+    class Meta:
+        model = FacturaDet
+        fields = ['factura', 'producto', 'cantidad','precio' ,'sub_total', 'descuento', 'total']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'from-control'
+            })
+        self.fields['producto'].widget.attrs['readonly'] = True 
+        self.fields['cantidad'].widget.attrs['readonly'] = True
+        self.fields['precio'].widget.attrs['readonly'] = False 
+        self.fields['sub_total'].widget.attrs['readonly'] = True
+        self.fields['descuento'].widget.attrs['readonly'] = False
+        self.fields['total'].widget.attrs['readonly'] = True

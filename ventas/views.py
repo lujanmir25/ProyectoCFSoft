@@ -17,7 +17,7 @@ from django.dispatch import receiver
 
 #Local
 from ventas.models import FacturaEnc, FacturaDet,Cliente, FacturaEnc, FacturaDet, OrdenFacturaEnc, OrdenFacturaDet, Caja
-from .forms import ClienteForm, CajaForm
+from .forms import ClienteForm, CajaForm, FacturaDetForm
 from productos.models import Producto
 import productos.views as productos
 
@@ -94,6 +94,23 @@ class ClienteEdit(VistaBaseEdit):
         print(form_class,form,context)
         return self.render_to_response(context)
 
+class VentaDetEdit(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
+    permission_required = "proveedor.view_comprasenc"
+    model = FacturaDet
+    template_name = "prov/factura_det_form.html"
+    context_object_name = 'obj'
+    form_class = FacturaDetForm
+    success_url = reverse_lazy("ventas:factura_list")
+    login_url = 'bases:login'
+
+    #def get_success_url(self):
+        #compra_id = self.kwargs['compra_id']
+        #return reverse_lazy('proveedor:compras_edit', kwargs={'compra_id': compra_id})
+
+    def form_valid(self, form):
+        form.instance.uc = self.request.user
+        # print(self.request.user.id)
+        return super().form_valid(form)
 
 ############# CAJA ################
 
@@ -230,7 +247,7 @@ def facturas(request,id=None):
 
     detalle = {}
     clientes = Cliente.objects.filter(estado=True)
-    
+    contexto = {}
     if request.method == "GET":
         enc = FacturaEnc.objects.filter(pk=id).first()
         if id:
@@ -326,8 +343,8 @@ def facturas(request,id=None):
             det.save()
 
         
-        if det:
-            det.save()
+        #if det:
+         #   det.save()
         
         return redirect("ventas:factura_edit",id=id)
 

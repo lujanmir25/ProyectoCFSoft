@@ -26,7 +26,7 @@ class ComprasEnc(ClaseModelo):
     fecha_compra = models.DateField(null=True, blank=True)
     observacion = models.TextField(blank=True, null=True)
     no_factura = models.CharField(max_length=100)
-    cantidad_cuotas = models.IntegerField(default=0 )
+    cantidad_cuotas = models.CharField(max_length=3, default='')
     fecha_factura = models.DateField()
     sub_total = models.FloatField(default=0)
     descuento = models.FloatField(default=0)
@@ -102,12 +102,15 @@ def detalle_compra_guardar(sender, instance, **kwargs):
     id_compra = instance.compra.id
     fecha_compra=instance.compra.fecha_compra
     precio_compra = instance.precio_prv
-    total = instance.total
+ 
     
     enc = ComprasEnc.objects.filter(pk=id_compra).first()
     #import pdb; pdb.set_trace()
     if enc: 
-        enc.total = total
+        sub_total = ComprasDet.objects.filter(compra=id_compra).aggregate(Sum('sub_total'))
+        descuento = ComprasDet.objects.filter(compra=id_compra).aggregate(Sum('descuento'))
+        enc.sub_total = sub_total['sub_total__sum']
+        enc.descuento = descuento['descuento__sum']
         enc.save()
 
     prod = Producto.objects.filter(pk=id_producto).first()
@@ -177,7 +180,7 @@ class OrdenComprasDet(ClaseModelo):
 class PagoProveedor(models.Model):
     compra = models.ForeignKey(ComprasEnc, on_delete=models.CASCADE)
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
-    cantidad_cuotas = models.BigIntegerField(default=0)
+    cantidad_cuotas = models.CharField(max_length=3, default='')
     #cant_cuotas_pagadas = models.BigIntegerField(default=0)
     monto_mensual = models.FloatField(default=0)
     monto_total_pag = models.FloatField(default=0)

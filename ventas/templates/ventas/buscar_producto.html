@@ -82,7 +82,7 @@
     function seleccionarProducto(id,codigo,descripcion,precio){
         $("#codigo").val(codigo);
         $("#descripcion").val(descripcion);
-        $("#precio").val(precio);
+        $("#precio").val(precio+(precio*0.3));
         $("#btnCancelar").click();
         $("#codigo").select();
         $("#codigo").focus();

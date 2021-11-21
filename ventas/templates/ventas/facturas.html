@@ -152,30 +152,32 @@
                         >
                         <thead>
                             <th data-sortable="true" data-field="id">Id.</th>        
-                            <th data-sortable="true" data-field="codigo">Código</th>
+                            <th data-sortable="true" data-field="codigo">Código Producto</th>
                             <th data-sortable="true" data-field="descripcion">Descripción</th>
                             <th data-field="cantidad">Cant</th>
+                            <th data-field="precio">Precio Venta</th>
                             <th data-field="subtotal">S. Total</th>
                             <th data-field="descuento">Des.</th>
                             <th data-field="total">Total</th>
                             <th class="all">Acciones</th>
                         </thead>
                         <tbody>
-                            {% for item in det%}
+                            {% for item in det%} 
                             <tr>
                                 <td>{{ item.id }}</td>
                                 <td>{{ item.producto }}</td>
-                                <td>{{ item.producto.descripcion }}</td>
+                                <td>{{ item.producto.product_name }}</td>
                                 <td>{{ item.cantidad }}</td>
+                                <td>{{ item.precio }}</td>
                                 <td>{{ item.sub_total }}</td>
                                 <td>{{ item.descuento }}</td>
                                 <td>{{ item.total }}</td>
-                            <td>
-                                <button type="button" class="btn btn-warning btn-circle"
-                                    onclick="#">
-                                    <i class="fas fa-history"></i>
-                                </button>
-                            </td>
+                                <td>
+                                    <button type="button" class="btn btn-warning btn-circle"
+                                        onclick="borrar_detalle({{ item.id }})">
+                                        <i class="fas fa-history"></i>
+                                    </button>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -334,7 +336,7 @@
             icon:"fab fa-keycdn",
             type:'red',
             title: "Confirmación Requerida",
-            content: 'url:/ventas/borrar-detalle/' + id,
+            content: 'url:/ventas/ventas/borrar-detalle/' + id,
             onContentReady: function () {
                 var self = this;
                 this.$content.find('#usuario').val('{{ user.username }}');
@@ -372,7 +374,7 @@
                             headers: { "X-CSRFToken": token },
                             type:"POST",
                             data:data,
-                            url: '/ventas/borrar-detalle/' + id,
+                            url: '/ventas/ventas/borrar-detalle/' + id,
                             success: function(r){
                                 console.log(r);
                                 if(r==="ok"){

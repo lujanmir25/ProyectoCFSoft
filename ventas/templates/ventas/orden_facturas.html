@@ -253,16 +253,15 @@
             success: function(r){
                 console.log(r);
                 console.log(r.existencia);
-                console.log(r.estado);
 
-               /* if(r.existencia<=0 || !r.estado){
-                    mensaje("Producto No Tiene Existencia o está inactivo",'orange')
+                if(r.existencia<=0 ){
+                    mensaje("Producto No Tiene Existencia",'orange')
                     $("#codigo").val("");
                     $("#descripcion").val("");
                     $("#precio").val("0.00");
                     $("#codigo").focus();
                     return false;
-                }*/
+                }
 
                 $("#codigo").val(r.codigo);
                 $("#descripcion").val(r.descripcion);
@@ -404,10 +403,11 @@
         var existencia = +$("#existencia").val();
         var cantidad = +$("#cantidad").val();
 
-        /*if(cantidad>existencia){
+        if(cantidad>existencia){
             mensaje("No hay existencia suficiente");
             return false;
-        }*/
+        }
+        
     })
 
     $("#btnEditCliente").click(function(e){

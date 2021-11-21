@@ -99,7 +99,6 @@ class FacturaDet(ClaseModelo2):
 def detalle_fac_guardar(sender,instance,**kwargs):
     factura_id = instance.factura.id
     producto_id = instance.producto.id
-
     enc = FacturaEnc.objects.get(pk=factura_id)
     if enc:
         sub_total = FacturaDet.objects \
@@ -117,6 +116,7 @@ def detalle_fac_guardar(sender,instance,**kwargs):
         enc.save()
 
     prod=Producto.objects.filter(pk=producto_id).first()
+    #import pdb; pdb.set_trace()
     if prod:
         cantidad = int(prod.existencia) - int(instance.cantidad)
         prod.existencia = cantidad
