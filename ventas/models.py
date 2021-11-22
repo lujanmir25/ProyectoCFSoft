@@ -161,7 +161,7 @@ class OrdenFacturaDet(ClaseModelo2):
         return '{}'.format(self.producto)
 
     def save(self):
-        self.sub_total = float(float(int(self.cantidad)) * float(self.precio))
+        self.sub_total = float(float(self.cantidad)) * float(self.precio)
         self.total = self.sub_total 
         super(OrdenFacturaDet, self).save()
     

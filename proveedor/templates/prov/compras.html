@@ -42,6 +42,18 @@
                                             </div>
                                             <div class="col-6">
                                                 <div class="form-group">
+                                                    <label for="id_fecha_ini_timbrado">Fecha Inicio Timbrado:</label>
+                                                    {{form_enc.fecha_ini_timbrado}}
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="id_fecha_fin_timbrado">Fecha Fin Timbrado:</label>
+                                                    {{form_enc.fecha_fin_timbrado}}
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="id_no_timbrado">No. Timbrado:</label>
+                                                    {{form_enc.no_timbrado}}
+                                                </div>
+                                                <div class="form-group">
                                                     <label for="id_fecha_compra">No. Factura:</label>
                                                     {{form_enc.no_factura}}
                                                 </div>
@@ -184,7 +196,7 @@
 <script>
     $(function () {
 
-        $("#id_fecha_compra, #id_fecha_factura").datetimepicker({
+        $("#id_fecha_compra, #id_fecha_factura, #id_fecha_ini_timbrado, #id_fecha_fin_timbrado").datetimepicker({
             format: 'Y-m-d',
             timepicker:false
         });
@@ -227,37 +239,43 @@
 
         $("#frmCompras").submit(function(e){ 
 
-            if($("#id_fecha_compra").val()=="" || $("#id_fecha_factura").val()=="" || $('#id_cantidad_pagos').val()=="0" ){
+            if($("#id_fecha_compra").val()=="" || $("#id_fecha_factura").val()=="" || $("#id_fecha_ini_timbrado").val()=="" || $("#id_fecha_fin_timbrado").val()=="") {
                 e.preventDefault()
                 $.alert({
                     type: 'red',
                     title: '',
-                    content: 'Debe Especificar Fecha o la cantidad a pagar'
+                    content: 'Debe Especificar Fecha'
                 });
                 return false;
             }
 
-            
-            /*
-            if($('#id_cantidad_pagos').val()=="0") {
+            if($("#id_fecha_ini_timbrado").val() >= $("#id_fecha_fin_timbrado").val()) {
                 e.preventDefault()
                 $.alert({
                     type: 'red',
                     title: '',
-                    content: 'Debe Especificar la cantidad de cuotas a pagar'
+                    content: 'Fecha Inicio timbrado debe ser menor a Fecha Fin timbrado'
                 });
                 return false;
             }
-
-            if($('#id_total_detalle').val()==0 || $('#id_id_producto').val()==0 ){
+            if($('#id_no_timbrado').val()<=0 || $('#id_no_factura').val()<=0 ||$('#id_no_factura').val()=="" || $('#id_no_timbrado').val()==""){
                 e.preventDefault();
                 //alert("No ha agregado productos o esta sin cantidades")
                 $.alert({
                         type:'red',
                         title:'',
-                        content:'No ha agregado productos o esta sin cantidades',
+                        content:'Numero de Timbrado o Factura no validos',
                         });
-            } */
+            }
+            if($('#id_no_timbrado').val()<=0 || $('#id_no_factura').val()<0 ){
+                e.preventDefault();
+                //alert("No ha agregado productos o esta sin cantidades")
+                $.alert({
+                        type:'red',
+                        title:'',
+                        content:'Numero de Timbrado o Factura no validos',
+                        });
+            }
         });
         /*Fin Validar Envio de Detalle*/
 

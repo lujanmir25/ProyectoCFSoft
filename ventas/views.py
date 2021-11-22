@@ -504,6 +504,7 @@ def orden_facturas(request,id=None):
     template_name='ventas/orden_facturas.html'
 
     detalle = {}
+    contexto = {}
     clientes = Cliente.objects.filter(estado=True)
     facDet = OrdenFacturaEnc.objects.all()
     
@@ -581,8 +582,9 @@ def orden_facturas(request,id=None):
         precio = request.POST.get("precio")
         s_total = request.POST.get("sub_total_detalle")
         total = request.POST.get("total_detalle")
-
+    
         prod = Producto.objects.get(codigo=codigo)
+        import pdb; pdb.set_trace()
         det = OrdenFacturaDet(
             factura = enc,
             producto = prod,
@@ -592,6 +594,7 @@ def orden_facturas(request,id=None):
          #   descuento = descuento,
             total = total
         )
+        
         #enc.descripcion = descripcion
         if det:
             det.save()

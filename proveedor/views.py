@@ -188,15 +188,20 @@ def compras(request, compra_id=None):
         
         if enc:
             det = ComprasDet.objects.filter(compra=enc)
-            cantidad_cuotas = IntegerField(enc.cantidad_cuotas)
+            cantidad_cuotas = (enc.cantidad_cuotas)
             fecha_compra = datetime.date.isoformat(enc.fecha_compra)
             fecha_factura = datetime.date.isoformat(enc.fecha_factura)
+            fecha_ini_timbrado = datetime.date.isoformat(enc.fecha_ini_timbrado)
+            fecha_fin_timbrado = datetime.date.isoformat(enc.fecha_fin_timbrado)
             e = {
                 'cantidad_cuotas' : cantidad_cuotas,
                 'fecha_compra': fecha_compra,
                 'proveedor': enc.proveedor,
                 'observacion': enc.observacion,
+                'fecha_ini_timbrado' : fecha_ini_timbrado,
+                'fecha_fin_timbrado' : fecha_fin_timbrado,
                 'no_factura': enc.no_factura,
+                'no_timbrado': enc.no_timbrado,
                 'fecha_factura': fecha_factura,
                 'sub_total': enc.sub_total,
                 'descuento': enc.descuento,
@@ -215,6 +220,9 @@ def compras(request, compra_id=None):
         observacion = request.POST.get("observacion")
         no_factura = request.POST.get("no_factura")
         fecha_factura = request.POST.get("fecha_factura")
+        fecha_ini_timbrado = request.POST.get("fecha_ini_timbrado")
+        fecha_fin_timbrado = request.POST.get("fecha_fin_timbrado")
+        no_timbrado = request.POST.get("no_timbrado")
         
         orden_id = request.POST.get("id_id_orden_compra")
 
@@ -228,8 +236,11 @@ def compras(request, compra_id=None):
             enc = ComprasEnc(
                 fecha_compra=fecha_compra,
                 observacion=observacion,
-                cantidad_cuotas = cantidad_cuotas,
-                no_factura=no_factura,
+                cantidad_cuotas=cantidad_cuotas,
+                no_factura= ('001-'+'002-' + int(str(7 - len(str(no_factura))))*'0' + str(no_factura)),
+                no_timbrado=no_timbrado,
+                fecha_fin_timbrado=fecha_fin_timbrado,
+                fecha_ini_timbrado=fecha_ini_timbrado,
                 fecha_factura=fecha_factura,
                 proveedor=prov,
                 uc=request.user
@@ -243,7 +254,10 @@ def compras(request, compra_id=None):
                 enc.fecha_compra = fecha_compra
                 enc.observacion = observacion    
                 enc.cantidad_cuotas = cantidad_cuotas
-                enc.no_factura = no_factura
+                enc.no_factura = ('001-'+'002-' + int(str(7 - len(str(no_factura))))*'0' + str(no_factura)),
+                enc.no_timbrado=no_timbrado,
+                enc.fecha_fin_timbrado=fecha_fin_timbrado,
+                enc.fecha_ini_timbrado=fecha_ini_timbrado,
                 enc.fecha_factura = fecha_factura
                 enc.um = request.user.id
                 enc.save()
