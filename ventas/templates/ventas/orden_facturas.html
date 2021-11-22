@@ -116,7 +116,7 @@
                         <div class="col-lg-1">Cant</div>
                         <div class="col-lg-3">
                             <input type="number" class="form-control" name="cantidad" id="cantidad" placeholder="Cantidad">
-                            <input type="hidden" class="form-control" name="existencia" id="existencia">
+                            <input type="number" class="form-control" name="existencia" id="existencia" readonly>
                         </div>
                         <div class="col-lg-4">
                             <input type="number" class="form-control" name="precio" id="precio" placeholder="Precio" readonly>
@@ -399,7 +399,7 @@
         });
     }
 
-    $("form").submit(function(e){
+    /*$("form").submit(function(e){
         var existencia = +$("#existencia").val();
         var cantidad = +$("#cantidad").val();
 
@@ -408,7 +408,7 @@
             return false;
         }
         
-    })
+    })*/
 
     $("#btnEditCliente").click(function(e){
         e.preventDefault();

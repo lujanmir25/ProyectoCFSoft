@@ -14,6 +14,7 @@ from django.core import serializers
 from .models import Proveedor, ComprasEnc, ComprasDet, OrdenComprasEnc, OrdenComprasDet, PagoProveedor
 from .forms import ProveedorForm, ComprasEncForm, OrdenComprasEncForm, ComprasDetForm
 from bases.models import ClaseModelo
+from ventas.models import Caja
 from productos.models import Producto
 
 
@@ -295,11 +296,14 @@ def compras(request, compra_id=None):
 
             det.save()
             form_detalles = ComprasDetForm(det)
-        detalle = list(ComprasDet.objects.filter(id = 47))
+
+        #detalle = list(ComprasDet.objects.filter(id = 47))
         #import pdb; pdb.set_trace()
 
-        if det:
-            det.save()
+
+
+        #if det:
+        #    det.save()
         
         sub_total = OrdenComprasDet.objects.filter(compra=orden_id).aggregate(Sum('sub_total'))
         #descuento = ComprasDet.objects.filter(compra=compra_id).aggregate(Sum('descuento'))
@@ -315,6 +319,26 @@ def compras(request, compra_id=None):
             estado_cuenta = 'Pendiente'
         )
         pagos.save()
+
+
+        #Calculos para la Caja
+        cant = Caja.objects.all().count()
+        cajalist = Caja.objects.all()
+        #total_detalle = ComprasDet.objects.filter(compra=orden_id).aggregate(sub_total=Sum('sub_total')).get('sub_total',0.00)
+        total_detalle = enc.total
+        saldo = cajalist[cant-1].saldo_actual
+        saldo_actual = saldo - total_detalle 
+
+        caja = Caja (
+            comp = enc,
+            #fecha = datetime.today(),
+            descripcion = 'COMPRA',
+            entrada = 0,
+            salida = total_detalle,
+            saldo_actual = saldo_actual
+        )
+
+        caja.save() 
 
         return redirect("proveedor:compras_edit", compra_id=compra_id)
 
@@ -428,6 +452,106 @@ def orden_compras(request, compra_id=None):
     return render(request, template_name, contexto)
 #CREAR CONVERSION PARA ORDENES DE COMPRA 
 #f'{self.producto}, {self.cantidad}, {self.precio_prv},{self.descuento},{self.total}'
+
+
+
+
+@login_required(login_url='/login/')
+def caja (request, id=None):
+    template_name = "ventas/registro_caja.html"
+    caja = Caja.objects.all()
+    form_caja = {}
+    contexto = {}
+
+    """if request.method == 'GET':
+        form_caja = CajaForm() 
+          = OrdenComprasEnc.objects.filter(pk=compra_id).first()
+
+        if enc:
+            det = OrdenComprasDet.objects.filter(compra=enc)
+            fecha_compra = datetime.date.isoformat(enc.fecha_compra)
+        #    fecha_factura = datetime.date.isoformat(enc.fecha_factura)
+            e = {
+                'fecha_compra': fecha_compra,
+            #    'proveedor': enc.proveedor,
+                'observacion': enc.observacion,
+            #    'no_factura': enc.no_factura,
+            #    'fecha_factura': fecha_factura,
+            #    'estado_compra': enc.estado_compra,
+                'sub_total': enc.sub_total,
+                'descuento': enc.descuento,
+                'total': enc.total
+            }
+            form_compras = OrdenComprasEncForm(e)
+        else:
+            det = None
+
+        contexto = {'productos': prod, 'encabezado': enc, 'detalle': det, 'form_enc': form_compras}
+
+    if request.method == 'POST':
+        salida = request.POST.get("salida")
+        entrada = request.POST.get("entrada")
+        desc = request.POST.get("descripcion")
+
+        cant = Caja.objects.all().count()
+        cajalist = Caja.objects.all()
+        saldo = cajalist[cant-1].saldo_actual
+
+        if salida:  
+            saldo_actual = saldo - salida
+        else:
+            if entrada:
+                if cant >=0:
+                    saldo_actual = saldo + entrada
+                else:
+                    saldo = entrada
+
+
+        caja = Caja (
+            #comp = enc,
+            #fecha = datetime.today(),
+            descripcion = 'COMPRA',
+            entrada = 0,
+            salida = total_detalle,
+            saldo_actual = saldo_actual
+        )
+
+        caja.save() 
+
+        det = OrdenComprasDet(
+            compra=enc,
+            producto=prod,
+            cantidad=cantidad,
+            precio_prv=precio,
+            descuento=descuento_detalle,
+            costo=0,
+            uc=request.user
+        )
+
+        if det:
+            det.save()
+
+            sub_total = OrdenComprasDet.objects.filter(compra=compra_id).aggregate(Sum('sub_total'))
+            descuento = OrdenComprasDet.objects.filter(compra=compra_id).aggregate(Sum('descuento'))
+            enc.sub_total = sub_total["sub_total__sum"]
+            enc.descuento = descuento["descuento__sum"]
+            enc.save()
+
+        return redirect("proveedor:orden_compras_edit", compra_id=compra_id)
+
+    return render(request, template_name, contexto)
+
+"""
+
+
+
+
+
+
+
+
+
+
 
 class OrdenView(OrdenComprasView):
 	template_name="prov/buscar_orden_compra.html"

@@ -2,7 +2,7 @@
 from django.urls import path
 
 # Local
-from .views import ProveedorView, ProveedorNew, ProveedorEdit, ProveedorDel, PagoView, ComprasDetEdit,ComprasDetView,\
+from .views import ProveedorView, ProveedorNew, ProveedorEdit, ProveedorDel, PagoView, ComprasDetEdit,ComprasDetView, \
     ComprasView, compras, CompraDetDelete, OrdenComprasView, orden_compras, OrdenView, clienteInactivar, realizarPago, detalle_compras
 from .reportes import reporte_compras, imprimir_compra
 
@@ -29,4 +29,6 @@ urlpatterns = [
     path('orden_compra/estado/<int:id>',clienteInactivar, name="cliente_inactivar"),
     path('pago/<int:id>',realizarPago, name="realizar_pago"),
     path('proveedor/buscar-orden',OrdenView.as_view(), name='buscar_compra'),
+
+   # path('caja/new', caja, name="caja_reg")
 ]
