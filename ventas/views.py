@@ -123,11 +123,11 @@ class CajaView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
 
 
 class CajaNew(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
-    permission_required = "caja.view_caja"
+    permission_required = "ventas.view_caja"
     Model = Caja
     template_name = "ventas/caja_form.html"
     context_object_name = "obj"
-    form_class=ClienteForm
+    form_class=CajaForm
     success_url = reverse_lazy("ventas:caja_list")
     login_url = "bases:login"
 
@@ -141,7 +141,7 @@ class CajaEdit(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
     model = Caja
     template_name = "ventas/caja_form.html"
     context_object_name = "obj"
-    form_class=ClienteForm
+    form_class=CajaForm
     success_url = reverse_lazy("ventas:caja_list")
     login_url = "bases:login"
 
@@ -158,10 +158,10 @@ class CajaDel(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("ventas:caja_list")
 
 
-
+"""
 @receiver(post_save, sender=FacturaEnc)
 def actualizar_caja(sender, instance, **kwargs):
-    """
+    
     id_enc = instance.id
     enc = FacturaEnc.objects.get(pk=id_enc)
     today = datetime.now().date()
@@ -270,6 +270,7 @@ def facturas(request,id=None):
                 'descuento':0.00,
                 'total': 0.00
             }
+
             detalle=None
         else:
             encabezado = {
@@ -282,6 +283,7 @@ def facturas(request,id=None):
             }
 
         detalle=FacturaDet.objects.filter(factura=enc)
+        
         contexto = {"enc":encabezado,"det":detalle,"clientes":clientes}
         return render(request,template_name,contexto)
     
@@ -295,6 +297,7 @@ def facturas(request,id=None):
                 cliente = cli,
                 fecha = fecha
             )
+
             if enc:
                 enc.save()
                 id = enc.id
@@ -339,12 +342,8 @@ def facturas(request,id=None):
                 descuento = 0,
                 total = total_d
             )
-            
             det.save()
-
-        
-        #if det:
-         #   det.save()
+     
         
         return redirect("ventas:factura_edit",id=id)
 
@@ -568,21 +567,39 @@ def orden_facturas(request,id=None):
                 enc.fecha = fecha
                 enc.save()
             
-        if enc:
-            enc.save()
-            id = enc.id
+        #if enc:
+        #    enc.save()
+        #    id = enc.id
 
         if not id:
             messages.error(request,'No Puedo Continuar No Pude Detectar No. de Factura')
             return redirect("ventas:orden_factura_list")
         
+
         codigo = request.POST.get("codigo")
         cantidad = request.POST.get("cantidad")
         precio = request.POST.get("precio")
         s_total = request.POST.get("sub_total_detalle")
         total = request.POST.get("total_detalle")
 
-        prod = Producto.objects.get(codigo=codigo)
+        prod = Producto.objects.filter(codigo=codigo)
+        prodlist = list(prod)
+        for item in prodlist:
+            existencia = item.existencia
+
+        if existencia < float(cantidad) :
+            messages.error(request,'No disponemos suficiente existencia')
+            return redirect("ventas:orden_factura_list")
+
+        if existencia == 0 :
+            messages.error(request,'No disponemos existencia compre por fa')
+            return redirect("ventas:orden_factura_list")
+
+        #prod = Producto.objects.filter(codigo=codigo).values()
+
+        #import pdb; pdb.set_trace()
+
+
         det = OrdenFacturaDet(
             factura = enc,
             producto = prod,

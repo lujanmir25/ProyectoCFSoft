@@ -21,17 +21,15 @@ class ClienteForm(forms.ModelForm):
 class CajaForm(forms.ModelForm):
     class Meta:
         model = Caja
-        fields = ['apertura','sub_total','total']
-        labels = {'apertura':"Apertura",'sub_total':"Recaudaciones",'total':"Total"}
-        widget = {'apertura':forms.TextInput,'sub_total':forms.TextInput,'total':forms.TextInput}
+        fields = ['descripcion','fecha','entrada','salida','saldo_actual']
+        labels = {'descripcion':"Descripcion",'fecha':"Fecha",'entrada':"Entrada", 'salida':"Salida", 'saldo_actual':"SaldoActual"}
+        widget = {'descripcion':forms.TextInput,'fecha':forms.TextInput,'entrada':forms.TextInput,'salida':forms.TextInput,'saldo_actual':forms.TextInput}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args,**kwargs)
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({'class':'form-control'})
-        self.fields ['sub_total'].widget.attrs['readonly'] = True
-        self.fields ['total'].widget.attrs['readonly'] = True
-        #self.fields ['existencia'].widget.attrs['readonly'] = True  
+        self.fields['fecha'].widget.attrs['readonly'] = True 
 
 class FacturaDetForm(forms.ModelForm):
 

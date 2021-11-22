@@ -1,6 +1,3 @@
-<!-- {% extends 'base/base.html' %}
-
-{% block page_content %}  -->
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
     {% if obj %}
@@ -19,26 +16,17 @@
                 <div class="row no-gutters align-items-center">
                    <div class="col mr-2">
                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            {% if obj %} Editar {% else %} Nuevo Registro De Caja {% endif %} </div>
+                            {% if obj %} Editar {% else %} Nuevo Registro {% endif %} </div>
                             <div class="dropdown-divider"></div>
                             {% csrf_token %}
                                 <div class="row">
-                                    <div class="input-group">
-                                            <p><input type="number" name="apertura" maxlength="100" class="form-control" required="id_apertura" placeholder="Apertura" value="{% if obj %} {{ obj.apertura }} {% endif %}"></p>
-                                        </div>  
-                                        <div class="input-group">
-                                            <p><input type="number" readonly name="sub_total" maxlength="100" class="form-control" required="id_sub_total" placeholder="Recaudacion Diaria" value="{% if obj %} {{ obj.sub_total }} {% endif %}"></p>
-                                        </div>
-                                        <div class="input-group">
-                                            <p><input type="number" name="total" readonly maxlength="100" class="form-control" required="id_total" placeholder="Total" value="{% if obj %} {{ obj.total }} {% endif %}"></p>
-                                        </div>
+                                    {{ form.as_p }}
                                 </div>
                             <div class="dropdown-divider"></div>
                                 <div class="row">
                                     <div class="col">
                                         <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span>Guardar</button>
-                                    <!--<a href="{% url 'productos:producto_list' %}" class="btn btn-succes"><span class="fa fa-undo"></span>Cancelar</a> -->
-                                    <button type="submit" class="btn btn-success" onclick="return cerrar_modal()" >
+                                    <button type="submit" class="btn btn-success" onclick="return cerrar_modal()">
                                         Cancelar
                                     </button>
                                 </div>
@@ -51,11 +39,3 @@
 </form>
     </div>
 </div>
-
-<!--
-{% endblock %}
-
-
-
-{% block js_page %}
-{% endblock %} -->
