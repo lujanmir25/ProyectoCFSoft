@@ -57,8 +57,8 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Sub total</th>
                         <th>Producto</th>
+                        <th>Cantidad producto</th>
                         <th>Cantidad</th>
                         <th>Sub total</th>
                         <th>Descuento</th>
@@ -68,7 +68,7 @@
                 <tbody>
                     {% for item in detalle %}
                     <tr>
-                        <td><span class="small">{{ item.producto }}</span></td>
+                        <td><span class="small">{{ item.producto.product_name}}</span></td>
                         <td class="numero">{{ item.cantidad }}</td>
                         <td class="numero">{{ item.precio_prv }}</td>
                         <td class="numero">{{ item.sub_total }}</td>

@@ -51,9 +51,13 @@ class FacturaEnc(ClaseModelo2):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     descripcion = models.TextField(blank=True, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
+    no_factura = models.CharField(max_length=15, default='0')
     sub_total=models.FloatField(default=0)
     descuento=models.FloatField(default=0)
     total=models.FloatField(default=0)
+    no_timbrado = models.CharField(default='00000000',max_length=8)
+    fecha_fin_timbrado = models.DateField(null=True, blank=True)
+    fecha_ini_timbrado = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return '{}'.format(self.id)

@@ -276,6 +276,8 @@ def facturas(request,id=None):
                 'id':enc.id,
                 'fecha':enc.fecha,
                 'cliente':enc.cliente,
+                'no_factura': enc.no_factura,
+                'no_timbrado': enc.no_timbrado,
                 'sub_total':enc.sub_total,
                 'descuento':enc.descuento,
                 'total':enc.total
@@ -288,12 +290,16 @@ def facturas(request,id=None):
     if request.method == "POST":
         cliente = request.POST.get("enc_cliente")
         fecha  = request.POST.get("fecha")
+        no_factura = request.POST.get("no_factura")
+        no_timbrado = request.POST.get("no_timbrado")
         cli=Cliente.objects.get(pk=cliente)
 
         if not id:
             enc = FacturaEnc(
                 cliente = cli,
-                fecha = fecha
+                fecha = fecha,
+                no_factura = ('001-'+'002-' + int(str(7 - len(str(no_factura))))*'0' + str(no_factura)),
+                no_timbrado = no_timbrado
             )
             if enc:
                 enc.save()
@@ -302,6 +308,8 @@ def facturas(request,id=None):
             enc = FacturaEnc.objects.filter(pk=id).first()
             if enc:
                 enc.cliente = cli
+                enc.no_factura = ('001-'+'002-' + int(str(7 - len(str(no_factura))))*'0' + str(no_factura)),
+                enc.no_timbrado=no_timbrado
                 enc.save()
 
         if not id:
