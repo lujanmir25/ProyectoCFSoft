@@ -15,7 +15,6 @@ def imprimir_factura_recibo(request,id):
         'enc':enc,
         'detalle':det
     }
-
     return render(request,template_name,context)
 
 def imprimir_factura_list(request,f1,f2):

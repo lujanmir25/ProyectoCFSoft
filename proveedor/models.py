@@ -24,7 +24,8 @@ class Proveedor(ClaseModelo, ClaseModeloUsuario):
 
 
 class ComprasEnc(ClaseModelo):
-    fecha_compra = models.DateField(null=True, blank=True)
+    fecha_compra = models.DateTimeField(null=True, blank=True)
+    #fecha_compra = models.DateTimeField(auto_now_add=True)
     observacion = models.TextField(blank=True, null=True)
     no_factura = models.CharField(max_length=100)
     cantidad_cuotas = models.CharField(max_length=3, default='')

@@ -18,13 +18,16 @@
 <body onload="window.print();window.close()" class="receipt">
     <div class="col-md-1 col-sm-1 col-xs-1 col-xl-1">
         <center>
-            <b class="text-center">Tienda UDEMY DEBSCONSULTORES</b><br> 
+            <b class="text-center">CARNICERIA EL TRIANGULO</b><br>
             <small>Direccion</small><br>
-            <small>FACTURA No. {{enc.factura}}</small><br>
+            <small>FACTURA No.</small><br>
         </center>
         <small>
             <br>
-            <b>Factura No.:</b>&nbsp;&nbsp;{{enc.id}}&nbsp;&nbsp;
+            <b>Fecha Inicio Timbrado:</b>&nbsp;&nbsp;{{enc.fecha_ini_timbrado}}&nbsp;&nbsp; <br>
+            <b>Fecha Fin Timbrado:</b>&nbsp;&nbsp;{{enc.fecha_ini_timbrado}}&nbsp;&nbsp; <br>
+            <b>Timbrado No.:</b>&nbsp;&nbsp;{{enc.no_timbrado}}&nbsp;&nbsp;
+            <b>Factura No.:</b>&nbsp;&nbsp;{{enc.no_factura}}&nbsp;&nbsp;
             <b>Fecha Fact:</b>&nbsp;&nbsp;{{enc.fecha}}&nbsp;&nbsp; <br>
             <b>Cliente:</b>&nbsp;&nbsp;{{enc.cliente.id}}&nbsp;&nbsp;- {{enc.cliente}}<br>
             <br><br>
@@ -81,7 +84,7 @@
             <center>
                 Creada por:  {{enc.uc}} - Fecha:  {{enc.fc}}
                 <br>
-                <i>&copy; &reg; <b>Daniel Bojorge y/o DEBS Consultores</b><br> - debsconsultores@gmail.com</i> 
+                <i>&copy; &reg; <b>Proyecto Final </b><br>CFSOFT</i>
             </center>
         </small>
         </div>

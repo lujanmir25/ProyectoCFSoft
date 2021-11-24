@@ -16,6 +16,7 @@ from .forms import ProveedorForm, ComprasEncForm, OrdenComprasEncForm, ComprasDe
 from bases.models import ClaseModelo
 from ventas.models import Caja
 from productos.models import Producto
+from .reportes import top_compras
 
 
 class ProveedorView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
@@ -298,7 +299,7 @@ def compras(request, compra_id=None):
             form_detalles = ComprasDetForm(det)
 
         #detalle = list(ComprasDet.objects.filter(id = 47))
-        #import pdb; pdb.set_trace()
+        import pdb; pdb.set_trace()
 
 
 
