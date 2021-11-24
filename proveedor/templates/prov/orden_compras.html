@@ -126,21 +126,14 @@
                                             <thead>
                                                 <th>Producto</th>
                                                 <th>Cantidad</th>
-                                                <th>Precio</th>
-                                                <th>Sub Total</th>
-                                                <th>Desc.</th>
-                                                <th>Total</th>
                                                 <th class="all">Acciones</th>
                                             </thead>
                                             <tbody>
                                                 {% for item in detalle %}
                                                 <tr>
-                                                <td>{{ item.producto }}</td>
+                                                <td>{{ item.producto.product_name }}</td>
                                                 <td>{{ item.cantidad }}</td>
-                                                <td>{{ item.precio_prv }}</td>
-                                                <td>{{ item.sub_total }}</td>
-                                                <td>{{ item.descuento }}</td>
-                                                <td>{{ item.total }}</td>
+
                                                 <td>
                                                     <button class="btn btn-danger btn-circle" onclick="return abrir_modal('{% url 'proveedor:compras_del' encabezado.pk item.id %}')"><i class="fas fa-trash-alt"></i></button>
                                                 </td>
@@ -214,7 +207,7 @@
                 return false;
             }
 
-            if($('#id_total_detalle').val()==0 || $('#id_id_producto').val()==0 ){
+            if($('#id_total_detalle').val()=='' || $('#id_id_producto').val()==0 ){
                 e.preventDefault();
                 //alert("No ha agregado productos o esta sin cantidades")
                 $.alert({

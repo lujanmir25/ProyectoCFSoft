@@ -157,6 +157,7 @@
                                     <div class="col">
                                         <table class="table table-striped table-hover dt-responsive nowrap" style="width:100%">
                                             <thead>
+                                                <th>ID Producto</th>
                                                 <th>Producto</th>
                                                 <th>Cantidad</th>
                                                 <th>Precio</th>
@@ -169,6 +170,7 @@
                                                 {% for item in detalle %}
                                                 <tr>
                                                 <td>{{ item.producto }}</td>
+                                                <td>{{ item.producto.product_name }}</td>
                                                 <td>{{ item.cantidad }}</td>
                                                 <td>{{ item.precio_prv }}</td>
                                                 <td>{{ item.sub_total }}</td>
