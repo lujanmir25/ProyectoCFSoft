@@ -598,15 +598,7 @@ def orden_facturas(request,id=None):
             existencia = item.existencia
             prod = Producto.objects.get(pk=product_id)
         #import pdb; pdb.set_trace()
-        det = OrdenFacturaDet(
-            factura = enc,
-            producto = prod,
-            cantidad = cantidad,
-            precio = precio,
-            sub_total = s_total,
-         #   descuento = descuento,
-            total = total
-        )
+        
 
         if existencia < float(cantidad) :
             messages.error(request,'No disponemos suficiente existencia')
@@ -619,7 +611,15 @@ def orden_facturas(request,id=None):
         #prod = Producto.objects.filter(codigo=codigo).values()
 
         #import pdb; pdb.set_trace()
-        
+        det = OrdenFacturaDet(
+            factura = enc,
+            producto = prod,
+            cantidad = cantidad,
+            precio = precio,
+            sub_total = s_total,
+         #   descuento = descuento,
+            total = total
+        )
         if det:
             det.save()
 

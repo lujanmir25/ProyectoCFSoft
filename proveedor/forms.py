@@ -85,7 +85,7 @@ class ComprasDetForm(forms.ModelForm):
 
     class Meta:
         model = ComprasDet
-        fields = ['compra', 'producto', 'cantidad','precio_prv' ,'sub_total', 'descuento', 'total', 'costo']
+        fields = ['compra', 'producto', 'cantidad','precio_prv' ,'sub_total', 'descuento', 'total', 'costo','dif_cantidad']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -95,7 +95,7 @@ class ComprasDetForm(forms.ModelForm):
             })
         self.fields['producto'].widget.attrs['readonly'] = True
         self.fields['compra'].widget.attrs['readonly'] = True 
-        self.fields['cantidad'].widget.attrs['readonly'] = True
+        self.fields['cantidad'].widget.attrs['readonly'] = False
         self.fields['precio_prv'].widget.attrs['readonly'] = False 
         self.fields['sub_total'].widget.attrs['readonly'] = True
         self.fields['descuento'].widget.attrs['readonly'] = False

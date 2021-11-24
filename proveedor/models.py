@@ -60,6 +60,7 @@ class ComprasDet(ClaseModelo):
     compra = models.ForeignKey(ComprasEnc, on_delete=models.CASCADE)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.BigIntegerField(default=0)
+    dif_cantidad = models.IntegerField(default=0)
     precio_prv = models.FloatField(default=0)
     sub_total = models.FloatField(default=0)
     descuento = models.FloatField(default=0)
@@ -71,6 +72,7 @@ class ComprasDet(ClaseModelo):
         return f'{self.compra}, {self.producto}, {self.cantidad}, {self.precio_prv}, {self.sub_total} , {self.total}'
 
     def save(self, **kwargs):
+        self.cantidad = self.cantidad + self.dif_cantidad
         self.sub_total = float(float(int(self.cantidad)) * float(self.precio_prv))
         self.total = self.sub_total - float(self.descuento)
         super(ComprasDet, self).save()
@@ -119,7 +121,10 @@ def detalle_compra_guardar(sender, instance, **kwargs):
 
     prod = Producto.objects.filter(pk=id_producto).first()
     if prod:
-        cantidad = int(prod.existencia) + int(instance.cantidad)
+        if instance.dif_cantidad < 0:
+             cantidad = int(prod.existencia) - int(instance.cantidad)
+        else:
+            cantidad = int(prod.existencia) + int(instance.cantidad)
         prod.existencia = cantidad
         prod.ultima_compra=fecha_compra
         prod.precio = precio_compra
