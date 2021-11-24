@@ -10,7 +10,7 @@ from datetime import timedelta
 from django.shortcuts import render
 from collections import Counter
 
-from .models import ComprasEnc, ComprasDet, OrdenComprasDet
+from .models import ComprasEnc, ComprasDet
 
 
 def link_callback(uri, rel):
@@ -98,7 +98,7 @@ def imprimir_compra(request, compras_id):
         return response
 
 def imprimir_compras_rang(request,f1,f2):
-        template_name='prov/prueba_compras.html'
+        template_name='prov/compras_print_rang.html'
 
         f1=parse_date(f1)
         f2=parse_date(f2)

@@ -16,7 +16,6 @@ from .forms import ProveedorForm, ComprasEncForm, OrdenComprasEncForm, ComprasDe
 from bases.models import ClaseModelo
 from ventas.models import Caja
 from productos.models import Producto
-from .reportes import top_compras
 
 
 class ProveedorView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
