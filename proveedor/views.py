@@ -298,7 +298,7 @@ def compras(request, compra_id=None):
             form_detalles = ComprasDetForm(det)
 
         #detalle = list(ComprasDet.objects.filter(id = 47))
-        #import pdb; pdb.set_trace()
+        import pdb; pdb.set_trace()
 
 
 

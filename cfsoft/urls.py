@@ -31,6 +31,7 @@ urlpatterns = [
     path('ventas/', include(('ventas.urls', 'ventas'), namespace='ventas')),
     path('api/', include(('api.urls', 'api'), namespace='api')),
     path('admin/', admin.site.urls),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

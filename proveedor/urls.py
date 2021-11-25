@@ -4,7 +4,7 @@ from django.urls import path
 # Local
 from .views import ProveedorView, ProveedorNew, ProveedorEdit, ProveedorDel, PagoView, ComprasDetEdit,ComprasDetView, \
     ComprasView, compras, CompraDetDelete, OrdenComprasView, orden_compras, OrdenView, clienteInactivar, realizarPago, detalle_compras
-from .reportes import reporte_compras, imprimir_compra
+from .reportes import reporte_compras, imprimir_compra, imprimir_compras_rang
 
 urlpatterns = [
     path('proveedor/', ProveedorView.as_view(), name='proveedor_list'),
@@ -13,6 +13,8 @@ urlpatterns = [
     path('proveedor/delete/<int:pk>', ProveedorDel.as_view(), name='proveedor_del'),
     path('compras/listado', reporte_compras, name='compras_print_all'),
     path('compras/<int:compras_id>/imprimir', imprimir_compra, name="compras_print_one"),
+    path('compras/imprimir-todas/<str:f1>/<str:f2>', imprimir_compras_rang, name="compras_print_rang"),
+    #path('compras/imprimir-todas/<str:f1>/<str:f2>', imprimir_compras_rang, name="pruebas_compras"),
 
     path('compras/', ComprasView.as_view(), name="compras_list"),
     path('compras_detalle/', ComprasDetView.as_view(), name="compras_det_list"), 
@@ -30,5 +32,4 @@ urlpatterns = [
     path('pago/<int:id>',realizarPago, name="realizar_pago"),
     path('proveedor/buscar-orden',OrdenView.as_view(), name='buscar_compra'),
 
-   # path('caja/new', caja, name="caja_reg")
 ]
