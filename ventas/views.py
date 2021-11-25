@@ -582,18 +582,15 @@ def orden_facturas(request,id=None):
         total = request.POST.get("total_detalle")
 
 
-        """producto = Producto.objects.filter(codigo=codigo)
+        producto = Producto.objects.filter(codigo=codigo)
         products_list = list(producto)
 
         for item in products_list: 
             existencia = item.existencia
-<<<<<<< HEAD
 
-=======
-            prod = Producto.objects.get(pk=product_id)
+
+        prod = Producto.objects.get(codigo=codigo)
         #import pdb; pdb.set_trace()
-        
->>>>>>> c3e27ce1faf314b6d53b6c06c2a4cdb979ebdbbb
 
         if existencia < float(cantidad) :
             messages.error(request,'No disponemos suficiente existencia')
@@ -601,30 +598,24 @@ def orden_facturas(request,id=None):
 
         if existencia == 0 :
             messages.error(request,'No disponemos existencia compre por fa')
-            return redirect("ventas:orden_factura_list")"""
+            return redirect("ventas:orden_factura_list")
 
 
         prod = Producto.objects.get(codigo=codigo)
 
-<<<<<<< HEAD
-=======
         #import pdb; pdb.set_trace()
->>>>>>> c3e27ce1faf314b6d53b6c06c2a4cdb979ebdbbb
+
         det = OrdenFacturaDet(
             factura = enc,
             producto = prod,
             cantidad = cantidad,
             precio = precio,
             sub_total = s_total,
-<<<<<<< HEAD
             total = total
         )
         
-=======
          #   descuento = descuento,
-            total = total
-        )
->>>>>>> c3e27ce1faf314b6d53b6c06c2a4cdb979ebdbbb
+
         if det:
             det.save()
 
