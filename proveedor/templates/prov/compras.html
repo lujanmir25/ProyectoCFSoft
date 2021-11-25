@@ -50,8 +50,10 @@
                                                     {{form_enc.fecha_fin_timbrado}}
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="id_no_timbrado">No. Timbrado:</label>
-                                                    {{form_enc.no_timbrado}}
+                                                    <label for="id_no_timbrado" >No. Timbrado:</label>
+                                                    <!--input type="text" name="id_no_timbrado" id="id_no_timbrado" placeholder="00000001" class="form-control form-control-user"
+                                                        value={{ form_enc.no_timbrado }}-->
+                                                        {{ form_enc.no_timbrado }}
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="id_fecha_compra">No. Factura:</label>
@@ -269,15 +271,16 @@
                         content:'Numero de Timbrado o Factura no validos',
                         });
             }
-            if($('#id_no_timbrado').val()<=0 || $('#id_no_factura').val()<0 ){
+            if(length(String($('#id_no_timbrado').val()))>8){
                 e.preventDefault();
                 //alert("No ha agregado productos o esta sin cantidades")
                 $.alert({
                         type:'red',
                         title:'',
-                        content:'Numero de Timbrado o Factura no validos',
+                        content:'El timbrado debe ser numerico de 8 digitos',
                         });
             }
+
         });
         /*Fin Validar Envio de Detalle*/
 

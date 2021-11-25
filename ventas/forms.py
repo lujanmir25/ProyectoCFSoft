@@ -49,3 +49,4 @@ class FacturaDetForm(forms.ModelForm):
         self.fields['sub_total'].widget.attrs['readonly'] = True
         self.fields['descuento'].widget.attrs['readonly'] = False
         self.fields['total'].widget.attrs['readonly'] = True
+

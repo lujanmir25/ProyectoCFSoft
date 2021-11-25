@@ -52,8 +52,9 @@ class Cliente(ClaseModelo):
 class FacturaEnc(ClaseModelo2):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     descripcion = models.TextField(blank=True, null=True)
-    fecha = models.DateTimeField(auto_now_add=True)
-    no_factura = models.CharField(max_length=15, default='0')
+    #fecha = models.DateTimeField(auto_now_add=True)
+    fecha = models.DateTimeField(null=True, blank=True)
+    no_factura = models.CharField(max_length=100, default='0')
     sub_total=models.FloatField(default=0)
     descuento=models.FloatField(default=0)
     total=models.FloatField(default=0)
@@ -64,7 +65,7 @@ class FacturaEnc(ClaseModelo2):
     def __str__(self):
         return '{}'.format(self.id)
 
-    def save(self):
+    def save(self,**kwargs):
         self.total = self.sub_total - self.descuento
         super(FacturaEnc,self).save()
 
