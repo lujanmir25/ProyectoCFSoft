@@ -133,24 +133,6 @@ class FacturaDet(ClaseModelo2):
             ('sup_caja_facturadet','Permisos de Supervisor de Caja Detalle')
         ]
 
-@receiver(post_save, sender=FacturaDet)
-def guardar_caja_venta(sender,instance,**kwargs):
-   """ factura_id = instance.factura.id
-    caja_id = instance.caja.id
-    caja = Caja.objects.filter(pk=factura_id)
-
-    if caja:
-        entrada = FacturaDet.objects \
-            .filter(factura=factura_id) \
-            .aggregate(sub_total=Sum('sub_total')) \
-            .get('sub_total',0.00)
-        desc = 'VENTA'
-
-        #caja = Caja(factura=factura_id,descripcion=desc,entrada=entrada,salida=0)
-        caja.entrada = caja.entrada + entrada
-        caja.descripcion = desc
-        caja.save() """
-
 
 @receiver(post_save, sender=FacturaDet)
 def detalle_fac_guardar(sender,instance,**kwargs):

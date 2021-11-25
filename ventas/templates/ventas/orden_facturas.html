@@ -6,7 +6,6 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <a href="#" class="btn btn-danger">Guardar</a>
-        <!-- <a href="{% url 'ventas:factura_imprimir_one' enc.id %}" class="btn btn-success" target="_factura">Imprimir</a> -->
         <a href="{% url 'ventas:orden_factura_list' %}" class="btn btn-info">Cancelar</a>
     </div>
     <div class="card-body">
@@ -116,7 +115,7 @@
                         <div class="col-lg-1">Cant</div>
                         <div class="col-lg-3">
                             <input type="number" class="form-control" name="cantidad" id="cantidad" placeholder="Cantidad">
-                            <input type="number" class="form-control" name="existencia" id="existencia" readonly>
+                            <input type="hidden" class="form-control" name="existencia" id="existencia" readonly>
                         </div>
                         <div class="col-lg-4">
                             <input type="number" class="form-control" name="precio" id="precio" placeholder="Precio" readonly>
@@ -236,10 +235,6 @@
 
     function buscarProducto()
     {
-       /* if ($("#enc_cliente").val()==="0" || $("#enc_cliente").val()===null){
-            mensaje("Cliente No Seleccionado",'red');
-            return false;
-        } */
 
         var codigo = $("#codigo").val();
         if(codigo===""){
@@ -318,8 +313,7 @@
         });
 
         $("#enc_id").val("{{ enc.id }}");
-        /*$("#enc_cliente").val("{{ enc.cliente.id }}").change();*/
-        $("#descripcion_enc").val({{ enc.descripcion }});
+        $("#descripcion_enc").val("{{ enc.descripcion }}");
         $("#fecha").val("{{ enc.fecha|date:'Y-m-d' }}");
         $("#sub_total").val("{{ enc.sub_total }}");
         $("#descuento").val("{{ enc.descuento }}");
@@ -341,7 +335,7 @@
             icon:"fab fa-keycdn",
             type:'red',
             title: "Confirmación Requerida",
-            content: 'url:/ventas/facturas/borrar-OrdenDetalle/' + id,
+            content: 'url:/ventas/ventas/borrar-OrdenDetalle/' + id,
             onContentReady: function () {
                 var self = this;
                 this.$content.find('#usuario').val('{{ user.username }}');
@@ -379,7 +373,7 @@
                             headers: { "X-CSRFToken": token },
                             type:"POST",
                             data:data,
-                            url: '/ventas/facturas/borrar-OrdenDetalle/' + id,
+                            url: '/ventas/ventas/borrar-OrdenDetalle/' + id,
                             success: function(r){
                                 console.log(r);
                                 if(r==="ok"){

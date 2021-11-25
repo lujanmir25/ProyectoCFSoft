@@ -425,9 +425,9 @@ def ordenInactivar(request,id):
     return HttpResponse("FAIL")
 
 def borrar_OrdenDetalle_factura(request, id):
-    template_name = "ventas/factura_borrar_Ordendetalle.html"
+    template_name = "ventas/factura_borrar_ordenDetalle.html"
 
-    det = FacturaDet.objects.get(pk=id)
+    det = OrdenFacturaDet.objects.get(pk=id)
 
     if request.method=="GET":
         context={"det":det}
@@ -448,7 +448,6 @@ def borrar_OrdenDetalle_factura(request, id):
             det.id = None
             det.cantidad = (-1 * det.cantidad)
             det.sub_total = (-1 * det.sub_total)
-            det.descuento = (-1 * det.descuento)
             det.total = (-1 * det.total)
             det.save()
 
@@ -507,6 +506,8 @@ def cliente_add_modify(request,pk=None):
     return render(request,template_name,context)
 
 
+@login_required(login_url='/login/')
+@permission_required('fac.change_facturaenc', login_url='bases:sin_privilegios')
 def orden_facturas(request,id=None):
     template_name='ventas/orden_facturas.html'
 
@@ -533,9 +534,7 @@ def orden_facturas(request,id=None):
                'id':0,
                'fecha':datetime.today(),
                'descripcion':0.0, 
-            #   'cliente':0,
                 'sub_total':0.00,
-            #   'descuento':0.00,
                 'total': 0.00
             }
             detalle=None
@@ -544,9 +543,7 @@ def orden_facturas(request,id=None):
                 'id':enc.id,
                 'fecha':enc.fecha,
                 'descripcion': enc.descripcion,
-             #  'cliente':enc.cliente,
                 'sub_total':enc.sub_total,
-             #   'descuento':enc.descuento,
                 'total':enc.total
             }
 
@@ -555,14 +552,11 @@ def orden_facturas(request,id=None):
         return render(request,template_name,contexto)
     
     if request.method == "POST":
-        cliente = request.POST.get("enc_cliente")
         fecha  = request.POST.get("fecha")
         descripcion_enc = request.POST.get("descripcion_enc")
-        #cli=Cliente.objects.get(pk=cliente)
 
         if not id:
             enc = OrdenFacturaEnc(
-                #id = enc.id,
                 fecha = fecha,
                 descripcion = descripcion_enc
             )
@@ -573,40 +567,27 @@ def orden_facturas(request,id=None):
             enc = OrdenFacturaEnc.objects.filter(pk=id).first()
             if enc:
                 #enc.c = cli
-                enc.fecha = fecha
+                #enc.fecha = fecha
                 enc.save()
-            
-        #if enc:
-        #    enc.save()
-        #    id = enc.id
+
 
         if not id:
             messages.error(request,'No Puedo Continuar No Pude Detectar No. de Factura')
             return redirect("ventas:orden_factura_list")
         
-
         codigo = request.POST.get("codigo")
         cantidad = request.POST.get("cantidad")
         precio = request.POST.get("precio")
         s_total = request.POST.get("sub_total_detalle")
         total = request.POST.get("total_detalle")
-        
-        producto = Producto.objects.filter(codigo=codigo)
+
+
+        """producto = Producto.objects.filter(codigo=codigo)
         products_list = list(producto)
+
         for item in products_list: 
-            product_id = item.id
             existencia = item.existencia
-            prod = Producto.objects.get(pk=product_id)
-        #import pdb; pdb.set_trace()
-        det = OrdenFacturaDet(
-            factura = enc,
-            producto = prod,
-            cantidad = cantidad,
-            precio = precio,
-            sub_total = s_total,
-         #   descuento = descuento,
-            total = total
-        )
+
 
         if existencia < float(cantidad) :
             messages.error(request,'No disponemos suficiente existencia')
@@ -614,11 +595,19 @@ def orden_facturas(request,id=None):
 
         if existencia == 0 :
             messages.error(request,'No disponemos existencia compre por fa')
-            return redirect("ventas:orden_factura_list")
+            return redirect("ventas:orden_factura_list")"""
 
-        #prod = Producto.objects.filter(codigo=codigo).values()
 
-        #import pdb; pdb.set_trace()
+        prod = Producto.objects.get(codigo=codigo)
+
+        det = OrdenFacturaDet(
+            factura = enc,
+            producto = prod,
+            cantidad = cantidad,
+            precio = precio,
+            sub_total = s_total,
+            total = total
+        )
         
         if det:
             det.save()

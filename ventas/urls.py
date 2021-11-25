@@ -22,7 +22,7 @@ urlpatterns = [
     path('ventas/orden_new',orden_facturas, name='orden_new'),
     #path('orden_ventas/new',OrdenVentaNew.as_view(), name="orden_venta_new"),
 	path('ventas/edit/<int:id>',facturas, name='factura_edit'),
-    path('ventas/edit_orden/<int:id>',orden_facturas, name='orden_factura_edit'),
+    path('orden_ventas/edit/<int:id>',orden_facturas, name='orden_factura_edit'),
     path('ventas_detalles/edit/<int:pk>', VentaDetEdit.as_view(), name="ventas_det_edit"),
 
 	path('ventas/buscar-producto',ProductoView.as_view(), name='factura_producto'),
