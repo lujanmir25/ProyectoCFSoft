@@ -311,7 +311,7 @@ def compras(request, compra_id=None):
         enc.save()
         compra = ComprasEnc.objects.get(pk=enc.id)
         pagos = PagoProveedor( 
-            compra = compra, 
+            compra = compra,
             proveedor = enc.proveedor,
             cantidad_cuotas = enc.cantidad_cuotas,
             monto_mensual = float(enc.total) / int(cantidad_cuotas),
