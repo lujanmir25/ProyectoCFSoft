@@ -31,9 +31,9 @@ urlpatterns = [
 	path('ventas/borrar-detalle/<int:id>',borrar_detalle_factura, name="factura_borrar_detalle"),
     path('ventas/borrar-OrdenDetalle/<int:id>',borrar_OrdenDetalle_factura, name="factura_borrar_OrdenDetalle"),
 
-    path('ventas/imprimir/<int:id>',imprimir_factura_recibo, name="factura_imprimir_one"),
-    path('ventas/imprimir-todas/<str:f1>/<str:f2>',imprimir_factura_list, name="factura_imprimir_all"),
 
+    path('ventas/imprimir-todas/<str:f1>/<str:f2>',imprimir_factura_list, name="factura_imprimir_all"),
+    path('ventas/imprimir/<int:id>', imprimir_factura_recibo, name="factura_imprimir_one"),
     path('orden_venta/estado/<int:id>',ordenInactivar, name="orden_inactivar"),
     
     path('ventas/clientes/new/',cliente_add_modify,name="fac_cliente_add"),

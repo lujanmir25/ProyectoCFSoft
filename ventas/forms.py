@@ -1,6 +1,7 @@
 from django import forms
 
-from .models import Cliente, Caja, FacturaDet
+from .models import Cliente, Caja, FacturaDet, FacturaEnc
+
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -49,3 +50,21 @@ class FacturaDetForm(forms.ModelForm):
         self.fields['sub_total'].widget.attrs['readonly'] = True
         self.fields['descuento'].widget.attrs['readonly'] = False
         self.fields['total'].widget.attrs['readonly'] = True
+
+class FacturaEncForm(forms.ModelForm):
+
+    class Meta:
+        model = FacturaEnc
+        fields = ['cliente', 'descripcion', 'fecha', 'no_factura', 'sub_total', 'descuento', 'total', 'no_timbrado', 'fecha_fin_timbrado', 'fecha_ini_timbrado']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'from-control'
+            })
+        self.fields['fecha_ini_timbrado'].widget.attrs['readonly'] = True
+        self.fields['fecha_fin_timbrado'].widget.attrs['readonly'] = True
+        #self.fields['no_timbrado'].widget.attrs['readonly'] = True
+        #self.fields['no_factura'].widget.attrs['readonly'] = True
+

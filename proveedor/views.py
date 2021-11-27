@@ -255,10 +255,10 @@ def compras(request, compra_id=None):
                 enc.fecha_compra = fecha_compra
                 enc.observacion = observacion    
                 enc.cantidad_cuotas = cantidad_cuotas
-                enc.no_factura = ('001-'+'002-' + int(str(7 - len(str(no_factura))))*'0' + str(no_factura)),
-                enc.no_timbrado=no_timbrado,
-                enc.fecha_fin_timbrado=fecha_fin_timbrado,
-                enc.fecha_ini_timbrado=fecha_ini_timbrado,
+                enc.no_factura = ('001-'+'002-' + int(str(7 - len(str(no_factura))))*'0' + str(no_factura))
+                enc.no_timbrado=no_timbrado
+                enc.fecha_fin_timbrado=fecha_fin_timbrado
+                enc.fecha_ini_timbrado=fecha_ini_timbrado
                 enc.fecha_factura = fecha_factura
                 enc.um = request.user.id
                 enc.save()
@@ -298,7 +298,7 @@ def compras(request, compra_id=None):
             form_detalles = ComprasDetForm(det)
 
         #detalle = list(ComprasDet.objects.filter(id = 47))
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
 
 
 
@@ -311,7 +311,7 @@ def compras(request, compra_id=None):
         enc.save()
         compra = ComprasEnc.objects.get(pk=enc.id)
         pagos = PagoProveedor( 
-            compra = compra, 
+            compra = compra,
             proveedor = enc.proveedor,
             cantidad_cuotas = enc.cantidad_cuotas,
             monto_mensual = float(enc.total) / int(cantidad_cuotas),

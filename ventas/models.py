@@ -6,7 +6,8 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.db.models import Sum
 from django.utils import timezone
-from datetime import date
+#from datetime import date
+import datetime
 #Local
 from bases.models import ClaseModelo, ClaseModelo2, ClaseModeloUsuario
 from productos.models import Producto
@@ -52,19 +53,20 @@ class Cliente(ClaseModelo):
 class FacturaEnc(ClaseModelo2):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     descripcion = models.TextField(blank=True, null=True)
-    fecha = models.DateTimeField(auto_now_add=True)
-    no_factura = models.CharField(max_length=15, default='0')
+    #fecha = models.DateTimeField(auto_now_add=True)
+    fecha = models.DateTimeField(null=True, blank=True)
+    no_factura = models.CharField(max_length=100)
     sub_total=models.FloatField(default=0)
     descuento=models.FloatField(default=0)
     total=models.FloatField(default=0)
-    no_timbrado = models.CharField(default='00000000',max_length=8)
+    no_timbrado = models.CharField(max_length=8)
     fecha_fin_timbrado = models.DateField(null=True, blank=True)
     fecha_ini_timbrado = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return '{}'.format(self.id)
 
-    def save(self):
+    def save(self,**kwargs):
         self.total = self.sub_total - self.descuento
         super(FacturaEnc,self).save()
 
@@ -80,7 +82,8 @@ class Caja(ClaseModelo2):
     fac = models.ForeignKey(FacturaEnc,on_delete=models.CASCADE, null=True)
     comp = models.ForeignKey(ComprasEnc,on_delete=models.CASCADE, null=True)
     descripcion = models.TextField(blank=True, null=True)
-    fecha = models.DateTimeField(default=timezone.now,null=True)
+    #fecha = models.DateTimeField(default=timezone.now,null=True)
+    fecha = models.DateTimeField(null=True, blank=True)
     entrada = models.BigIntegerField(default=0,null=True)
     salida = models.BigIntegerField(default=0,null=True)
     saldo_actual = models.BigIntegerField(default=0,null=True)
@@ -162,7 +165,7 @@ def detalle_fac_guardar(sender,instance,**kwargs):
 
         caja = Caja (
             fac = enc,
-            fecha = date.today(),
+            fecha = datetime.datetime.now(),
             descripcion = 'VENTA',
             entrada = total_detalle,
             salida = 0,

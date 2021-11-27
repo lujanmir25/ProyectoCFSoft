@@ -27,9 +27,9 @@ class ComprasEnc(ClaseModelo):
     fecha_compra = models.DateTimeField(null=True, blank=True)
     #fecha_compra = models.DateTimeField(auto_now_add=True)
     observacion = models.TextField(blank=True, null=True)
-    no_factura = models.CharField(max_length=100)
-    cantidad_cuotas = models.CharField(max_length=3, default='')
-    no_timbrado = models.IntegerField(default=00000000)
+    no_factura = models.CharField(max_length=100, default=0)
+    cantidad_cuotas = models.CharField(max_length=12, default='')
+    no_timbrado = models.CharField(max_length=8)
     fecha_fin_timbrado = models.DateField(null=True, blank=True)
     fecha_ini_timbrado = models.DateField(null=True, blank=True)
     fecha_factura = models.DateField()
@@ -109,16 +109,27 @@ def detalle_compra_guardar(sender, instance, **kwargs):
     id_compra = instance.compra.id
     fecha_compra=instance.compra.fecha_compra
     precio_compra = instance.precio_prv
- 
-    
+
     enc = ComprasEnc.objects.filter(pk=id_compra).first()
     #import pdb; pdb.set_trace()
-    if enc: 
+    if enc:
         sub_total = ComprasDet.objects.filter(compra=id_compra).aggregate(Sum('sub_total'))
         descuento = ComprasDet.objects.filter(compra=id_compra).aggregate(Sum('descuento'))
         enc.sub_total = sub_total['sub_total__sum']
         enc.descuento = descuento['descuento__sum']
         enc.save()
+
+    cantidad = enc.cantidad_cuotas
+    monto_cuenta = enc.sub_total
+
+    deuda = PagoProveedor.objects.filter(compra_id=id_compra).first()
+    if deuda:
+        deuda.monto_mensual = monto_cuenta/int(cantidad)
+        deuda.cantidad_cuotas= cantidad
+        deuda.monto_total_pag = 0
+        deuda.estado_cuenta = 'Pendiente'
+        deuda.save()
+
 
     prod = Producto.objects.filter(pk=id_producto).first()
     if prod:
@@ -130,7 +141,7 @@ def detalle_compra_guardar(sender, instance, **kwargs):
         prod.ultima_compra=fecha_compra
         prod.precio = precio_compra
         prod.save()
-
+    #import pdb;pdb.set_trace()
 class OrdenComprasEnc(ClaseModelo):
     fecha_compra = models.DateField(null=True, blank=True)
     observacion = models.TextField(blank=True, null=True)
@@ -194,12 +205,12 @@ class PagoProveedor(models.Model):
     #cant_cuotas_pagadas = models.BigIntegerField(default=0)
     monto_mensual = models.FloatField(default=0)
     monto_total_pag = models.FloatField(default=0)
-    estado_cuenta = models.CharField(max_length=12, default= 'Iniciado' ) 
+    estado_cuenta = models.CharField(max_length=12, default= 'Iniciado' )
 
     def __str__(self):
         #return '{}'.format(self.producto)
         return f'{self.proveedor}, {self.cantidad_cuotas},{self.monto_mensual},{self.monto_total_pag}'
-    
+
     class Meta:
         verbose_name_plural = "Pago de Proveedores"
         verbose_name = "Pago de Proveedor"

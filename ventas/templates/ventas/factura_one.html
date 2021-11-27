@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'base/css/recibo.css' %}">
     <style type="text/css">
         @page {
-             width: 58mm; 
+             width: 58mm;
             size: auto;   
             margin: 0mm;
             }
@@ -25,7 +25,7 @@
         <small>
             <br>
             <b>Fecha Inicio Timbrado:</b>&nbsp;&nbsp;{{enc.fecha_ini_timbrado}}&nbsp;&nbsp; <br>
-            <b>Fecha Fin Timbrado:</b>&nbsp;&nbsp;{{enc.fecha_ini_timbrado}}&nbsp;&nbsp; <br>
+            <b>Fecha Fin Timbrado:</b>&nbsp;&nbsp;{{enc.fecha_fin_timbrado}}&nbsp;&nbsp; <br>
             <b>Timbrado No.:</b>&nbsp;&nbsp;{{enc.no_timbrado}}&nbsp;&nbsp;
             <b>Factura No.:</b>&nbsp;&nbsp;{{enc.no_factura}}&nbsp;&nbsp;
             <b>Fecha Fact:</b>&nbsp;&nbsp;{{enc.fecha}}&nbsp;&nbsp; <br>
@@ -34,17 +34,19 @@
         </small>
         <table class="table table-condensed table-sm" width="60%">
             <thead>
-                <th>Código</th>
-                <th  align='right'>Cant.</th>
-                <th  align='right'>P. Unit.</th>
-                <th  align='right'>Sub Total</th>
-                <th  align='right'>Descuento</th>
-                <th  align='right'>Total</th>
+                <th align='right'>Código</th>
+                <th align='right'>Descripcio.</th>
+                <th align='right'>Cant.</th>
+                <th align='right'>P. Unit.</th>
+                <th align='right'>Sub Total</th>
+                <th align='right'>Descuento</th>
+                <th align='right'>Total</th>
             </thead>
             <tbody>
                 {% for obj in detalle %}
                 <tr>
                     <td>{{obj.producto.id}}</td>
+                    <td>{{obj.producto.product_name}}</td>
                     <td>{{obj.cantidad}}</td>
                     <td>{{obj.precio}}</td>
                     <td>{{obj.sub_total}}</td>
@@ -52,7 +54,7 @@
                     <td>{{obj.total}}</td>
                 </tr>
                 <tr>
-                    <td colspan="5">{{obj.producto}}</td>
+                    <td colspan="5"> </td>
                 </tr>
                 {% endfor %}
             </tbody>

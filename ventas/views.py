@@ -8,16 +8,18 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
     PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
-from datetime import datetime
+#from datetime import date
+#from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from bases.views import SinPrivilegios
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-
+#from datetime import date
+import datetime
 #Local
-from ventas.models import FacturaEnc, FacturaDet,Cliente, FacturaEnc, FacturaDet, OrdenFacturaEnc, OrdenFacturaDet, Caja
-from .forms import ClienteForm, CajaForm, FacturaDetForm
+from ventas.models import Cliente, FacturaEnc, FacturaDet, OrdenFacturaEnc, OrdenFacturaDet, Caja
+from .forms import ClienteForm, CajaForm, FacturaDetForm, FacturaEncForm
 from productos.models import Producto
 import productos.views as productos
 
@@ -29,7 +31,7 @@ class ClienteView(SinPrivilegios, generic.ListView):
     permission_required="cmp.view_cliente"
 
 
-class VistaBaseCreate(SuccessMessageMixin,SinPrivilegios, \
+class VistaBaseCreate(SuccessMessageMixin,SinPrivilegios,
     generic.CreateView):
     context_object_name = 'obj'
     success_message="Registro Agregado Satisfactoriamente"
@@ -249,7 +251,10 @@ def facturas(request,id=None):
     clientes = Cliente.objects.filter(estado=True)
     contexto = {}
     if request.method == "GET":
+        form_FacEnc = FacturaEncForm()
         enc = FacturaEnc.objects.filter(pk=id).first()
+        #fecha_ini_timbrado = datetime.date.isoformat(enc.fecha_ini_timbrado)
+        #fecha_fin_timbrado = datetime.date.isoformat(enc.fecha_fin_timbrado)
         if id:
             if not enc:
                 messages.error(request,'Factura No Existe')
@@ -264,7 +269,7 @@ def facturas(request,id=None):
         if not enc:
             encabezado = {
                 'id':0,
-                'fecha':datetime.today(),
+                'fecha':datetime.datetime.now(),
                 'cliente':0,
                 'sub_total':0.00,
                 'descuento':0.00,
@@ -273,20 +278,25 @@ def facturas(request,id=None):
 
             detalle=None
         else:
+            fecha_ini_timbrado = datetime.date.isoformat(enc.fecha_ini_timbrado)
+            fecha_fin_timbrado = datetime.date.isoformat(enc.fecha_fin_timbrado)
             encabezado = {
                 'id':enc.id,
                 'fecha':enc.fecha,
                 'cliente':enc.cliente,
                 'no_factura': enc.no_factura,
                 'no_timbrado': enc.no_timbrado,
+                'fecha_fin_timbrado': fecha_fin_timbrado,
+                'fecha_ini_timbrado': fecha_ini_timbrado,
                 'sub_total':enc.sub_total,
                 'descuento':enc.descuento,
                 'total':enc.total
             }
+            form_FacEnc = FacturaEncForm(encabezado)
 
         detalle=FacturaDet.objects.filter(factura=enc)
         
-        contexto = {"enc":encabezado,"det":detalle,"clientes":clientes}
+        contexto = {"enc":encabezado,"det":detalle,"clientes":clientes, "form_Fac":form_FacEnc}
         return render(request,template_name,contexto)
     
     if request.method == "POST":
@@ -294,14 +304,19 @@ def facturas(request,id=None):
         fecha  = request.POST.get("fecha")
         no_factura = request.POST.get("no_factura")
         no_timbrado = request.POST.get("no_timbrado")
-        cli=Cliente.objects.get(pk=cliente)
+        fecha_fin_timbrado = request.POST.get("fecha_fin_timbrado")
+        fecha_ini_timbrado = request.POST.get("fecha_ini_timbrado")
+        #cli=Cliente.objects.get(pk=cliente)
 
         if not id:
+            cli = Cliente.objects.get(pk=cliente)
             enc = FacturaEnc(
                 cliente = cli,
                 fecha = fecha,
                 no_factura = ('001-'+'002-' + int(str(7 - len(str(no_factura))))*'0' + str(no_factura)),
-                no_timbrado = no_timbrado
+                no_timbrado = no_timbrado,
+                fecha_fin_timbrado = fecha_fin_timbrado,
+                fecha_ini_timbrado = fecha_ini_timbrado,
             )
 
             if enc:
@@ -310,9 +325,12 @@ def facturas(request,id=None):
         else:
             enc = FacturaEnc.objects.filter(pk=id).first()
             if enc:
-                enc.cliente = cli
-                enc.no_factura = ('001-'+'002-' + int(str(7 - len(str(no_factura))))*'0' + str(no_factura)),
+                #enc.cliente = cli
+                enc.no_factura = ('001-'+'002-' + int(str(7 - len(str(no_factura))))*'0' + str(no_factura))
                 enc.no_timbrado=no_timbrado
+                enc.fecha_fin_timbrado = fecha_fin_timbrado
+                enc.fecha_ini_timbrado = fecha_ini_timbrado
+
                 enc.save()
 
         if not id:
@@ -330,10 +348,13 @@ def facturas(request,id=None):
         orden_id = request.POST.get("id_orden")
         detalleOrdenes = OrdenFacturaDet.objects.filter(factura=orden_id)
         detalleOrdenes = list(detalleOrdenes)
+        #prod = FacturaDet.objects.filter(pk=id).first()
        #caja = Caja.objects.all()
 
         for items in detalleOrdenes:
+            #prod = FacturaDet.objects.filter(pk=id).first()
             cantidad_d = items.cantidad
+            #desc = prod.producto.descripcion
             precio_d = items.precio
             sub_total_d = items.sub_total
             total_d = items.total
@@ -532,8 +553,14 @@ def orden_facturas(request,id=None):
         if not enc:
             encabezado = {
                'id':0,
+<<<<<<< HEAD
                'fecha':datetime.today(),
                'descripcion':0.0, 
+=======
+               'fecha':datetime.datetime.now(),
+               'descripcion':0.0,
+            #   'cliente':0,
+>>>>>>> 6aa3528efccdf198125a1729f1c413f55797da14
                 'sub_total':0.00,
                 'total': 0.00
             }
@@ -567,7 +594,8 @@ def orden_facturas(request,id=None):
             enc = OrdenFacturaEnc.objects.filter(pk=id).first()
             if enc:
                 #enc.c = cli
-                #enc.fecha = fecha
+                enc.fecha = fecha
+                #enc.descripcion = descripcion_enc
                 enc.save()
 
 
