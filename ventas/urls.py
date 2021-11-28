@@ -4,7 +4,7 @@ from django.urls import path,include
 #Local
 from ventas.views import ClienteView,ClienteNew,ClienteEdit,clienteInactivar,FacturaView,facturas, \
 ProductoView, borrar_detalle_factura, cliente_add_modify,orden_facturas,borrar_OrdenDetalle_factura, OrdenFacturaView, \
-OrdenView, ordenInactivar, CajaView, CajaNew, CajaEdit, CajaDel, VentaDetEdit
+OrdenView, ordenInactivar, CajaView, CajaNew, CajaEdit, CajaDel, VentaDetEdit, productos_vendidos
 
 from .reportes import imprimir_factura_recibo, imprimir_factura_list
 
@@ -16,6 +16,7 @@ urlpatterns = [
     path('clientes/estado/<int:id>',clienteInactivar, name="cliente_inactivar"),
 
 	path('ventas/',FacturaView.as_view(), name='factura_list'),
+    path('ventas-top-productos/',productos_vendidos, name='top_productos_list'),
     path('orden_ventas/',OrdenFacturaView.as_view(), name='orden_factura_list'),  
    # path('orden_ventas/',OrdenVentaView.as_view(), name='orden_venta_list'),
 	path('ventas/new',facturas, name='factura_new'),

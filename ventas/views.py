@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
     PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
+from collections import Counter 
 #from datetime import date
 #from datetime import datetime
 from django.contrib import messages
@@ -22,6 +23,7 @@ from ventas.models import Cliente, FacturaEnc, FacturaDet, OrdenFacturaEnc, Orde
 from .forms import ClienteForm, CajaForm, FacturaDetForm, FacturaEncForm
 from productos.models import Producto
 import productos.views as productos
+
 
 
 class ClienteView(SinPrivilegios, generic.ListView):
@@ -478,6 +480,35 @@ def borrar_OrdenDetalle_factura(request, id):
     
     return render(request,template_name,context)
 
+def productos_vendidos(request): 
+    #template_name = "ventas/top_productos_list.html"
+    #for i in ventas: print('producto: ',i.producto.product_name,'cantidad:',i.cantidad)
+    #ventas_collection.items()
+    ventas_collection = {}
+    ventas = FacturaDet.objects.all()
+    
+    ventas_list = list(ventas) 
+    for v in ventas_list:
+        id_producto = v.producto.id 
+        nombre = v.producto.product_name
+
+        if nombre in ventas_collection: 
+            ventas_collection[nombre] += v.cantidad 
+            
+        else: 
+            ventas_collection[nombre] = v.cantidad
+            
+    #import pdb; pdb.set_trace()        
+    ventas_collection = {k:v for k,v in sorted(ventas_collection.items(), key=lambda item: item[1], reverse= True)}
+    
+    contador = Counter(ventas_collection)
+
+    contador_counter = contador.most_common(5)
+
+    contexto = {'obj': contador_counter}
+    #import pdb; pdb.set_trace()
+    return render(request,"ventas/top_productos_list.html" ,contexto)
+
 
 @login_required(login_url="/login/")
 @permission_required("ventas.change_cliente",login_url="/login/")
@@ -552,15 +583,9 @@ def orden_facturas(request,id=None):
 
         if not enc:
             encabezado = {
-               'id':0,
-<<<<<<< HEAD
-               'fecha':datetime.today(),
-               'descripcion':0.0, 
-=======
-               'fecha':datetime.datetime.now(),
-               'descripcion':0.0,
-            #   'cliente':0,
->>>>>>> 6aa3528efccdf198125a1729f1c413f55797da14
+                'id':0,
+                'fecha':datetime.datetime.now(),
+                'descripcion':0.0, 
                 'sub_total':0.00,
                 'total': 0.00
             }
