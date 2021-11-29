@@ -53,7 +53,7 @@ class FacturaEnc(ClaseModelo2):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     descripcion = models.TextField(blank=True, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
-    no_factura = models.CharField(max_length=15, default='0')
+    no_factura = models.CharField(max_length=100, default='0')
     sub_total=models.FloatField(default=0)
     descuento=models.FloatField(default=0)
     total=models.FloatField(default=0)
@@ -89,7 +89,7 @@ class Caja(ClaseModelo2):
     def __str__(self):
         return '{}'.format(self.descripcion)
 
-    def save(self):
+    def save(self):        
         if self.salida != 0:
             cant = Caja.objects.all().count()
             cajalist = Caja.objects.all()
@@ -138,38 +138,15 @@ class FacturaDet(ClaseModelo2):
 def detalle_fac_guardar(sender,instance,**kwargs):
     factura_id = instance.factura.id
     producto_id = instance.producto.id
-    enc = FacturaEnc.objects.get(pk=factura_id)
+    enc = FacturaEnc.objects.filter(pk=factura_id).first()
     if enc:
-        sub_total = FacturaDet.objects \
-            .filter(factura=factura_id) \
-            .aggregate(sub_total=Sum('sub_total')) \
-            .get('sub_total',0.00)
-        
-        descuento = FacturaDet.objects \
-            .filter(factura=factura_id) \
-            .aggregate(descuento=Sum('descuento')) \
-            .get('descuento',0.00)
-        
-        enc.sub_total = sub_total
-        enc.descuento = descuento
+
+        sub_total = FacturaDet.objects.filter(factura=factura_id).aggregate(Sum('sub_total'))
+        descuento = FacturaDet.objects.filter(factura=factura_id).aggregate(Sum('descuento'))
+
+        enc.sub_total = sub_total['sub_total__sum']
+        enc.descuento = descuento['descuento__sum']
         enc.save()
-
-        cant = Caja.objects.all().count()
-        cajalist = Caja.objects.all()
-        total_detalle = enc.total
-        saldo = cajalist[cant-1].saldo_actual
-        saldo_actual = total_detalle + saldo
-
-        caja = Caja (
-            fac = enc,
-            fecha = date.today(),
-            descripcion = 'VENTA',
-            entrada = total_detalle,
-            salida = 0,
-            saldo_actual = saldo_actual
-        )
-
-        caja.save() 
 
 
     prod=Producto.objects.filter(pk=producto_id).first()

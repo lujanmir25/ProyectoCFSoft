@@ -173,7 +173,7 @@
                             <th data-field="subtotal">S. Total</th>
                             <th data-field="descuento">Des.</th>
                             <th data-field="total">Total</th>
-                            <th class="all">Acciones</th>
+                            <!--<th class="all">Acciones</th> -->
                         </thead>
                         <tbody>
                             {% for item in det%} 
@@ -187,10 +187,10 @@
                                 <td>{{ item.descuento }}</td>
                                 <td>{{ item.total }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-warning btn-circle"
+                                   <!-- <button type="button" class="btn btn-warning btn-circle"
                                         onclick="borrar_detalle({{ item.id }})">
                                         <i class="fas fa-history"></i>
-                                    </button>
+                                    </button> -->
                                 </td>
                             </tr>
                             {% endfor %}
@@ -206,6 +206,7 @@
 {% endblock %}
 {% block js_page %}
 <script>
+
     function calcular_detalle()
     {
         var cant,prec,desc,stotal,total;

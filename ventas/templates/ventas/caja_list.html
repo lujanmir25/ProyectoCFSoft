@@ -4,15 +4,17 @@
  <div class="card shadow mb-4">
     <!-- Card Header - Dropdown -->
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-      <h6 class="m-0 font-weight-bold text-primary">Registros De Caja</h6>
+      <!--<h6 class="m-0 font-weight-bold text-primary">Registros De Caja</h6>-->
+      <button class="btn btn-success" onclick="return abrir_modal('{% url 'ventas:caja_new' %}')" >Apertura de Caja</button>
+        <button class="btn btn-danger" onclick="cerrar_caja(1)" >Cierre de Caja</button>
       <div class="dropdown no-arrow">
         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
         </a>
-        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+        <!--<div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
           <div class="dropdown-header">Opciones</div>
-          <a class="dropdown-item" onclick="return abrir_modal('{% url 'ventas:caja_new' %}')" href="#"><i class="far fa-calendar-plus"></i> Nuevo</a>
-        </div> 
+          <a class="dropdown-item" onclick="return abrir_modal('{% url 'ventas:caja_new' %}')" href="#"><i class="far fa-calendar-plus"></i> Apertura de Caja </a>
+        </div> --> 
       </div>
     </div>
     <!-- Card Body -->
@@ -57,4 +59,38 @@
 {% endblock page_content %}
 
 {% block js_page %}
-{% endblock %}              
+    <script>
+        function cerrar_caja(id)
+  {
+    var data = {id:id};
+    data = JSON.stringify(data);
+    var token = '{{csrf_token}}';
+    $.ajax({
+      headers : {"X-CSRFToken": token},
+      type:"POST",
+      //url:"/fac/clientes/estado/"+id,
+      //url : "/proveedor/orden_compra/estado/"+id,
+      url : "/ventas/cierre/"+id,
+      //data: data,
+      success: function(response){
+        if(response==="OK")
+        {
+          location.reload(true);
+        }
+        else{
+          mensaje("Error al realizar el pago");
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrow){
+        console.log(textStatus, errorThrow);
+        mensaje(errorThrow,'red');
+        cerrar_modal();
+      }
+    });
+  }
+        //call the datatables jQuery plugin
+        $(document).ready(function () {
+            $('.table').DataTable();
+        });
+    </script>
+{% endblock %}        

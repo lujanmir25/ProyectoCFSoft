@@ -6,6 +6,8 @@ from django.dispatch import receiver
 from django.db.models import Sum
 from bases.models import ClaseModelo, ClaseModeloUsuario
 from productos.models import Producto
+from datetime import datetime
+
 
 
 class Proveedor(ClaseModelo, ClaseModeloUsuario):
@@ -109,10 +111,11 @@ def detalle_compra_guardar(sender, instance, **kwargs):
     id_compra = instance.compra.id
     fecha_compra=instance.compra.fecha_compra
     precio_compra = instance.precio_prv
- 
     
     enc = ComprasEnc.objects.filter(pk=id_compra).first()
+    #caja = Caja.objects.filter(comp= id_compra).first()
     #import pdb; pdb.set_trace()
+
     if enc: 
         sub_total = ComprasDet.objects.filter(compra=id_compra).aggregate(Sum('sub_total'))
         descuento = ComprasDet.objects.filter(compra=id_compra).aggregate(Sum('descuento'))
@@ -130,6 +133,64 @@ def detalle_compra_guardar(sender, instance, **kwargs):
         prod.ultima_compra=fecha_compra
         prod.precio = precio_compra
         prod.save()
+
+    # Caja 
+    from ventas.models import Caja
+
+    c = Caja.objects.filter(comp=id_compra).first()
+    # si ya existe la caja entonces editamos
+    if c:
+        #c = list(c)
+        #for item in c:
+        id_caja = c.id
+        caja = Caja.objects.filter(id=id_caja).first()                                                                                                                                                      
+        #import pdb; pdb.set_trace()
+        caja.saldo_actual = caja.salida + caja.saldo_actual
+        caja.salida = enc.total
+        caja.saldo_actual = caja.saldo_actual - caja.salida
+        caja.save()
+
+        # Calculo para ajustar los saldos
+        """cajaList = Caja.objects.all()
+        cajaList = list(cajaList)
+        lastid = cajaList[-1].id 
+        import pdb; pdb.set_trace()
+        if lastid > id_caja :
+            #cajaList = list(cajaList)
+            saldo_actual = caja.saldo_actual
+            i = id_caja + 1
+            import pdb; pdb.set_trace()
+            while i < lastid or i == lastid:
+                caja = Caja.objects.filter(id=i).first()
+                if caja.entrada > 0:
+                    caja.saldo_actual = saldo_actual + caja.entrada
+                    saldo_actual = caja.saldo_actual
+                else:
+                    caja.saldo_actual = saldo_actual - caja.salida
+                    saldo_actual = caja.saldo_actual
+                i=i+1
+                caja.save()"""
+    # si no existe la caja crea un nuevo registro           
+    else:
+        cant = Caja.objects.all().count()
+        cajalist = Caja.objects.all()
+        total_detalle = enc.total
+        saldo = cajalist[cant-1].saldo_actual
+        saldo_actual = saldo - total_detalle 
+
+        caja = Caja (
+            comp = enc,
+            #fecha = datetime.today(),
+            descripcion = 'COMPRA',
+            entrada = 0,
+            salida = total_detalle,
+            saldo_actual = saldo_actual
+        )
+
+        caja.save()
+
+
+
 
 class OrdenComprasEnc(ClaseModelo):
     fecha_compra = models.DateField(null=True, blank=True)
