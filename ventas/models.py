@@ -82,8 +82,8 @@ class Caja(ClaseModelo2):
     fac = models.ForeignKey(FacturaEnc,on_delete=models.CASCADE, null=True)
     comp = models.ForeignKey(ComprasEnc,on_delete=models.CASCADE, null=True)
     descripcion = models.TextField(blank=True, null=True)
-    #fecha = models.DateTimeField(default=timezone.now,null=True)
-    fecha = models.DateTimeField(null=True, blank=True)
+    fecha = models.DateTimeField(default=timezone.now,null=True)
+    #fecha = models.DateTimeField(null=True, blank=True)
     entrada = models.BigIntegerField(default=0,null=True)
     salida = models.BigIntegerField(default=0,null=True)
     saldo_actual = models.BigIntegerField(default=0,null=True)
@@ -92,7 +92,7 @@ class Caja(ClaseModelo2):
     def __str__(self):
         return '{}'.format(self.descripcion)
 
-    def save(self):
+    def save(self):        
         if self.salida != 0:
             cant = Caja.objects.all().count()
             cajalist = Caja.objects.all()
@@ -142,20 +142,14 @@ class FacturaDet(ClaseModelo2):
 def detalle_fac_guardar(sender,instance,**kwargs):
     factura_id = instance.factura.id
     producto_id = instance.producto.id
-    enc = FacturaEnc.objects.get(pk=factura_id)
+    enc = FacturaEnc.objects.filter(pk=factura_id).first()
     if enc:
-        sub_total = FacturaDet.objects \
-            .filter(factura=factura_id) \
-            .aggregate(sub_total=Sum('sub_total')) \
-            .get('sub_total',0.00)
-        
-        descuento = FacturaDet.objects \
-            .filter(factura=factura_id) \
-            .aggregate(descuento=Sum('descuento')) \
-            .get('descuento',0.00)
-        
-        enc.sub_total = sub_total
-        enc.descuento = descuento
+
+        sub_total = FacturaDet.objects.filter(factura=factura_id).aggregate(Sum('sub_total'))
+        descuento = FacturaDet.objects.filter(factura=factura_id).aggregate(Sum('descuento'))
+
+        enc.sub_total = sub_total['sub_total__sum']
+        enc.descuento = descuento['descuento__sum']
         enc.save()
 
         cant = Caja.objects.all().count()
@@ -166,7 +160,6 @@ def detalle_fac_guardar(sender,instance,**kwargs):
 
         caja = Caja (
             fac = enc,
-            fecha = datetime.datetime.now(),
             descripcion = 'VENTA',
             entrada = total_detalle,
             salida = 0,

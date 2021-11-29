@@ -161,31 +161,6 @@ class CajaDel(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
     context_object_name = "obj"
     success_url = reverse_lazy("ventas:caja_list")
 
-
-"""
-@receiver(post_save, sender=FacturaEnc)
-def actualizar_caja(sender, instance, **kwargs):
-    
-    id_enc = instance.id
-    enc = FacturaEnc.objects.get(pk=id_enc)
-    today = datetime.now().date()
-    caja = Caja.objects.filter(fecha=today)
-    caja = list(caja)
-
-    s_total = caja[0].sub_total
-    #totalCaja = caja[1].total
-
-
-    import pdb; pdb.set_trace()
-
-    if (caja.fecha == today):
-        caja.sub_total = caja.sub_total + enc.sub_total
-        caja.total = caja.apertura + caja.sub_total
-
-    caja.save()
-"""
-
-
 @login_required(login_url="/login/")
 @permission_required("ventas.change_cliente",login_url="/login/")
 def clienteInactivar(request,id):
@@ -338,14 +313,6 @@ def facturas(request,id=None):
         if not id:
             messages.error(request,'No Puedo Continuar No Pude Detectar No. de Factura')
             return redirect("ventas:factura_list")
-        
-
-        """codigo = request.POST.get("codigo")
-        cantidad = request.POST.get("cantidad")
-        precio = request.POST.get("precio")
-        s_total = request.POST.get("sub_total_detalle")
-        descuento = request.POST.get("descuento_detalle")
-        total = request.POST.get("total_detalle") """
 
         orden_id = request.POST.get("id_orden")
         detalleOrdenes = OrdenFacturaDet.objects.filter(factura=orden_id)
@@ -377,7 +344,25 @@ def facturas(request,id=None):
                 total = total_d
             )
             det.save()
-     
+
+
+        # Calculos para la Caja
+        """total = OrdenFacturaDet.objects.filter(factura=orden_id).aggregate(Sum('sub_total'))
+        cant = Caja.objects.all().count()
+        cajalist = Caja.objects.all()
+        total_detalle = total["sub_total__sum"]
+        saldo = cajalist[cant-1].saldo_actual
+        saldo_actual = total_detalle + saldo
+
+        caja = Caja (
+            fac = enc,
+            descripcion = 'VENTA',
+            entrada = total_detalle,
+            salida = 0,
+            saldo_actual = saldo_actual
+        )
+
+        caja.save()"""
         
         return redirect("ventas:factura_edit",id=id)
 
@@ -685,3 +670,23 @@ def orden_facturas(request,id=None):
         return redirect("ventas:orden_factura_edit",id=id)
 
     return render(request,template_name,contexto)
+
+
+def cerrarCaja(request,id):
+
+    if request.method=="POST":
+        cant = Caja.objects.all().count()
+        cajalist = Caja.objects.all()
+        total_detalle = cajalist[cant-1].saldo_actual
+        saldo = cajalist[cant-1].saldo_actual
+        saldo_actual = saldo - total_detalle 
+
+        caja = Caja (
+        descripcion = 'CIERRE DE CAJA',
+        entrada = 0,
+        salida = total_detalle,
+        saldo_actual = saldo_actual
+        )
+
+        caja.save()
+        return HttpResponse("OK")
