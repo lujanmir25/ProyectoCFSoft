@@ -4,11 +4,8 @@ from django.urls import path,include
 #Local
 from ventas.views import ClienteView,ClienteNew,ClienteEdit,clienteInactivar,FacturaView,facturas, \
 ProductoView, borrar_detalle_factura, cliente_add_modify,orden_facturas,borrar_OrdenDetalle_factura, OrdenFacturaView, \
-<<<<<<< HEAD
-OrdenView, ordenInactivar, CajaView, CajaNew, CajaEdit, CajaDel, VentaDetEdit, cerrarCaja
-=======
-OrdenView, ordenInactivar, CajaView, CajaNew, CajaEdit, CajaDel, VentaDetEdit, productos_vendidos
->>>>>>> eb8251a43c547877fedd20f9f43d4d830d89f5ec
+OrdenView, ordenInactivar, CajaView, CajaNew, CajaEdit, CajaDel, VentaDetEdit, cerrarCaja,productos_vendidos
+
 
 from .reportes import imprimir_factura_recibo, imprimir_factura_list
 

@@ -82,8 +82,8 @@ class Caja(ClaseModelo2):
     fac = models.ForeignKey(FacturaEnc,on_delete=models.CASCADE, null=True)
     comp = models.ForeignKey(ComprasEnc,on_delete=models.CASCADE, null=True)
     descripcion = models.TextField(blank=True, null=True)
-    #fecha = models.DateTimeField(default=timezone.now,null=True)
-    fecha = models.DateTimeField(null=True, blank=True)
+    fecha = models.DateTimeField(default=timezone.now,null=True)
+    #fecha = models.DateTimeField(null=True, blank=True)
     entrada = models.BigIntegerField(default=0,null=True)
     salida = models.BigIntegerField(default=0,null=True)
     saldo_actual = models.BigIntegerField(default=0,null=True)
@@ -160,7 +160,6 @@ def detalle_fac_guardar(sender,instance,**kwargs):
 
         caja = Caja (
             fac = enc,
-            fecha = datetime.datetime.now(),
             descripcion = 'VENTA',
             entrada = total_detalle,
             salida = 0,
