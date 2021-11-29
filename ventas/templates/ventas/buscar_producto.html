@@ -80,9 +80,11 @@
     $('#tblProducto').bootstrapTable();
 
     function seleccionarProducto(id,codigo,descripcion,precio,existencia){
+        precio = id === 1 ? precio+(precio*0.2) : precio+(precio*0.3);
         $("#codigo").val(codigo);
         $("#descripcion").val(descripcion);
-        $("#precio").val(precio+(precio*0.3));
+        //$("#precio").val(precio+(precio*0.3));
+        $("#precio").val(precio);
         $("#btnCancelar").click();
         $("#codigo").select();
         $("#codigo").focus();

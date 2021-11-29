@@ -58,20 +58,24 @@
                                         value="{{ enc.fecha|date:'Y-m-d' }}" readonly />
                                     </div>
                                 </div>
-                                <div class="col-lg-2">
-                                    Timbrado:
+                                <div class="form-group">
+                                    <label for="id_no_timbrado" >No. Timbrado:</label>
+                                        {{ form_Fac.no_timbrado }}
                                 </div>
+                                <div class="form-group">
+                                    <label for="id_no_factura">No. Factura:</label>
+                                        {{ form_Fac.no_factura}}
+                                </div>
+                                <!--div class="col-lg-4">Timbrado:</div>
                                 <div class="col-lg-8 form-group">
                                     <input type="text" name="no_timbrado" id="no_timbrado" class="form-control form-control-user" 
                                     value="{{ enc.no_timbrado }}"  />
                                 </div>
-                                <div class="col-lg-2">
-                                    No.Factura:
-                                </div>
+                                <div class="col-lg-4">No.Factura:</div>
                                 <div class="col-lg-8 form-group">
                                     <input type="text" name="no_factura" id="no_factura" class="form-control form-control-user" 
                                     value="{{ enc.no_factura }}"  />
-                                </div>
+                                </div-->
                             </div>
                             <div class="col-lg-6 p-2 form-group">
                                 <div class="row">
@@ -93,6 +97,15 @@
                                     <div class="col-lg-8">
                                         <input type="number" class="form-control text-right" value="0.00" disabled
                                             name="total" id="total">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="id_fecha_ini_timbrado">Fecha Inicio Timbrado:</label>
+                                            {{form_Fac.fecha_ini_timbrado}}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="id_fecha_fin_timbrado">Fecha Fin Timbrado:</label>
+                                            {{form_Fac.fecha_fin_timbrado}}
+                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -303,6 +316,43 @@
     }
 
     $(function () {
+
+        $("#id_fecha_ini_timbrado, #id_fecha_fin_timbrado").datetimepicker({
+            format: 'Y-m-d',
+            timepicker:false
+        });
+
+        $("#frmFacturas").submit(function(e){
+            if($("#id_fecha_ini_timbrado").val()=="" || $("#id_fecha_fin_timbrado").val()=="") {
+                e.preventDefault()
+                $.alert({
+                    type: 'red',
+                    title: '',
+                    content: 'Debe Especificar Fecha'
+                });
+                return false;
+            }
+
+            if($("#id_fecha_ini_timbrado").val() >= $("#id_fecha_fin_timbrado").val()) {
+                e.preventDefault()
+                $.alert({
+                    type: 'red',
+                    title: '',
+                    content: 'Fecha Inicio timbrado debe ser menor a Fecha Fin timbrado'
+                });
+                return false;
+            }
+            if($('#id_no_timbrado').val()<=0 || $('#id_no_factura').val()<=0 ||$('#id_no_factura').val()=="" || $('#id_no_timbrado').val()==""){
+                e.preventDefault();
+                //alert("No ha agregado productos o esta sin cantidades")
+                $.alert({
+                        type:'red',
+                        title:'',
+                        content:'Numero de Timbrado o Factura no validos',
+                        });
+            }
+        });
+
         $("#sidebarToggle").click();
         $('#enc_cliente').select2({
             placeholder: "Seleccione Cliente",

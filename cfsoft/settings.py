@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'cfsoft.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -100,8 +100,8 @@ DATABASES = {
         'PORT': '5433',
     }
 } 
-
 """
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -111,7 +111,7 @@ DATABASES = {
         'HOST':'localhost',
     }
 }
-"""
+
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -142,7 +142,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

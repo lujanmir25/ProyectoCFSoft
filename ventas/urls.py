@@ -4,7 +4,11 @@ from django.urls import path,include
 #Local
 from ventas.views import ClienteView,ClienteNew,ClienteEdit,clienteInactivar,FacturaView,facturas, \
 ProductoView, borrar_detalle_factura, cliente_add_modify,orden_facturas,borrar_OrdenDetalle_factura, OrdenFacturaView, \
+<<<<<<< HEAD
 OrdenView, ordenInactivar, CajaView, CajaNew, CajaEdit, CajaDel, VentaDetEdit, cerrarCaja
+=======
+OrdenView, ordenInactivar, CajaView, CajaNew, CajaEdit, CajaDel, VentaDetEdit, productos_vendidos
+>>>>>>> eb8251a43c547877fedd20f9f43d4d830d89f5ec
 
 from .reportes import imprimir_factura_recibo, imprimir_factura_list
 
@@ -16,6 +20,7 @@ urlpatterns = [
     path('clientes/estado/<int:id>',clienteInactivar, name="cliente_inactivar"),
 
 	path('ventas/',FacturaView.as_view(), name='factura_list'),
+    path('ventas-top-productos/',productos_vendidos, name='top_productos_list'),
     path('orden_ventas/',OrdenFacturaView.as_view(), name='orden_factura_list'),  
    # path('orden_ventas/',OrdenVentaView.as_view(), name='orden_venta_list'),
 	path('ventas/new',facturas, name='factura_new'),
@@ -31,9 +36,9 @@ urlpatterns = [
 	path('ventas/borrar-detalle/<int:id>',borrar_detalle_factura, name="factura_borrar_detalle"),
     path('ventas/borrar-OrdenDetalle/<int:id>',borrar_OrdenDetalle_factura, name="factura_borrar_OrdenDetalle"),
 
-    path('ventas/imprimir/<int:id>',imprimir_factura_recibo, name="factura_imprimir_one"),
-    path('ventas/imprimir-todas/<str:f1>/<str:f2>',imprimir_factura_list, name="factura_imprimir_all"),
 
+    path('ventas/imprimir-todas/<str:f1>/<str:f2>',imprimir_factura_list, name="factura_imprimir_all"),
+    path('ventas/imprimir/<int:id>', imprimir_factura_recibo, name="factura_imprimir_one"),
     path('orden_venta/estado/<int:id>',ordenInactivar, name="orden_inactivar"),
     
     path('ventas/clientes/new/',cliente_add_modify,name="fac_cliente_add"),

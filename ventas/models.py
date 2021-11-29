@@ -6,7 +6,8 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.db.models import Sum
 from django.utils import timezone
-from datetime import date
+#from datetime import date
+import datetime
 #Local
 from bases.models import ClaseModelo, ClaseModelo2, ClaseModeloUsuario
 from productos.models import Producto
@@ -52,19 +53,20 @@ class Cliente(ClaseModelo):
 class FacturaEnc(ClaseModelo2):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     descripcion = models.TextField(blank=True, null=True)
-    fecha = models.DateTimeField(auto_now_add=True)
-    no_factura = models.CharField(max_length=100, default='0')
+    #fecha = models.DateTimeField(auto_now_add=True)
+    fecha = models.DateTimeField(null=True, blank=True)
+    no_factura = models.CharField(max_length=20)
     sub_total=models.FloatField(default=0)
     descuento=models.FloatField(default=0)
     total=models.FloatField(default=0)
-    no_timbrado = models.CharField(default='00000000',max_length=8)
+    no_timbrado = models.CharField(max_length=8)
     fecha_fin_timbrado = models.DateField(null=True, blank=True)
     fecha_ini_timbrado = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return '{}'.format(self.id)
 
-    def save(self):
+    def save(self,**kwargs):
         self.total = self.sub_total - self.descuento
         super(FacturaEnc,self).save()
 
@@ -80,7 +82,8 @@ class Caja(ClaseModelo2):
     fac = models.ForeignKey(FacturaEnc,on_delete=models.CASCADE, null=True)
     comp = models.ForeignKey(ComprasEnc,on_delete=models.CASCADE, null=True)
     descripcion = models.TextField(blank=True, null=True)
-    fecha = models.DateTimeField(default=timezone.now,null=True)
+    #fecha = models.DateTimeField(default=timezone.now,null=True)
+    fecha = models.DateTimeField(null=True, blank=True)
     entrada = models.BigIntegerField(default=0,null=True)
     salida = models.BigIntegerField(default=0,null=True)
     saldo_actual = models.BigIntegerField(default=0,null=True)
@@ -111,6 +114,7 @@ class Caja(ClaseModelo2):
 class FacturaDet(ClaseModelo2):
     factura = models.ForeignKey(FacturaEnc,on_delete=models.CASCADE)
     producto=models.ForeignKey(Producto,on_delete=models.CASCADE)
+    fecha_detalle = models.DateTimeField(null=True, blank=True)
     cantidad=models.BigIntegerField(default=0)
     precio=models.FloatField(default=0)
     sub_total=models.FloatField(default=0)
@@ -148,6 +152,23 @@ def detalle_fac_guardar(sender,instance,**kwargs):
         enc.descuento = descuento['descuento__sum']
         enc.save()
 
+        cant = Caja.objects.all().count()
+        cajalist = Caja.objects.all()
+        total_detalle = enc.total
+        saldo = cajalist[cant-1].saldo_actual
+        saldo_actual = total_detalle + saldo
+
+        caja = Caja (
+            fac = enc,
+            fecha = datetime.datetime.now(),
+            descripcion = 'VENTA',
+            entrada = total_detalle,
+            salida = 0,
+            saldo_actual = saldo_actual
+        )
+
+        caja.save() 
+
 
     prod=Producto.objects.filter(pk=producto_id).first()
     #import pdb; pdb.set_trace()
@@ -179,7 +200,6 @@ class OrdenFacturaEnc(ClaseModelo2):
         permissions = [
             ('sup_caja_facturaenc','Permisos de Supervisor de Caja Orden Encabezado')
         ]
-    
 
 class OrdenFacturaDet(ClaseModelo2):
     factura = models.ForeignKey(OrdenFacturaEnc,on_delete=models.CASCADE)

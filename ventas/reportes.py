@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.utils.dateparse import parse_date
 from datetime import timedelta
 
+from productos.models import Producto
 from .models import FacturaEnc,FacturaDet
 
 def imprimir_factura_recibo(request,id):
@@ -9,11 +10,10 @@ def imprimir_factura_recibo(request,id):
 
     enc = FacturaEnc.objects.get(id=id)
     det = FacturaDet.objects.filter(factura=id)
-
     context={
         'request':request,
         'enc':enc,
-        'detalle':det
+        'detalle':det,
     }
     return render(request,template_name,context)
 
