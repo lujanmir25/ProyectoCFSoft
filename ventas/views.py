@@ -16,8 +16,8 @@ from django.contrib.auth import authenticate
 from bases.views import SinPrivilegios
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-#from datetime import date
 import datetime
+#from dateutil.parser import *
 #Local
 from ventas.models import Cliente, FacturaEnc, FacturaDet, OrdenFacturaEnc, OrdenFacturaDet, Caja
 from .forms import ClienteForm, CajaForm, FacturaDetForm, FacturaEncForm
@@ -363,9 +363,12 @@ def facturas(request,id=None):
             producto_id = items.producto_id
             prod = Producto.objects.get(pk=producto_id)
 
+            #fecha = datetime.datetime.strptime(enc.fecha, '%d/%m/%y %H:%M:%S')
+
             #prod = Producto.objects.get(codigo=codigo)
             det = FacturaDet(
                 factura = enc,
+                fecha_detalle = enc.fecha,
                 producto = prod,
                 cantidad = cantidad_d,
                 precio = precio_d,
@@ -481,26 +484,30 @@ def borrar_OrdenDetalle_factura(request, id):
     return render(request,template_name,context)
 
 def productos_vendidos(request): 
+    from datetime import datetime
     #template_name = "ventas/top_productos_list.html"
-    #for i in ventas: print('producto: ',i.producto.product_name,'cantidad:',i.cantidad)
-    #ventas_collection.items()
+    #for i in ventas: print('producto: ',i.producto.product_name, 'fech: ',i.fecha_detalle, ' cantidad:',i.cantidad)
     ventas_collection = {}
     ventas = FacturaDet.objects.all()
-    
-    ventas_list = list(ventas) 
-    for v in ventas_list:
-        id_producto = v.producto.id 
-        nombre = v.producto.product_name
-
-        if nombre in ventas_collection: 
-            ventas_collection[nombre] += v.cantidad 
-            
-        else: 
-            ventas_collection[nombre] = v.cantidad
-            
-    #import pdb; pdb.set_trace()        
+    if request.method == "POST": 
+        fecha_det = request.POST.get("fecha") 
+        #x = parser.parse(fecha_det)
+        fecha_det = datetime.strptime(fecha_det, '%Y-%m-%d')
+       # fecha_det = datetime.date.today()
+        ventas_list = list(ventas)
+        if fecha_det: 
+            for v in ventas_list:
+                fecha = v.fecha_detalle 
+                id_producto = v.producto.id 
+                nombre = v.producto.product_name
+                if fecha_det >= fecha:
+                    if nombre in ventas_collection: 
+                        ventas_collection[nombre] += v.cantidad 
+                    
+                    else: 
+                        ventas_collection[nombre] = v.cantidad
     ventas_collection = {k:v for k,v in sorted(ventas_collection.items(), key=lambda item: item[1], reverse= True)}
-    
+        
     contador = Counter(ventas_collection)
 
     contador_counter = contador.most_common(5)
@@ -622,7 +629,6 @@ def orden_facturas(request,id=None):
                 enc.fecha = fecha
                 #enc.descripcion = descripcion_enc
                 enc.save()
-
 
         if not id:
             messages.error(request,'No Puedo Continuar No Pude Detectar No. de Factura')

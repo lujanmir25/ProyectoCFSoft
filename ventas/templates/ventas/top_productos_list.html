@@ -1,6 +1,8 @@
 {% extends 'base/base.html' %} 
 
 {% block page_content %}
+<form method="post" id="frmTop">
+    {% csrf_token %}
     <div class="card shadow mb-4">
        
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -30,7 +32,16 @@
                 </div>
             </div>
             <hr>
-
+            <div class="row">
+                <div class="col-lg-3">Fecha Hasta:</div>
+                <div class="col-lg-3">
+                    <input type="date" class="form-control text-right" value="" data-date-format="y-m-d" 
+                        name="fecha" id="fecha">
+                </div>
+                <hr>
+                <div class="col-lg-3">
+                    <button type="submit" class="btn btn-danger" id="btnGuardar"> Ver Listado <i class="far fa-plus-square"></i> </button>
+                </div>
             {% if not obj %}
                 <div class="alert alert-info">No hay Ventas</div>
             {% endif %}
@@ -76,6 +87,7 @@
             </table> -->
         </div>
     </div>
+</form>
 {% endblock %}
 
 {% block js_page %}
@@ -87,6 +99,16 @@
 
     <script>
     $(function () {
+        $("#frmTop").submit(function(e){
+            if($("#fecha").val()=="" ) {
+                e.preventDefault()
+                $.alert({
+                    type: 'red',
+                    title: '',
+                    content: 'Debe Especificar Fecha'
+                });
+                return false;
+            }
 
         $("#f1, #f2").datetimepicker({
             format: 'Y-m-d',

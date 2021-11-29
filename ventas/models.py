@@ -114,6 +114,7 @@ class Caja(ClaseModelo2):
 class FacturaDet(ClaseModelo2):
     factura = models.ForeignKey(FacturaEnc,on_delete=models.CASCADE)
     producto=models.ForeignKey(Producto,on_delete=models.CASCADE)
+    fecha_detalle = models.DateTimeField(null=True, blank=True)
     cantidad=models.BigIntegerField(default=0)
     precio=models.FloatField(default=0)
     sub_total=models.FloatField(default=0)
@@ -205,27 +206,6 @@ class OrdenFacturaEnc(ClaseModelo2):
         permissions = [
             ('sup_caja_facturaenc','Permisos de Supervisor de Caja Orden Encabezado')
         ]
-    
-class ReporteProducto(ClaseModelo2):
-    #caja = models.ForeignKey(Caja, on_delete=models.CASCADE)
-    producto = models.CharField(max_length=3)
-    cantidad = models.IntegerField(default=0)
-    
-    total=models.FloatField(default=0)
-
-    def __str__(self):
-        return '{}'.format(self.id)
-
-    def save(self):
-        #self.descripcion = self.descripcion.upper()
-        self.total = self.sub_total - self.descuento
-        super(OrdenFacturaEnc,self).save()
-
-    class Meta:
-        verbose_name_plural = "Encabezado Orden Facturas"
-        verbose_name="Encabezado Orden Factura"
-        permissions = [
-            ('sup_caja_facturaenc','Permisos de Supervisor de Caja Orden Encabezado')]
 
 class OrdenFacturaDet(ClaseModelo2):
     factura = models.ForeignKey(OrdenFacturaEnc,on_delete=models.CASCADE)
