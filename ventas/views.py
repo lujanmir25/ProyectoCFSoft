@@ -517,6 +517,40 @@ def productos_vendidos(request):
     return render(request,"ventas/top_productos_list.html" ,contexto)
 
 
+def productos_menos_vendidos(request):
+    from datetime import datetime
+    # template_name = "ventas/top_productos_list.html"
+    # for i in ventas: print('producto: ',i.producto.product_name, 'fech: ',i.fecha_detalle, ' cantidad:',i.cantidad)
+    ventas_collection = {}
+    ventas = FacturaDet.objects.all()
+    if request.method == "POST":
+        fecha_det = request.POST.get("fecha")
+        # x = parser.parse(fecha_det)
+        fecha_det = datetime.strptime(fecha_det, '%Y-%m-%d')
+        # fecha_det = datetime.date.today()
+        ventas_list = list(ventas)
+        if fecha_det:
+            for v in ventas_list:
+                fecha = v.fecha_detalle
+                id_producto = v.producto.id
+                nombre = v.producto.product_name
+                if fecha_det >= fecha:
+                    if nombre in ventas_collection:
+                        ventas_collection[nombre] += v.cantidad
+
+                    else:
+                        ventas_collection[nombre] = v.cantidad
+    ventas_collection = {k: v for k, v in sorted(ventas_collection.items(), key=lambda item: item[1])}
+
+    contador = Counter(ventas_collection)
+
+    contador_counter = contador.most_common()[:-6:-1]
+
+    contexto = {'obj': contador_counter}
+    # import pdb; pdb.set_trace()
+    return render(request, "ventas/top_prodMenos_list.html", contexto)
+
+
 @login_required(login_url="/login/")
 @permission_required("ventas.change_cliente",login_url="/login/")
 def cliente_add_modify(request,pk=None):

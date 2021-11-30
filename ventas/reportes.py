@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.utils.dateparse import parse_date
 from datetime import timedelta
 
-from productos.models import Producto
 from .models import FacturaEnc,FacturaDet
 
 def imprimir_factura_recibo(request,id):

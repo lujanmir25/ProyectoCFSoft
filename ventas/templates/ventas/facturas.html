@@ -66,15 +66,13 @@
                                     <label for="id_no_factura">No. Factura:</label>
                                         {{ form_Fac.no_factura}}
                                 </div>
-                                <!--div class="col-lg-4">Timbrado:</div>
-                                <div class="col-lg-8 form-group">
-                                    <input type="text" name="no_timbrado" id="no_timbrado" class="form-control form-control-user" 
-                                    value="{{ enc.no_timbrado }}"  />
+                                <!--div class="form-group">
+                                    <label for="id_fecha_ini_timbrado">Fecha Inicio Timbrado:</label>
+                                            {{form_Fac.fecha_ini_timbrado}}
                                 </div>
-                                <div class="col-lg-4">No.Factura:</div>
-                                <div class="col-lg-8 form-group">
-                                    <input type="text" name="no_factura" id="no_factura" class="form-control form-control-user" 
-                                    value="{{ enc.no_factura }}"  />
+                                <div class="form-group">
+                                    <label for="id_fecha_fin_timbrado">Fecha Fin Timbrado:</label>
+                                            {{form_Fac.fecha_fin_timbrado}}
                                 </div-->
                             </div>
                             <div class="col-lg-6 p-2 form-group">
@@ -106,15 +104,15 @@
                                         <label for="id_fecha_fin_timbrado">Fecha Fin Timbrado:</label>
                                             {{form_Fac.fecha_fin_timbrado}}
                                     </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
                 <!-- Fin Sección Izquierda -->
 
-
+                 <!--div class="card-header py-3 d-flex flex-row align-items-center justify-content-between"-->
                 <!-- Sección Derecha -->
                 <div class="col-lg-6 from-group">
                     <div class="row p-2">
@@ -122,7 +120,7 @@
                         <!--<div class="col-lg-3">
                             <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Cód. Producto">
                         </div> -->
-                        <div class="col-lg-8">
+                        <div class="col-lg-7">
                             <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Descripcion" disabled>
                         </div>
                         <div class="col-lg-1">
@@ -132,7 +130,7 @@
                         </div>
                     </div>
                     <div class="row p-2">
-                     <div class="col-lg-1">Orden</div>
+                        <div class="col-lg-2">Orden</div>
                         <div class="col-lg-3">
                             <input type="text" readonly class="form-control" name="id_orden" id="id_orden" placeholder="Orden Id" value="" required>
                         </div>
@@ -151,7 +149,7 @@
                         <div class="col-lg-3">
                             <input type="number" class="form-control" name="sub_total_detalle" id="sub_total_detalle" placeholder="Sub Total"
                              value="0.00" disabled>
-                        </div> 
+                        </div>
                     </div>
                     <div class="row p-1">
                         <div class="col-lg-9 text-right">Total</div>
@@ -159,10 +157,10 @@
                             <input type="number" class="form-control" name="total_detalle" id="total_detalle" placeholder="Total"
                              value="0.00" disabled>
                         </div>
-                    </div>-->
-                </div>
+                    </div-->
+                    </div>
                 <!-- Fin Sección Derecha -->
-            </div>
+                </div>
             <!-- Fin Sección Superior -->
             <!-- Inicio Detalle -->
             <hr>
@@ -258,10 +256,10 @@
 
     function buscarProducto()
     {
-        if ($("#enc_cliente").val()==="0" || $("#enc_cliente").val()===null){
+        /*if ($("#enc_cliente").val()=="" || $("#enc_cliente").val()==null){
             mensaje("Cliente No Seleccionado",'red');
             return false;
-        }
+        }*/
 
         var codigo = $("#codigo").val();
         if(codigo===""){
@@ -316,12 +314,26 @@
 
     $(function () {
 
+
+
         $("#id_fecha_ini_timbrado, #id_fecha_fin_timbrado").datetimepicker({
             format: 'Y-m-d',
             timepicker:false
         });
 
         $("#frmFacturas").submit(function(e){
+
+            if ($("#enc_cliente").val()=="" || $("#enc_cliente").val()==null){
+                e.preventDefault()
+                $.alert({
+                    type: 'red',
+                    title: '',
+                    content: 'Debe Especificar Cliente'
+                });
+                return false;
+            }
+
+
             if($("#id_fecha_ini_timbrado").val()=="" || $("#id_fecha_fin_timbrado").val()=="") {
                 e.preventDefault()
                 $.alert({
