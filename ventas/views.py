@@ -508,12 +508,14 @@ def reporte_ganancias(request):
         fecha_fin = datetime.datetime.strptime(fecha_fin, "%Y-%m-%d").date()
         ventas = 0
         compras = 0
+        
         Saldo_Caja = list(Caja)
         if fecha_inicio: 
             for v in Saldo_Caja:
                 Entro = 0
                 fecha = v.fecha
-                fecha = datetime.date.today()
+                f1_str = fecha.strftime('%Y-%m-%d')
+                fecha = datetime.datetime.strptime(f1_str, "%Y-%m-%d").date()
                 Descrip = v.descripcion 
                 monto_venta = v.entrada
                 monto_compra = v.salida 
@@ -525,13 +527,14 @@ def reporte_ganancias(request):
                     if Descrip == 'COMPRA':
                         compras += monto_compra
             Total = ventas - compras
+            #import pdb; pdb.set_trace()
             Total_por = round((Total / ventas ) * 100,2)
             ganancias_collection = { 'Ventas = ': ventas, 'Compras = ': compras, 'Ganancia % ': Total_por}
             
     ganancias_collection = {k:v for k,v in sorted(ganancias_collection.items(), key=lambda item: item[1])}
 
     contexto = {'obj': ganancias_collection}
-    #import pdb; pdb.set_trace()
+    
     return render(request,"ventas/reporte_ganancias.html" ,contexto)
 
 def productos_comprados_prov(request): 
