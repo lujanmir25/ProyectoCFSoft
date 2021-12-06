@@ -348,7 +348,7 @@ def facturas(request,id=None):
 
 
         # Calculos para la Caja
-        """total = OrdenFacturaDet.objects.filter(factura=orden_id).aggregate(Sum('sub_total'))
+        total = OrdenFacturaDet.objects.filter(factura=orden_id).aggregate(Sum('sub_total'))
         cant = Caja.objects.all().count()
         cajalist = Caja.objects.all()
         total_detalle = total["sub_total__sum"]
@@ -363,7 +363,7 @@ def facturas(request,id=None):
             saldo_actual = saldo_actual
         )
 
-        caja.save()"""
+        caja.save()
         
         return redirect("ventas:factura_edit",id=id)
 

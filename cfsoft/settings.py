@@ -99,7 +99,19 @@ DATABASES = {
         'PORT': '5432',
     }
 } 
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'cfs',
+        'USER': 'postgres',
+        'PASSWORD': 'oracle',
+        'HOST': 'localhost',
+        'PORT': '5433',
+    }
+} 
 """
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
