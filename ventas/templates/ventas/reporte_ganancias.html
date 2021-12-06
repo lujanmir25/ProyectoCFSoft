@@ -1,0 +1,116 @@
+{% extends 'base/base.html' %} 
+
+{% block page_content %}
+<form method="post" id="frmGanancias">
+    {% csrf_token %}
+    <div class="card shadow mb-4">       
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Ganancias por Fecha</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-header">Acciones:</div>
+                </div>
+            </div>
+        </div>
+        <!-- Card Body -->
+        <div class = "card-body">
+            <div class = "row">
+                <div class = " col-md-4 " >
+                 <button class = "btn btn-warning" type = "button" id = "btnPrint"> Imprimir </button >
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-lg-1">Fecha Incio:</div>
+                <div class="col-lg-3">
+                    <input type="date" class="form-control text-right" value="" data-date-format="y-m-d" 
+                        name="fecha_inicio" id="fecha_inicio">
+                </div>
+
+                <div class="col-lg-1">Fecha Fin:</div>
+                <div class="col-lg-3">
+                    <input type="date" class="form-control text-right" value="" data-date-format="y-m-d" 
+                        name="fecha_fin" id="fecha_fin">
+                </div>
+                <hr>
+                <div class="col-lg-3">
+                    <button type="submit" class="btn btn-danger" id="btnGuardar"> Ver Listado <i class="far fa-plus-square"></i> </button>
+                </div>
+            {% if not obj %}
+                <div class="alert alert-info">No hay Ventas</div>
+            {% endif %}
+            <table 
+                id="table"
+                data-toggle="table"
+                data-pagination="true"
+                data-search="true"
+                data-show-columns="true"
+                data-show-toggle="true"
+                data-show-fullscreen="true"
+                data-toolbar=".buttons-toolbar"
+                data-locale="es-NI"
+            >
+      <thead>
+          <th data-sortable="true" data-field="id">Ganancias en Porcentaje</th> 
+      </thead>
+      <tbody>
+        {% for key, value in obj.items %}
+        <tr>
+            <td> {{ key }}  {{ value }}</td> 
+            
+        </tr>
+    {% endfor %}
+      </tbody>
+    </table>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block js_page %}
+    <script>
+        //call the datatables jQuery plugin
+        
+       
+    </script>
+
+    <script>
+    $(function () {
+        $("#frmGanancias").submit(function(e){
+            if($("#fecha").val()=="" ) {
+                e.preventDefault()
+                $.alert({
+                    type: 'red',
+                    title: '',
+                    content: 'Debe Especificar Fecha'
+                });
+                return false;
+            }
+
+        $("#f1, #f2").datetimepicker({
+            format: 'Y-m-d',
+            timepicker: false
+        });
+
+        $("#btnPrint").click(function(e){
+            e.preventDefault();
+            var f1,f2;
+            f1 = $("#f1").val();
+            f2 = $("#f2").val();
+            if(f1=="" || f1==null){
+                f1="2021-11-01";
+            }
+            if(f2=="" || f2==null){
+                var d = new Date();
+                var f2 = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+            }
+            var url = "imprimir-todas/" + f1 + "/" + f2;
+
+            window.open(url,'compras');
+        });
+    });
+    </script>
+{% endblock %}

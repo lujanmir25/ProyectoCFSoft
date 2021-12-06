@@ -23,7 +23,7 @@ class ProveedorView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListVie
     model = Proveedor
     template_name = "prov/proveedor_list.html"
     context_object_name = "obj"
-    login_url = "bases:login"
+    login_url = "bases:login" 
 
 class PagoView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
     permission_required = "proveedor.view_proveedor"
@@ -189,7 +189,7 @@ def compras(request, compra_id=None):
         
         if enc:
             det = ComprasDet.objects.filter(compra=enc)
-            cantidad_cuotas = (enc.cantidad_cuotas)
+            cantidad_cuotas = enc.cantidad_cuotas
             fecha_compra = datetime.date.isoformat(enc.fecha_compra)
             fecha_factura = datetime.date.isoformat(enc.fecha_factura)
             fecha_ini_timbrado = datetime.date.isoformat(enc.fecha_ini_timbrado)

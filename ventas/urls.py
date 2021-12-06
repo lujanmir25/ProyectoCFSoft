@@ -2,12 +2,12 @@
 from django.urls import path,include
 
 #Local
+
 from ventas.views import ClienteView,ClienteNew,ClienteEdit,clienteInactivar,FacturaView,facturas, \
 ProductoView, borrar_detalle_factura, cliente_add_modify,orden_facturas,borrar_OrdenDetalle_factura, OrdenFacturaView, \
-OrdenView, ordenInactivar, CajaView, CajaNew, CajaEdit, CajaDel, VentaDetEdit, cerrarCaja,productos_vendidos, notaCredito
+OrdenView, ordenInactivar, CajaView, CajaNew, CajaEdit, CajaDel, VentaDetEdit, cerrarCaja,productos_vendidos, reporte_ganancias, productos_comprados_prov, notaCredito
 
-
-from .reportes import imprimir_factura_recibo, imprimir_factura_list
+from .reportes import imprimir_factura_recibo, imprimir_factura_list, GraficoVentas, GraficoCompras
 
 urlpatterns = [
 
@@ -18,6 +18,8 @@ urlpatterns = [
 
 	path('ventas/',FacturaView.as_view(), name='factura_list'),
     path('ventas-top-productos/',productos_vendidos, name='top_productos_list'),
+    path('ventas-reporte-ganancias/',reporte_ganancias, name='reporte_ganancias'),
+    path('ventas-reporte-compras/',productos_comprados_prov, name='reporte_comprados'),
     path('orden_ventas/',OrdenFacturaView.as_view(), name='orden_factura_list'),  
    # path('orden_ventas/',OrdenVentaView.as_view(), name='orden_venta_list'),
 	path('ventas/new',facturas, name='factura_new'),
@@ -45,6 +47,8 @@ urlpatterns = [
     path('caja/new',CajaNew.as_view(), name='caja_new'),
     path('caja/edit/<int:pk>',CajaEdit.as_view(), name='caja_edit'),
     path('caja/delete/<int:pk>',CajaDel.as_view(), name='caja_del'),
+    path('grafico_venta_max/', GraficoVentas, name="grafico_venta_max"),
+    path('grafico_compra_max/', GraficoCompras, name="grafico_compra_max"),
 
     path('cierre/<int:id>',cerrarCaja, name="cierre_caja"),
 

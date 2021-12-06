@@ -1,0 +1,164 @@
+{% extends 'base/base.html' %} 
+
+{% block page_content %}
+<form method="post" id="frmReportesCompras">
+    {% csrf_token %}
+    <div class="card shadow mb-4">       
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Productos comprados por Proveedor</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-header">Acciones:</div>
+                </div>
+            </div>
+        </div>
+        <!-- Card Body -->
+        <div class = "card-body">
+            <div class = "row">
+                <div class = " col-md-4 " >
+                 <button class = "btn btn-warning" type = "button" id = "btnPrint"> Imprimir </button >
+                </div>
+            </div>
+            <hr>
+            <!-- Desde aqui es la tabla proveedor -->
+            <table class="table table-striped table-hover dt-responsive table-sm nowrap tbl-productos" style="width:100%">
+                <thead>
+                    <th>Id</th>
+                    <th>Cedula</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th class="all">Acciones</th>
+                </thead>
+                <tbody>
+                    {% for item in proveedores %}
+                    <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.cedula }}</td>
+                    <td>{{ item.nombre }}</td>
+                    <td>{{ item.apellido }}</td>
+                    <td>
+                        <button type="button" class="btn btn-warning btn-circle"
+                        onclick="selectProv({{ item.cedula }} )"><i class="far fa-hand-pointer"></i></button>
+                    </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <!-- Hasta aqui es la tabla proveedor -->
+            <hr>
+            <div class="form-group row"> 
+                <label for="id_proveedor" class="col-sm-3 col-form-label">Id Proveedor</label>
+                <div class="col-sm-2">
+                    <input type="number" readonly class="form-control-plaintext" name="id_proveedor" id="id_proveedor" value="" required>
+                </div>
+
+            </div>     
+            <div class="row">
+                <hr>
+                <div class="col-lg-3">
+                    <button type="submit" class="btn btn-danger" id="btnGuardar"> Ver Listado <i class="far fa-plus-square"></i> </button>
+                </div>
+            {% if not obj %}
+                <div class="alert alert-info">No hay Compras</div>
+            {% endif %}
+            
+            <table 
+                id="table"
+                data-toggle="table"
+                data-pagination="false"
+                data-search="false"
+                data-show-columns="false"
+                data-show-toggle="false"
+                data-show-fullscreen="false"
+                data-toolbar=".buttons-toolbar"
+                data-locale="es-NI"
+            >
+      <thead>
+          <th data-sortable="true" data-field="id">Nombre Proveedor</th> 
+      </thead>
+      <tbody>
+        {% for key, value in prov.items %}
+        <tr>
+            <td> {{ value }}</td> 
+            
+        </tr>
+    {% endfor %}
+      </tbody>
+    </table>
+
+            <table 
+                id="table"
+                data-toggle="table"
+                data-pagination="true"
+                data-search="false"
+                data-show-columns="true"
+                data-show-toggle="true"
+                data-show-fullscreen="true"
+                data-toolbar=".buttons-toolbar"
+                data-locale="es-NI"
+            >
+      <thead>
+          <th data-sortable="true" data-field="id">Nombre Producto</th>        
+          <th data-sortable="true" data-field="cedula">Cantidad Vendida</th> 
+      </thead>
+      <tbody>
+        {% for item in obj%}
+        <tr>
+            <td>{{ item.0 }}</td>
+            <td>{{ item.1 }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block js_page %}
+
+    <script>
+    function selectProv(cedula){
+        $('#id_proveedor').val(+cedula);
+        }
+    $(function () { 
+        
+        $("#frmReportesCompras").submit(function(e){
+            if($("#proveedor").val()=="" ) {
+                e.preventDefault()
+                $.alert({
+                    type: 'red',
+                    title: '',
+                    content: 'Debe Especificar el proveedor'
+                });
+                return false;
+            }
+
+        $("#f1, #f2").datetimepicker({
+            format: 'Y-m-d',
+            timepicker: false
+        });
+
+        $("#btnPrint").click(function(e){
+            e.preventDefault();
+            var f1,f2;
+            f1 = $("#f1").val();
+            f2 = $("#f2").val();
+            if(f1=="" || f1==null){
+                f1="2021-11-01";
+            }
+            if(f2=="" || f2==null){
+                var d = new Date();
+                var f2 = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+            }
+            var url = "imprimir-todas/" + f1 + "/" + f2;
+
+            window.open(url,'compras');
+        });
+    });
+} )
+    </script>
+{% endblock %}

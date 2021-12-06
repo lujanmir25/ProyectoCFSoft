@@ -17,9 +17,10 @@ from bases.views import SinPrivilegios
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 import datetime
+from proveedor.models import Proveedor
 #from dateutil.parser import *
 #Local
-from ventas.models import Cliente, FacturaEnc, FacturaDet, OrdenFacturaEnc, OrdenFacturaDet, Caja
+from ventas.models import Cliente, FacturaEnc, FacturaDet, OrdenFacturaEnc, OrdenFacturaDet, Caja, ComprasEnc, ComprasDet
 from .forms import ClienteForm, CajaForm, FacturaDetForm, FacturaEncForm
 from productos.models import Producto, NotaCredito
 import productos.views as productos
@@ -83,7 +84,6 @@ class ClienteEdit(VistaBaseEdit):
 
     def get(self, request, *args, **kwargs):
         print("sobre escribir get en editar")
-
         print(request)
         
         try:
@@ -304,7 +304,7 @@ def facturas(request,id=None):
             enc = FacturaEnc.objects.filter(pk=id).first()
             if enc:
                 #enc.cliente = cli
-                enc.no_factura = ('001-'+'002-' + int(str(7 - len(str(no_factura))))*'0' + str(no_factura))
+                enc.no_factura = no_factura
                 enc.no_timbrado=no_timbrado
                 enc.fecha_fin_timbrado = fecha_fin_timbrado
                 enc.fecha_ini_timbrado = fecha_ini_timbrado
@@ -462,46 +462,111 @@ def borrar_OrdenDetalle_factura(request, id):
             det.sub_total = (-1 * det.sub_total)
             det.total = (-1 * det.total)
             det.save()
-
             return HttpResponse("ok")
-
         return HttpResponse("Usuario no autorizado")
-    
     return render(request,template_name,context)
 
 def productos_vendidos(request): 
     from datetime import datetime
     #template_name = "ventas/top_productos_list.html"
-    #for i in ventas: print('producto: ',i.producto.product_name, 'fech: ',i.fecha_detalle, ' cantidad:',i.cantidad)
     ventas_collection = {}
     ventas = FacturaDet.objects.all()
     if request.method == "POST": 
-        fecha_det = request.POST.get("fecha") 
-        #x = parser.parse(fecha_det)
-        fecha_det = datetime.strptime(fecha_det, '%Y-%m-%d')
-       # fecha_det = datetime.date.today()
+        fecha_inicio = request.POST.get("fecha_inicio")
+        fecha_fin = request.POST.get("fecha_fin") 
+        #Fechas convertidas 
+        fecha_inicio = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+        fecha_fin = datetime.strptime(fecha_fin, '%Y-%m-%d')
         ventas_list = list(ventas)
-        if fecha_det: 
+        if fecha_inicio: 
             for v in ventas_list:
                 fecha = v.fecha_detalle 
-                id_producto = v.producto.id 
+                #id_producto = v.producto.id 
                 nombre = v.producto.product_name
-                if fecha_det >= fecha:
+                if (fecha_fin >= fecha) and (fecha_inicio <= fecha):
                     if nombre in ventas_collection: 
                         ventas_collection[nombre] += v.cantidad 
-                    
                     else: 
                         ventas_collection[nombre] = v.cantidad
-    ventas_collection = {k:v for k,v in sorted(ventas_collection.items(), key=lambda item: item[1], reverse= True)}
-        
+    ventas_collection = {k:v for k,v in sorted(ventas_collection.items(), key=lambda item: item[1], reverse= True)}        
     contador = Counter(ventas_collection)
-
     contador_counter = contador.most_common(5)
-
     contexto = {'obj': contador_counter}
     #import pdb; pdb.set_trace()
     return render(request,"ventas/top_productos_list.html" ,contexto)
 
+def reporte_ganancias(request): 
+    #from datetime import datetime
+    import datetime 
+    from ventas.models import Caja
+    ganancias_collection = {}
+    Caja = Caja.objects.all()
+    if request.method == "POST": 
+        fecha_inicio = request.POST.get("fecha_inicio")
+        fecha_fin = request.POST.get("fecha_fin") 
+        fecha_inicio = datetime.datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
+        fecha_fin = datetime.datetime.strptime(fecha_fin, "%Y-%m-%d").date()
+        ventas = 0
+        compras = 0
+        Saldo_Caja = list(Caja)
+        if fecha_inicio: 
+            for v in Saldo_Caja:
+                Entro = 0
+                fecha = v.fecha
+                fecha = datetime.date.today()
+                Descrip = v.descripcion 
+                monto_venta = v.entrada
+                monto_compra = v.salida 
+                
+                if (fecha >= fecha_inicio ) and (fecha <= fecha_fin) :
+                    Entro = 1
+                    if Descrip == 'VENTA':
+                        ventas += monto_venta 
+                    if Descrip == 'COMPRA':
+                        compras += monto_compra
+            Total = ventas - compras
+            Total_por = round((Total / ventas ) * 100,2)
+            ganancias_collection = { 'Ventas = ': ventas, 'Compras = ': compras, 'Ganancia % ': Total_por}
+            
+    ganancias_collection = {k:v for k,v in sorted(ganancias_collection.items(), key=lambda item: item[1])}
+
+    contexto = {'obj': ganancias_collection}
+    #import pdb; pdb.set_trace()
+    return render(request,"ventas/reporte_ganancias.html" ,contexto)
+
+def productos_comprados_prov(request): 
+    compras_collection = {}
+    proveedor_collection = {}
+    proveedores = Proveedor.objects.all() 
+    if request.method == "POST":  
+        prov = request.POST.get("id_proveedor")
+        
+        compras_all = ComprasEnc.objects.all()
+        compras_list = list(compras_all)
+        
+        for v in compras_list:
+            proveedor_id = v.proveedor.cedula
+            entro = 0
+            if prov == proveedor_id:
+                entro = 1
+                compra_id = v.id 
+                nombre_prov = v.proveedor.nombre+' '+v.proveedor.apellido
+                proveedor_collection[prov] = nombre_prov
+                comprasDet = ComprasDet.objects.filter(compra = compra_id )
+                compras_det_list = list(comprasDet)
+                for i in compras_det_list: 
+                    nombre_prod = i.producto.product_name 
+                    cantidad = i.cantidad
+                    if nombre_prod in compras_collection: 
+                        compras_collection[nombre_prod] += cantidad 
+                    else: 
+                        compras_collection[nombre_prod] = cantidad 
+        
+    compras_collection = {k:v for k,v in sorted(compras_collection.items(), key=lambda item: item[1], reverse= True)}        
+    contador = Counter(compras_collection)
+    contador_counter = contador.most_common(5)
+    contexto = {'obj': contador_counter,'prov':proveedor_collection,'proveedores': proveedores}    
+    return render(request,"ventas/reporte_comprados.html" ,contexto)
 
 @login_required(login_url="/login/")
 @permission_required("ventas.change_cliente",login_url="/login/")

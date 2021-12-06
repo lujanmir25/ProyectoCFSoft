@@ -34,7 +34,7 @@
       		        <th class="all">Realizar Pago</th>
                 </thead>
                 <tbody>
-                    {% for item in obj %}  
+                    {% for item in obj %}
                     <tr>
                         <td>{{ item.id }}</td>
       				    <td>{{ item.proveedor }}</td>
@@ -61,14 +61,14 @@
 
 {% block js_page %}
     <script>
-        function realizar_pago()
+        function realizar_pago(id)
   {
     var data = {id:id};
     data = JSON.stringify(data);
     var token = '{{csrf_token}}';
     // alert(token);
     //alert(id);
-    
+
     $.ajax({
       headers : {"X-CSRFToken": token},
       type:"POST",
