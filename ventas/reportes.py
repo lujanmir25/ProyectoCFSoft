@@ -1,8 +1,16 @@
+from dataclasses import replace
+from itertools import count
+
+from django.db.models import Sum
+from past.builtins import xrange
+
+from proveedor.models import ComprasEnc
+from .models import FacturaEnc,FacturaDet
+
 from django.shortcuts import render
 from django.utils.dateparse import parse_date
-from datetime import timedelta
+from datetime import timedelta, datetime
 
-from .models import FacturaEnc,FacturaDet
 
 def imprimir_factura_recibo(request,id):
     template_name="ventas/factura_one.html"
@@ -34,3 +42,35 @@ def imprimir_factura_list(request,f1,f2):
     }
 
     return render(request,template_name,context)
+
+
+def GraficoVentas(request):
+    data = []
+    year = datetime.now().year
+    for m in range(1, 13):
+        total = FacturaEnc.objects.filter(fecha__year=year, fecha__month=m).aggregate(r=Sum('total')).get('r')
+        data.append(total)
+
+    for i in xrange(len(data)):
+        if data[i] == None:
+            data[i] = 0
+
+    #import pdb;
+    #pdb.set_trace()
+    return render(request,'ventas/grafico_venta_max.html', {'data':data})
+
+
+def GraficoCompras(request):
+    data = []
+    year = datetime.now().year
+    for m in range(1, 13):
+        total = ComprasEnc.objects.filter(fecha_compra__year=year, fecha_compra__month=m).aggregate(r=Sum('total')).get('r')
+        data.append(total)
+
+    for i in xrange(len(data)):
+        if data[i] == None:
+            data[i] = 0
+
+    #import pdb;
+    #pdb.set_trace()
+    return render(request,'ventas/grafico_compra_max.html', {'data':data})
