@@ -154,6 +154,20 @@
       </li>
 
       <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseNotas" aria-expanded="true" aria-controls="collapseNotas">
+          <i class="fas fa-book"></i>
+          <span>Notas De Creditos </span>
+        </a>
+        <div id="collapseNotas" class="collapse" aria-labelledby="headingNotas" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Opciones:</h6>
+            <a class="collapse-item" href="{% url 'productos:nota_credito_list' %}"> Notas De Creditos </a>
+          </div>
+        </div>
+      </li>
+
+
+      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTop" aria-expanded="true" aria-controls="collapsePagos">
           <i class="fas fa-book"></i>
           <span>Reportes </span>

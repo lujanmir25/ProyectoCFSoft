@@ -15,7 +15,7 @@ from .models import Proveedor, ComprasEnc, ComprasDet, OrdenComprasEnc, OrdenCom
 from .forms import ProveedorForm, ComprasEncForm, OrdenComprasEncForm, ComprasDetForm
 from bases.models import ClaseModelo
 from ventas.models import Caja
-from productos.models import Producto
+from productos.models import Producto, AjusteInventario, NotaCredito
 
 
 class ProveedorView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
@@ -455,6 +455,83 @@ def orden_compras(request, compra_id=None):
 
 class OrdenView(OrdenComprasView):
 	template_name="prov/buscar_orden_compra.html"
+
+
+def notaCredito(request,id):
+    template_name = "prov/nota_credito.html"
+    contexto = {}
+    enc = ComprasEnc.objects.filter(pk=id).first()
+
+    if request.method == "GET":
+        detalle = ComprasDet.objects.filter(compra=id)
+        contexto = {'detalle': detalle}
+
+    if request.method == "POST":
+        cantidad = request.POST.get("cantidad")
+        codigo  = request.POST.get("codigo")
+
+        #Inicializaciones
+        producto = Producto.objects.filter(id=int(codigo)).first()
+        det = ComprasDet.objects.filter(compra=id)
+        det = list(det)
+
+        for item in det:
+            if item.producto.id == int(codigo):
+                compras_det = ComprasDet.objects.filter(id=item.id).first()
+                #Ajuste de Inventario
+                producto.existencia = producto.existencia - int(cantidad)
+                producto.save()
+
+                #Ajuste De la Factura
+                entrada = compras_det.sub_total
+                compras_det.cantidad = compras_det.cantidad  - int(cantidad)
+                compras_det.sub_total = compras_det.cantidad*compras_det.precio_prv
+                s_total = int(cantidad)*compras_det.precio_prv
+                #compras_det.save()
+                entrada = entrada - compras_det.sub_total
+                total_deuda = enc.total - s_total
+                #Ajuste De la Deuda 
+                deuda = PagoProveedor.objects.filter(compra=id).first()
+                deuda.monto_mensual = total_deuda/int(deuda.cantidad_cuotas)
+                deuda.save()
+
+               #Registro de Caja
+                cant = Caja.objects.all().count()
+                cajalist = Caja.objects.all()
+                saldo = cajalist[cant-1].saldo_actual
+                saldo_actual = saldo + entrada
+
+                caja = Caja (
+                    comp = enc,
+                    #fecha = datetime.today(),
+                    descripcion = 'Nota de Crédito x compra',
+                    entrada = entrada,
+                    salida = 0,
+                    saldo_actual = saldo_actual
+                )
+
+                caja.save()
+                
+                total = (compras_det.precio_prv*int(cantidad))
+
+                gravada = round(float(total/1.05))
+                iva = round(float(total/21))
+
+                nota = NotaCredito (
+                    no_factura = enc.no_factura,
+                    producto = producto.product_name,
+                    descripcion = 'Nota de Credito x Compra', 
+                    cantidad = cantidad,
+                    precio = compras_det.precio_prv,
+                    gravada = gravada,
+                    iva = iva,
+                    total = total
+                )
+
+                nota.save()
+
+    return render(request, template_name,contexto)
+
 
 def clienteInactivar(request,id):
     cliente = OrdenComprasEnc.objects.filter(pk=id).first()

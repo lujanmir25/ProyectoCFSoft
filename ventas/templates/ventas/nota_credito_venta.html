@@ -1,0 +1,155 @@
+{% extends 'base/base.html'%}
+{% block page_content %}
+    <form method="POST" id="frmNotaDeCredito">
+        {% csrf_token %}
+        <div class="col-xl-12 col-md-12 mb-12">
+            <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                </div>
+                                <h1> Nota de Crédito</h1>
+                                <div class="dropdown-divider"></div>
+                                <div class="row">
+                                    <!-- Inicio Izquierda -->
+                                    <div class="col-6">
+                                        <!-- Inicio Encabezado -->
+                                        <label for="cantidad" class="col-sm-3 col-form-label">Cantidad a devolver</label>
+                                            <div class="col-sm-5">
+                                                <input type="number"  class="form-control" name="cantidad" id="cantidad" value="" required>
+                                            </div>
+                                        <label for="cantidad" class="col-sm-3 col-form-label">Código del Producto</label>
+                                            <div class="col-sm-5">
+                                                <input type="number" class="form-control" name="codigo" id="codigo" value="" required>
+                                            </div>
+                                    </div>
+                                </div>
+                                        <!-- Fin Encabezado -->
+                                    </div>
+                                    <!-- Fin Izquierda -->
+                                    <!-- Inicio Derecha -->
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col"> 
+                                            </div>
+                                        </div> 
+                                        <!--fin del row dela tabla de ordenes de compra-->
+                            
+                                        <!-- Botones -->
+                                        
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span> Generar Nota de Crédito</button>
+                                                <a href="{% url 'proveedor:compras_list' %}" class="btn btn-success"><i class="far fa-hand-point-left"></i> Cancelar</a>
+                                            </div>
+                                        </div>
+                                        <!-- Fin Botones -->
+                                    </div>
+                                    <!-- Fin Derecha -->
+                                </div>
+                                <!-- Inicio Detalle -->
+                                <div class="row">
+                                    <div class="col">
+                                        <table class="table table-striped table-hover dt-responsive nowrap" style="width:100%">
+                                            <thead>
+                                                <th>Codigo Producto</th>
+                                                <th>Producto</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio</th>
+                                                <th>Sub Total</th>
+                                                <th>Desc.</th>
+                                                <th>Total</th>
+                                            </thead>
+                                            <tbody>
+                                               {% for item in detalle %}
+                                                <tr>
+                                                <td>{{ item.producto }}</td>
+                                                <td>{{ item.producto.product_name }}</td>
+                                                <td>{{ item.cantidad }}</td>
+                                                <td>{{ item.precio_prv }}</td>
+                                                <td>{{ item.sub_total }}</td>
+                                                <td>{{ item.descuento }}</td>
+                                                <td>{{ item.total }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- Fin Detalle -->
+                            </div>
+                        </div>
+                </div>
+        </div>
+    </form>
+{% endblock %}
+{% block js_page %} 
+<script>
+    $(function () {
+
+        $("#id_fecha_compra, #id_fecha_factura, #id_fecha_ini_timbrado, #id_fecha_fin_timbrado").datetimepicker({
+            format: 'Y-m-d',
+            timepicker:false
+        });
+
+        $("#sidebarToggle").click();
+
+        $('.table').DataTable({
+            "pageLength": 2,
+            "language": {
+            "sProcessing": "Procesando...",
+            "sLengthMenu": "Mostrar _MENU_ registros",
+            "sZeroRecords": "No se encontraron resultados",
+            "sEmptyTable": "Ningún dato disponible en esta tabla",
+            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix": "",
+            "sSearch": "Buscar:",
+            "sUrl": "",
+            "sInfoThousands": ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst": "<span class='fa fa-angle-double-left'></span>",
+                "sLast": "<span class='fa fa-angle-double-right'></span>",
+                "sNext": "<span class='fa fa-angle-right'></span>",
+                "sPrevious": "<span class='fa fa-angle-left'></span>"
+            },
+            "oAria": {
+                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            }
+            }
+        });
+
+        /*Validar Envio de Detalle*/
+
+        $("#frmNotaDeCredito").submit(function(e){ 
+
+
+        /*Fin Validar Envio de Detalle*/
+
+    });
+
+    function selectProducto(id,descripcion)
+    {
+        $('#id_cantidad_detalle').val(0);
+        $(`#id_precio_detalle`).val(0);
+        $('#id_descuento_detalle').val(0);
+
+        $('#id_sub_total_detalle').val(0);
+        $('#id_total_detalle').val(0);
+
+        $('#id_id_producto').val(+id);
+        $('#id_descripcion_producto').val(descripcion);
+        $('#id_cantidad_detalle').focus();
+        $('#id_cantidad_detalle').select();
+
+        $('.table').DataTable().search('').draw();
+    }
+
+
+</script>
+{% endblock %}

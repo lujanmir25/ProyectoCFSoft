@@ -152,21 +152,24 @@ def detalle_fac_guardar(sender,instance,**kwargs):
         enc.descuento = descuento['descuento__sum']
         enc.save()
 
-        cant = Caja.objects.all().count()
-        cajalist = Caja.objects.all()
-        total_detalle = enc.total
-        saldo = cajalist[cant-1].saldo_actual
-        saldo_actual = total_detalle + saldo
+        c = Caja.objects.filter(fac=factura_id).first()
+    # si ya existe la caja entonces editamos
+        if not c:
+            cant = Caja.objects.all().count()
+            cajalist = Caja.objects.all()
+            total_detalle = enc.total
+            saldo = cajalist[cant-1].saldo_actual
+            saldo_actual = total_detalle + saldo
 
-        caja = Caja (
-            fac = enc,
-            descripcion = 'VENTA',
-            entrada = total_detalle,
-            salida = 0,
-            saldo_actual = saldo_actual
-        )
+            caja = Caja (
+                fac = enc,
+                descripcion = 'VENTA',
+                entrada = total_detalle,
+                salida = 0,
+                saldo_actual = saldo_actual
+            )
 
-        caja.save() 
+            caja.save() 
 
 
     prod=Producto.objects.filter(pk=producto_id).first()
