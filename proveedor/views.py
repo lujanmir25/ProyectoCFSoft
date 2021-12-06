@@ -23,7 +23,7 @@ class ProveedorView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListVie
     model = Proveedor
     template_name = "prov/proveedor_list.html"
     context_object_name = "obj"
-    login_url = "bases:login"
+    login_url = "bases:login" 
 
 class PagoView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
     permission_required = "proveedor.view_proveedor"

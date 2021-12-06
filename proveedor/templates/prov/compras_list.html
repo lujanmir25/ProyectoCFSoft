@@ -39,15 +39,12 @@
                     <th>id</th>
       		        <th>Fecha</th>
       		        <th>Observacion</th>
-                    <th>fecha_ini_timbrado</th>
-                    <th>fecha_fin_timbrado</th>
                     <th>No. Timbrado</th>
       		        <th>No. Factura</th>
       		        <th>F. Factura</th>
       		        <th>sub Total</th>
                     <th>Descuento</th>
                     <th>Total</th>
-                    <th>Estado</th>
       		        <th class="all">Acciones</th>
                 </thead>
                 <tbody>
@@ -56,15 +53,12 @@
                         <td>{{ item.id }}</td>
       				    <td>{{ item.fecha_compra }}</td>
       				    <td>{{ item.observacion }}</td>
-                        <td>{{ item.fecha_ini_timbrado }}</td>
-                        <td>{{ item.fecha_fin_timbrado }}</td>
                         <td>{{ item.no_timbrado }}</td>
       				    <td>{{ item.no_factura }}</td>
       				    <td>{{ item.fecha_factura }}</td>
       				    <td>{{ item.sub_total }}</td>
                         <td>{{ item.descuento }}</td>
                         <td>{{ item.total }}</td>
-                        <td>{{ item.estado_c|yesno:"Activo, Inactivo" }}</td>
                         <td>
                             <a class="btn btn-warning btn-circle" href="{% url 'proveedor:compras_edit' item.id %}"><i class="far fa-edit" ></i></a>
                             <a class="btn btn-success btn-circle" href="{% url 'proveedor:compras_print_one' item.id %}" target="reportes"><i class="fas fa-print"></i></a>
