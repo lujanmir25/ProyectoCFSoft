@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib import messages
 from django.urls import reverse_lazy
 
-from .models import Producto
+from .models import Producto, NotaCredito
 from .forms import ProductoForm, InvProductoForm
 
 
@@ -72,6 +72,16 @@ class ProductoDel(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteVie
     template_name = "productos/producto_del.html"
     context_object_name = "obj"
     success_url = reverse_lazy("productos:producto_list")
+
+
+class NotaCreditoView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
+    permission_required = "productos.view_producto"
+    model = NotaCredito
+    template_name = "productos/nota_credito_list.html"
+    context_object_name = "obj"
+    login_url = 'bases:login'
+
+
 
 def producto_inactivar(request, id): 
     prod = Producto.objects.filter(pk=id).first()

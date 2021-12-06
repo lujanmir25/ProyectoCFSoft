@@ -1,7 +1,7 @@
 '''Modelo de productos'''
 from django.db import models
 
-from bases.models import ClaseModelo
+from bases.models import ClaseModelo,ClaseModelo2
 from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -52,4 +52,24 @@ class AjusteInventario(Producto):
 
     class Meta:
         verbose_name_plural = "Productos Ajustados"
+
+
+class NotaCredito(ClaseModelo2):
+    no_factura = models.CharField(max_length=100, default=0)
+    producto = models.CharField(max_length=50, null=True)
+    descripcion = models.CharField(max_length=200,default='.')
+    cantidad = models.BigIntegerField(default=0)
+    precio = models.FloatField(default=0)
+    total = models.FloatField(default=0) 
+    gravada = models.FloatField(default=0)
+    iva = models.FloatField(default=0)
+
+    def __str__(self):
+        return '{}'.format(self.id)
+
+    def save(self):
+        super(NotaCredito,self).save()
+
+    class Meta:
+        verbose_name_plural = "Notas de Creditos"
 

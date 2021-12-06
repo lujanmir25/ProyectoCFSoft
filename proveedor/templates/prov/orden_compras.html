@@ -83,7 +83,7 @@
                                         <div class="form-group row">
                                             <label for="id_cantidad_detalle" class="col-sm-2 col-form-label">Cant.:</label>
                                             <div class="col-sm-2">
-                                                <input type="number" class="form-control" name="id_cantidad_detalle" id="id_cantidad_detalle" value="00" required>
+                                                <input type="number" class="form-control" name="id_cantidad_detalle" id="id_cantidad_detalle" required>
                                             </div>
                                             <label for="id_precio_detalle" class="col-sm-2 col-form-label">Precio:</label>
                                             <div class="col-sm-2">
@@ -203,6 +203,17 @@
                     type: 'red',
                     title: '',
                     content: 'Debe Especificar Fecha'
+                });
+                return false;
+            }
+            
+
+            if($("#id_cantidad_detalle").val()==0 ) {
+                e.preventDefault()
+                $.alert({
+                    type: 'red',
+                    title: '',
+                    content: 'Debe Especificar Cantidad'
                 });
                 return false;
             }

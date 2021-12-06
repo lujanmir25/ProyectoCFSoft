@@ -22,8 +22,9 @@ from proveedor.models import Proveedor
 #Local
 from ventas.models import Cliente, FacturaEnc, FacturaDet, OrdenFacturaEnc, OrdenFacturaDet, Caja, ComprasEnc, ComprasDet
 from .forms import ClienteForm, CajaForm, FacturaDetForm, FacturaEncForm
-from productos.models import Producto
+from productos.models import Producto, NotaCredito
 import productos.views as productos
+from proveedor.models import PagoProveedor
 
 
 
@@ -736,6 +737,76 @@ def orden_facturas(request,id=None):
 
     return render(request,template_name,contexto)
 
+
+def notaCredito(request,id):
+    template_name = "ventas/nota_credito_venta.html"
+    contexto = {}
+    enc = FacturaEnc.objects.filter(pk=id).first()
+
+    if request.method == "GET":
+        detalle = FacturaDet.objects.filter(factura=id)
+        contexto = {'detalle': detalle}
+
+    if request.method == "POST":
+        cantidad = request.POST.get("cantidad")
+        codigo  = request.POST.get("codigo")
+
+        #inicializaciones
+        producto = Producto.objects.filter(id=int(codigo)).first()
+        det = FacturaDet.objects.filter(factura=enc)
+        det = list(det)
+
+        for item in det:
+            if item.producto.id == int(codigo):
+                factura_det = FacturaDet.objects.filter(id=item.id).first()
+                #Ajuste de Inventario
+                producto.existencia = producto.existencia + int(cantidad)
+                producto.save()
+
+                #Ajuste De la Factura
+                salida = factura_det.sub_total
+                factura_det.cantidad = factura_det.cantidad  - int(cantidad)
+                factura_det.sub_total = factura_det.cantidad*factura_det.precio
+                #factura_det.save()
+                salida = salida - factura_det.sub_total
+
+                #Registro de Caja
+                cant = Caja.objects.all().count()
+                cajalist = Caja.objects.all()
+                saldo = cajalist[cant-1].saldo_actual
+                saldo_actual = saldo - salida
+
+                caja = Caja (
+                    fac = enc,
+                    #fecha = datetime.today(),
+                    descripcion = 'Nota de Crédito x Venta',
+                    entrada = 0,
+                    salida = salida,
+                    saldo_actual = saldo_actual
+                )
+
+                caja.save()
+
+                total = (factura_det.precio*int(cantidad))
+
+                gravada = round(float(total/1.05))
+                iva = round((total/21))
+
+                nota = NotaCredito (
+                    no_factura = enc.no_factura,
+                    producto = producto.product_name,
+                    descripcion = 'Nota de Credito x Venta', 
+                    cantidad = cantidad,
+                    gravada = gravada,
+                    iva = iva,
+                    precio = factura_det.precio,
+                    total = total
+                )
+
+                nota.save()
+        
+
+    return render(request, template_name,contexto)
 
 def cerrarCaja(request,id):
 

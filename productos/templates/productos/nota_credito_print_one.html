@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Listado de Notas</title>
+
+    <style type="text/css">
+    @page {
+        size: letter;
+        margin: 1cm;
+    }
+    .table {
+        background-color: #c0c1c8;
+        text-align: center;
+    }
+    .table td .numero{
+        text-align: center;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4>CFSoft</h4>
+            </div>
+
+            <div class="list-group">
+                <p>No. Nota de Credito: {{ nota.id}} </p>
+                <table class="">
+                    <tbody>
+                        <tr>
+                            <td>Fecha: {{ today }}</td>
+                            <td>{{ nota.fecha|date:"d/m/Y"}}</td>
+                        </tr>
+                        <tr>
+                            <td>Nota de credito x Factura</td>
+                            <td>{{nota.no_factura}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr>
+            </div>
+
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Descripcion</th>
+                        <th>Cant Dev</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="small">{{ nota.producto}}</span></td>
+                        <td class="text">{{ nota.descripcion }}</td>
+                        <td class="text">{{ nota.cantidad }}</td>
+                        <td class="numero">{{ nota.precio }}</td>
+                    </tr>
+                          <tr>
+                            <td><br></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><h4>Total</h4></td>
+                            <td class="numero"><h4>{{ nota.total}}</h4></td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><h4></h4>Gravada</td>
+                            <td class="numero"><h4>{{ nota.gravada}}</h4></td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><h4></h4>Iva 5%</td>
+                            <td class="numero"><h4>{{ nota.iva}}</h4></td>
+                          </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -67,6 +67,7 @@
           <a href="{% url 'ventas:factura_edit' item.id %}" class="href btn btn-warning btn-circle">
               <i class="far fa-edit"></i>
           </a>
+          <a class="btn btn-info" href="{% url 'ventas:nota_credito' item.id %} ">Nota de Crédito</a>
         </td>
       </tr>
       {% endfor %}

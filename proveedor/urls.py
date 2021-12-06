@@ -3,7 +3,7 @@ from django.urls import path
 
 # Local
 from .views import ProveedorView, ProveedorNew, ProveedorEdit, ProveedorDel, PagoView, ComprasDetEdit,ComprasDetView, \
-    ComprasView, compras, CompraDetDelete, OrdenComprasView, orden_compras, OrdenView, clienteInactivar, realizarPago, detalle_compras
+    ComprasView, compras, CompraDetDelete, OrdenComprasView, orden_compras, OrdenView, clienteInactivar, realizarPago, detalle_compras,notaCredito
 from .reportes import reporte_compras, imprimir_compra, imprimir_compras_rang
 
 urlpatterns = [
@@ -32,4 +32,5 @@ urlpatterns = [
     path('pago/<int:id>',realizarPago, name="realizar_pago"),
     path('proveedor/buscar-orden',OrdenView.as_view(), name='buscar_compra'),
 
+    path('compras/notaCred/<int:id>', notaCredito, name="nota_credito")
 ]
