@@ -303,7 +303,7 @@ def facturas(request,id=None):
             enc = FacturaEnc.objects.filter(pk=id).first()
             if enc:
                 #enc.cliente = cli
-                enc.no_factura = ('001-'+'002-' + int(str(7 - len(str(no_factura))))*'0' + str(no_factura))
+                enc.no_factura = no_factura
                 enc.no_timbrado=no_timbrado
                 enc.fecha_fin_timbrado = fecha_fin_timbrado
                 enc.fecha_ini_timbrado = fecha_ini_timbrado

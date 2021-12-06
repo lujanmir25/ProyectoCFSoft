@@ -189,7 +189,7 @@ def compras(request, compra_id=None):
         
         if enc:
             det = ComprasDet.objects.filter(compra=enc)
-            cantidad_cuotas = (enc.cantidad_cuotas)
+            cantidad_cuotas = enc.cantidad_cuotas
             fecha_compra = datetime.date.isoformat(enc.fecha_compra)
             fecha_factura = datetime.date.isoformat(enc.fecha_factura)
             fecha_ini_timbrado = datetime.date.isoformat(enc.fecha_ini_timbrado)

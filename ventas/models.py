@@ -55,7 +55,7 @@ class FacturaEnc(ClaseModelo2):
     descripcion = models.TextField(blank=True, null=True)
     #fecha = models.DateTimeField(auto_now_add=True)
     fecha = models.DateTimeField(null=True, blank=True)
-    no_factura = models.CharField(max_length=20)
+    no_factura = models.CharField(max_length=100)
     sub_total=models.FloatField(default=0)
     descuento=models.FloatField(default=0)
     total=models.FloatField(default=0)
